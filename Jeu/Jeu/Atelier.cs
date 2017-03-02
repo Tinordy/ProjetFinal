@@ -237,17 +237,14 @@ namespace AtelierXNA
             }
             else if (p == Protocoles.Disconnected)
             {
-                byte id = reader.ReadByte();
-                string ip = reader.ReadString();
                 enemyConnected = false;
+                enemy.Enabled = false;
             }
             else if (p == Protocoles.PlayerMoved)
             {
                 float X = reader.ReadSingle();
                 float Y = reader.ReadSingle();
                 float Z = reader.ReadSingle();
-                byte id = reader.ReadByte();
-                string ip = reader.ReadString();
                 enemy.Position = new Vector3(enemy.Position.X + X, enemy.Position.Y + Y, enemy.Position.Z + Z);
                 enemy.CalculerMatriceMonde();
                 
