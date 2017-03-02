@@ -103,6 +103,7 @@
     <Compile Include="Protocoles.cs" />
     <Compile Include="Section.cs" />
     <Compile Include="Terrain.cs" />
+    <Compile Include="Voiture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

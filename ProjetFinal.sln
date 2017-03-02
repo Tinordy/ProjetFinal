@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "JeuContent", "ProjetFinal\ProjetFinalContent\JeuContent.contentproj", "{F970A49C-241D-4CE8-9598-9A94EC602107}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayServer", "..\Serveur\RelayServer\RelayServer.csproj", "{936720BA-0015-4574-8891-54617F3E63CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JeuContent", "ProjetFinal\ProjetFinalContent\JeuContent.contentproj", "{F970A49C-241D-4CE8-9598-9A94EC602107}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeu", "Jeu\Jeu\Jeu.csproj", "{2155818E-1385-457A-9351-6B65FE802BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayServer", "C:\Users\farme\Downloads\Serveur\Serveur\RelayServer\RelayServer.csproj", "{936720BA-0015-4574-8891-54617F3E63CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,14 +17,14 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F970A49C-241D-4CE8-9598-9A94EC602107}.Debug|x86.ActiveCfg = Debug|x86
 		{F970A49C-241D-4CE8-9598-9A94EC602107}.Release|x86.ActiveCfg = Release|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.ActiveCfg = Debug|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.Build.0 = Debug|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.ActiveCfg = Release|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.Build.0 = Release|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Debug|x86.ActiveCfg = Debug|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Debug|x86.Build.0 = Debug|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Release|x86.ActiveCfg = Release|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Release|x86.Build.0 = Release|x86
+		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.ActiveCfg = Debug|x86
+		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.Build.0 = Debug|x86
+		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.ActiveCfg = Release|x86
+		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
