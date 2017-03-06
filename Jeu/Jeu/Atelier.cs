@@ -175,6 +175,7 @@ namespace AtelierXNA
             {
                 UpdateLan(gameTime);
                 base.Update(gameTime);
+                TempsÉcouléDepuisMAJ = 0;
             }
 
         }
