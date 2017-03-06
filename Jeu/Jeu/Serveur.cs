@@ -475,26 +475,5 @@ namespace AtelierXNA
             writeStream.Position = 0;
         }
     }
-
-    class ProgramDuServeur
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Quel est votre port? : " );
-            int port = int.Parse(Console.ReadLine());           
-            try
-            {
-                Server server = new Server(port);
-                while (true) { Thread.Sleep(1000); }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            Console.ReadKey();
-
-        }
-
-    }
+    
 }

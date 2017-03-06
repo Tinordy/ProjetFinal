@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace AtelierXNA
 {
@@ -61,7 +62,7 @@ namespace AtelierXNA
             GestionInput = new InputManager(this);
             Services.AddService(typeof(InputManager), GestionInput);
             //serveur 
-
+           
 
 
             readStream = new MemoryStream();
@@ -111,6 +112,12 @@ namespace AtelierXNA
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
             Components.Add(player);
+            try
+            {
+                Server server = new Server(PORT);
+                Thread.Sleep(1000);
+            }
+            catch (Exception e) { }
             base.Initialize();
         }
 
