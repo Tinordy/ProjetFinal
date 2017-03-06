@@ -406,23 +406,26 @@ namespace AtelierXNA
                 int bytesWritten = (int)ms.Position;
                 result = new byte[bytesWritten];
                 ms.Position = 0;
-                if((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
+                if ((int)ms.Position > 0)
                 {
-                    X = reader.ReadSingle();
-                    Y = reader.ReadSingle();
-                    Z = reader.ReadSingle();
+                    if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
+                    {
+                        X = reader.ReadSingle();
+                        Y = reader.ReadSingle();
+                        Z = reader.ReadSingle();
 
-                    X = X < 10 ? X : 10;
-                    Y = Y < 10 ? Y : 10;
-                    Z = Z < 10 ? Z : 10;
+                        X = X < 10 ? X : 10;
+                        Y = Y < 10 ? Y : 10;
+                        Z = Z < 10 ? Z : 10;
 
-                    // réécrire le memory Stream
+                        // réécrire le memory Stream
 
-                    writeStream.Position = 0;
-                    writer.Write((byte)Protocoles.PlayerMoved);
-                    writer.Write(X);
-                    writer.Write(Y);
-                    writer.Write(Z);
+                        writeStream.Position = 0;
+                        writer.Write((byte)Protocoles.PlayerMoved);
+                        writer.Write(X);
+                        writer.Write(Y);
+                        writer.Write(Z);
+                    }
                 }
                 ms.Read(result, 0, bytesWritten);
             }
