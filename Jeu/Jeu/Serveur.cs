@@ -397,41 +397,38 @@ namespace AtelierXNA
         {
             byte[] result;
             float limite = 10f;
-            //Async method called this, so lets lock the object to make sure other threads/async calls need to wait to use it.
-            lock (ms)
+
+            float X;
+            float Y;
+            float Z;
+            int bytesWritten = (int)ms.Position;
+            result = new byte[bytesWritten];
+            ms.Position = 0;
+            if ((int)ms.Position > 0)
             {
-                float X;
-                float Y;
-                float Z;
-                int bytesWritten = (int)ms.Position;
-                result = new byte[bytesWritten];
-                ms.Position = 0;
-                if ((int)ms.Position > 0)
+                if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
                 {
-                    if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
-                    {
-                        X = reader.ReadSingle();
-                        Y = reader.ReadSingle();
-                        Z = reader.ReadSingle();
+                    X = reader.ReadSingle();
+                    Y = reader.ReadSingle();
+                    Z = reader.ReadSingle();
 
-                        X = X < 10 ? X : 10;
-                        Y = Y < 10 ? Y : 10;
-                        Z = Z < 10 ? Z : 10;
+                    X = X < 10 ? X : 10;
+                    Y = Y < 10 ? Y : 10;
+                    Z = Z < 10 ? Z : 10;
 
-                        // réécrire le memory Stream
+                    // réécrire le memory Stream
 
-                        writeStream.Position = 0;
-                        
-                        writer.Write((byte)Protocoles.PlayerMoved);
-                        writer.Write(X);
-                        writer.Write(Y);
-                        writer.Write(Z);
-                        writeStream.Read(result, 0, bytesWritten);
-                        return result;
-                    }
+                    writeStream.Position = 0;
+
+                    writer.Write((byte)Protocoles.PlayerMoved);
+                    writer.Write(X);
+                    writer.Write(Y);
+                    writer.Write(Z);
+                    writeStream.Read(result, 0, bytesWritten);
+                    return result;
                 }
-                ms.Read(result, 0, bytesWritten);
             }
+            ms.Read(result, 0, bytesWritten);
 
             return result;
         }
