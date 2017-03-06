@@ -93,7 +93,6 @@
     <Compile Include="Afficheur3D.cs" />
     <Compile Include="Atelier.cs" />
     <Compile Include="DataPiste.cs" />
-    <Compile Include="Delegates.cs" />
     <Compile Include="Maison.cs" />
     <Compile Include="Piste.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocoles.cs" />
     <Compile Include="Section.cs" />
+    <Compile Include="Serveur.cs" />
     <Compile Include="Terrain.cs" />
     <Compile Include="Voiture.cs" />
   </ItemGroup>
