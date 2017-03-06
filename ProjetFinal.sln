@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JeuContent", "ProjetFinal\ProjetFinalContent\JeuContent.contentproj", "{F970A49C-241D-4CE8-9598-9A94EC602107}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeu", "Jeu\Jeu\Jeu.csproj", "{2155818E-1385-457A-9351-6B65FE802BD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayServer", "C:\Users\farme\Downloads\Serveur\Serveur\RelayServer\RelayServer.csproj", "{936720BA-0015-4574-8891-54617F3E63CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayServer", "..\..\Serveur\Serveur\RelayServer\RelayServer.csproj", "{936720BA-0015-4574-8891-54617F3E63CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
