@@ -130,23 +130,24 @@ namespace AtelierXNA
 
         void UpdateLan(GameTime gameTime)
         {
+            float valeurTranslation = 1f;
             Vector3 iPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z);
             Vector3 nPosition = iPosition;
             if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.W))
             {
-                nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z + 0.01f);
+                nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z + valeurTranslation);
             }
             if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.S))
             {
-                nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z - 0.01f);
+                nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z - valeurTranslation);
             }
             if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.A))
             {
-                nPosition = new Vector3(player.Position.X + 0.01f, player.Position.Y, player.Position.Z);
+                nPosition = new Vector3(player.Position.X + valeurTranslation, player.Position.Y, player.Position.Z);
             }
             if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.D))
             {
-                nPosition = new Vector3(player.Position.X - 0.01f, player.Position.Y, player.Position.Z);
+                nPosition = new Vector3(player.Position.X - valeurTranslation, player.Position.Y, player.Position.Z);
             }
 
 
