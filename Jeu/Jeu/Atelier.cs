@@ -32,7 +32,7 @@ namespace AtelierXNA
 
         // server related properties
 
-        string IP = "172.17.106.122";
+        string IP = "172.22.157.39";
         int PORT = 5001;
         int BUFFER_SIZE = 2048;
         byte[] readBuffer;
@@ -112,7 +112,7 @@ namespace AtelierXNA
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
             Components.Add(player);
-            Server server = new Server(PORT);
+            //Server server = new Server(PORT);           
             base.Initialize();
         }
 
@@ -223,9 +223,7 @@ namespace AtelierXNA
             if (p == Protocoles.Connected)
             {             
                 if (!enemyConnected)
-                {
-                    byte id = reader.ReadByte();
-                    string ip = reader.ReadString();
+                {                   
                     enemyConnected = true;
                     enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(0, 0, 5), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
                     Components.Add(enemy);
