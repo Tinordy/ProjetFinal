@@ -29,7 +29,7 @@ namespace AtelierXNA
         List<Section> ListeSections { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         TcpClient client;
-        Server server;
+        Server server { get; set; }
 
         // server related properties
 
@@ -113,7 +113,7 @@ namespace AtelierXNA
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
             Components.Add(player);
-            //Server server = new Server(PORT);           
+            server = new Server(PORT);           
             base.Initialize();
         }
 
@@ -164,7 +164,6 @@ namespace AtelierXNA
                 writer.Write(player.Position.Y);
                 writer.Write(player.Position.Z);
                 SendData(server.GetDataFromMemoryStream(writeStream));
-
 
             }
         }
