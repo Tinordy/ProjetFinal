@@ -112,12 +112,7 @@ namespace AtelierXNA
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
             Components.Add(player);
-            try
-            {
-                Server server = new Server(PORT);
-                Thread.Sleep(1000);
-            }
-            catch (Exception e) { }
+            Server server = new Server(PORT);
             base.Initialize();
         }
 
@@ -256,11 +251,6 @@ namespace AtelierXNA
                 enemy.CalculerMatriceMonde();
                 
             }
-            //}
-            //catch (Exception exception)
-            //{
-            //    MessageBox.Show(exception.Message + "2");
-            //}
         }
 
         private byte[] GetDataFromMemoryStream(MemoryStream ms)
