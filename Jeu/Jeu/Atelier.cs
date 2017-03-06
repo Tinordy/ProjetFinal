@@ -62,7 +62,7 @@ namespace AtelierXNA
             GestionInput = new InputManager(this);
             Services.AddService(typeof(InputManager), GestionInput);
             //serveur 
-           
+
 
 
             readStream = new MemoryStream();
@@ -132,7 +132,7 @@ namespace AtelierXNA
         {
             Vector3 iPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z);
             Vector3 nPosition = iPosition;
-            if(GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.W))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.W))
             {
                 nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z + 0.01f);
             }
@@ -170,8 +170,13 @@ namespace AtelierXNA
         protected override void Update(GameTime gameTime)
         {
             GérerClavier();
-            UpdateLan(gameTime);
-            base.Update(gameTime);
+            TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
+            {
+                UpdateLan(gameTime);
+                base.Update(gameTime);
+            }
+
         }
 
         void StreamReceived(IAsyncResult ar)
@@ -221,13 +226,13 @@ namespace AtelierXNA
             p = (Protocoles)reader.ReadByte();
 
             if (p == Protocoles.Connected)
-            {             
+            {
                 if (!enemyConnected)
-                {                   
+                {
                     enemyConnected = true;
                     enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(0, 0, 5), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
                     Components.Add(enemy);
-                    
+
 
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
@@ -247,7 +252,7 @@ namespace AtelierXNA
                 float Z = reader.ReadSingle();
                 enemy.Position = new Vector3(enemy.Position.X + X, enemy.Position.Y + Y, enemy.Position.Z + Z);
                 enemy.CalculerMatriceMonde();
-                
+
             }
         }
 
