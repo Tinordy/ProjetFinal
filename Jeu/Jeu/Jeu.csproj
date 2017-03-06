@@ -94,6 +94,7 @@
     <Compile Include="Atelier.cs" />
     <Compile Include="DataPiste.cs" />
     <Compile Include="Maison.cs" />
+    <Compile Include="ObjetDeBase.cs" />
     <Compile Include="Piste.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
     <Compile Include="PrimitiveDeBaseAnimée.cs" />
