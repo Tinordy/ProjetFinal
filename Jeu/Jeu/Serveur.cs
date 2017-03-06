@@ -393,7 +393,7 @@ namespace AtelierXNA
         /// </summary>
         /// <param name="ms">MemoryStream to convert</param>
         /// <returns>Byte array representation of the data</returns>
-        private byte[] GetDataFromMemoryStream(MemoryStream ms)
+        public byte[] GetDataFromMemoryStream(MemoryStream ms)
         {
             byte[] result;
             float limite = 10f;

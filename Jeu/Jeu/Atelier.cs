@@ -29,6 +29,7 @@ namespace AtelierXNA
         List<Section> ListeSections { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         TcpClient client;
+        Server server;
 
         // server related properties
 
@@ -162,7 +163,7 @@ namespace AtelierXNA
                 writer.Write(player.Position.X);
                 writer.Write(player.Position.Y);
                 writer.Write(player.Position.Z);
-                SendData(GetDataFromMemoryStream(writeStream));
+                SendData(server.GetDataFromMemoryStream(writeStream));
 
 
             }
@@ -238,7 +239,7 @@ namespace AtelierXNA
 
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
-                    SendData(GetDataFromMemoryStream(writeStream));
+                    SendData(server.GetDataFromMemoryStream(writeStream));
                 }
 
             }
@@ -256,21 +257,6 @@ namespace AtelierXNA
                 enemy.CalculerMatriceMonde();
 
             }
-        }
-
-        private byte[] GetDataFromMemoryStream(MemoryStream ms)
-        {
-            byte[] result;
-            lock (ms)
-            {
-                int bytesWritten = (int)ms.Position;
-                result = new byte[bytesWritten];
-
-                ms.Position = 0;
-                ms.Read(result, 0, bytesWritten);
-            }
-
-            return result;
         }
 
         public void SendData(byte[] b)
