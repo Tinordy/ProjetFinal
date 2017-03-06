@@ -421,10 +421,13 @@ namespace AtelierXNA
                         // réécrire le memory Stream
 
                         writeStream.Position = 0;
+                        
                         writer.Write((byte)Protocoles.PlayerMoved);
                         writer.Write(X);
                         writer.Write(Y);
                         writer.Write(Z);
+                        writeStream.Read(result, 0, bytesWritten);
+                        return result;
                     }
                 }
                 ms.Read(result, 0, bytesWritten);
