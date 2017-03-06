@@ -158,9 +158,9 @@ namespace AtelierXNA
                 player.CalculerMatriceMonde();
                 writeStream.Position = 0;
                 writer.Write((byte)Protocoles.PlayerMoved);
-                writer.Write(delta.X);
-                writer.Write(delta.Y);
-                writer.Write(delta.Z);
+                writer.Write(player.Position.X);
+                writer.Write(player.Position.Y);
+                writer.Write(player.Position.Z);
                 SendData(GetDataFromMemoryStream(writeStream));
 
 
@@ -250,7 +250,7 @@ namespace AtelierXNA
                 float X = reader.ReadSingle();
                 float Y = reader.ReadSingle();
                 float Z = reader.ReadSingle();
-                enemy.Position = new Vector3(enemy.Position.X + X, enemy.Position.Y + Y, enemy.Position.Z + Z);
+                enemy.Position = new Vector3(X,Y,Z);
                 enemy.CalculerMatriceMonde();
 
             }
