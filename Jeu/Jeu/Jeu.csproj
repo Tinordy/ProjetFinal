@@ -92,8 +92,17 @@
   <ItemGroup>
     <Compile Include="Afficheur3D.cs" />
     <Compile Include="Atelier.cs" />
+    <Compile Include="BoutonDeCommande.cs" />
     <Compile Include="DataPiste.cs" />
+    <Compile Include="DéfileurSprite.cs" />
+    <Compile Include="EntréeDeTexte.cs" />
+    <Compile Include="Jeu.cs" />
     <Compile Include="Maison.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuLan.cs" />
+    <Compile Include="MenuOption.cs" />
+    <Compile Include="MenuPrincipal.cs" />
+    <Compile Include="MenuProfile.cs" />
     <Compile Include="ObjetDeBase.cs" />
     <Compile Include="Piste.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
@@ -104,6 +113,7 @@
     <Compile Include="Section.cs" />
     <Compile Include="Serveur.cs" />
     <Compile Include="Terrain.cs" />
+    <Compile Include="Titre.cs" />
     <Compile Include="Voiture.cs" />
   </ItemGroup>
   <ItemGroup>
