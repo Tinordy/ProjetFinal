@@ -420,9 +420,10 @@ namespace AtelierXNA
             int bytesWritten = (int)ms.Position;
             result = new byte[bytesWritten];
             ms.Position = 0;
-            Protocoles p = (Protocoles)reader.ReadByte();
+           
             if ((int)ms.Position > 0)
             {
+                Protocoles p = (Protocoles)reader.ReadByte();
                 if (p == Protocoles.PlayerMoved)
                 {
                     X = reader.ReadSingle();
