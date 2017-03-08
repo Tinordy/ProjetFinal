@@ -112,6 +112,7 @@
     <Compile Include="Protocoles.cs" />
     <Compile Include="Section.cs" />
     <Compile Include="Serveur.cs" />
+    <Compile Include="Sprite.cs" />
     <Compile Include="Terrain.cs" />
     <Compile Include="Titre.cs" />
     <Compile Include="Voiture.cs" />
