@@ -138,15 +138,15 @@ namespace AtelierXNA
             {
                 nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z + valeurTranslation);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Down))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.NumPad5))
             {
                 nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z - valeurTranslation);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Left))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.NumPad4))
             {
                 nPosition = new Vector3(player.Position.X + valeurTranslation, player.Position.Y, player.Position.Z);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Right))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.NumPad6))
             {
                 nPosition = new Vector3(player.Position.X - valeurTranslation, player.Position.Y, player.Position.Z);
             }
@@ -156,8 +156,9 @@ namespace AtelierXNA
 
             if (delta != Vector3.Zero)
             {
-                player.Position = Server.VérificationPositionServeur(nPosition);
-                player.CalculerMatriceMonde();
+                //player.Position = Server.VérificationPositionServeur(nPosition);
+                player.Position = nPosition;
+                //player.CalculerMatriceMonde();
                 writeStream.Position = 0;
                 writer.Write((byte)Protocoles.PlayerMoved);
                 writer.Write(player.Position.X);
@@ -255,6 +256,7 @@ namespace AtelierXNA
                 float Z = reader.ReadSingle();
                 enemy.Position = new Vector3(X,Y,Z);
                 enemy.CalculerMatriceMonde();
+                player.CalculerMatriceMonde();
 
             }
         }

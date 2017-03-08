@@ -420,30 +420,30 @@ namespace AtelierXNA
             int bytesWritten = (int)ms.Position;
             result = new byte[bytesWritten];
             ms.Position = 0;
-            //if ((int)ms.Position > 0)
-            //{
-            //    if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
-            //    {
-            //        X = reader.ReadSingle();
-            //        Y = reader.ReadSingle();
-            //        Z = reader.ReadSingle();
+            reader = new BinaryReader(ms);
+            Protocoles p = (Protocoles)reader.ReadByte();
+            if ((int)ms.Position > 0)
+            {
+                if (p == Protocoles.PlayerMoved)
+                {
+                    X = reader.ReadSingle();
+                    Y = reader.ReadSingle();
+                    Z = reader.ReadSingle();
 
-            //        X = X < 10 ? X : 10;
-            //        Y = Y < 10 ? Y : 10;
-            //        Z = Z < 10 ? Z : 10;
+                    Vector3 tampon =  VérificationPositionServeur(new Vector3(X, Y, Z));
 
-            //        // réécrire le memory Stream
+                    // réécrire le memory Stream
 
-            //        writeStream.Position = 0;
+                    writeStream.Position = 0;
 
-            //        writer.Write((byte)Protocoles.PlayerMoved);
-            //        writer.Write(X);
-            //        writer.Write(Y);
-            //        writer.Write(Z);
-            //        writeStream.Read(result, 0, bytesWritten);
-            //        return result;
-            //    }
-            //}
+                    writer.Write((byte)Protocoles.PlayerMoved);
+                    writer.Write(tampon.X);
+                    writer.Write(tampon.Y);
+                    writer.Write(tampon.Z);
+                    writeStream.Read(result, 0, bytesWritten);
+                    return result;
+                }
+            }
             ms.Read(result, 0, bytesWritten);
 
             return result;
