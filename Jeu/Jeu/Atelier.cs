@@ -30,6 +30,7 @@ namespace AtelierXNA
         float TempsÉcouléDepuisMAJ { get; set; }
         TcpClient client;
         Server Server { get; set; }
+        int ancienNbDeClients { get; set; }
 
         // server related properties
 
@@ -179,8 +180,18 @@ namespace AtelierXNA
                 UpdateLan(gameTime);
                 
                 TempsÉcouléDepuisMAJ = 0;
+                DéconnectionDeJoueur();
             }
 
+        }
+
+        private void DéconnectionDeJoueur()
+        {
+
+            if(Server.connectedClients < ancienNbDeClients )
+            {
+                Components.Remove(enemy);
+            }
         }
 
         void StreamReceived(IAsyncResult ar)
