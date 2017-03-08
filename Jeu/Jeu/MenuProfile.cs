@@ -32,7 +32,7 @@ namespace AtelierXNA
             Composantes.Add(new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20"));
             List<string> noms = new List<string>();
             noms.Add("CielÉtoilé");
-            noms.Add("Dragon");
+            noms.Add("Neige");
             noms.Add("brique1");
             Composantes.Add(new DéfileurSprite(Game,noms, new Rectangle(0,Game.Window.ClientBounds.Height/3, Game.Window.ClientBounds.Width,2* Game.Window.ClientBounds.Height/3), 0.01f));
             Composantes.Add(new BoutonDeCommande(Game, "Démarrer", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 2, 8 * Game.Window.ClientBounds.Height / 9), true, Démarrer, 0.01f));

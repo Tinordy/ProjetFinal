@@ -69,6 +69,8 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.JOUER:
+                    //retirer tous les menus des components?
+                    MenuChoixProfile.Enabled = false;
                     DémarrerLeJeu();
                     break;
             }
