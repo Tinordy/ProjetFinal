@@ -172,6 +172,7 @@ namespace AtelierXNA
 
         protected override void Update(GameTime gameTime)
         {
+            DéconnectionDeJoueur();
             GérerClavier();
             base.Update(gameTime);
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -180,7 +181,7 @@ namespace AtelierXNA
                 UpdateLan(gameTime);
                 
                 TempsÉcouléDepuisMAJ = 0;
-                DéconnectionDeJoueur();
+               
             }
 
         }
