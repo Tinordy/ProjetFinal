@@ -33,7 +33,7 @@ namespace AtelierXNA
 
         // server related properties
 
-        string IP = "172.22.157.39";
+        string IP = "127.0.0.1";
         int PORT = 5001;
         int BUFFER_SIZE = 2048;
         byte[] readBuffer;
@@ -134,19 +134,19 @@ namespace AtelierXNA
             float valeurTranslation = 1f;
             Vector3 iPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z);
             Vector3 nPosition = iPosition;
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.W))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.NumPad8))
             {
                 nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z + valeurTranslation);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.S))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Down))
             {
                 nPosition = new Vector3(player.Position.X, player.Position.Y, player.Position.Z - valeurTranslation);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.A))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Left))
             {
                 nPosition = new Vector3(player.Position.X + valeurTranslation, player.Position.Y, player.Position.Z);
             }
-            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.D))
+            if (GestionInput.EstEnfoncée(Microsoft.Xna.Framework.Input.Keys.Right))
             {
                 nPosition = new Vector3(player.Position.X - valeurTranslation, player.Position.Y, player.Position.Z);
             }
@@ -171,11 +171,12 @@ namespace AtelierXNA
         protected override void Update(GameTime gameTime)
         {
             GérerClavier();
+            base.Update(gameTime);
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
             {
                 UpdateLan(gameTime);
-                base.Update(gameTime);
+                
                 TempsÉcouléDepuisMAJ = 0;
             }
 

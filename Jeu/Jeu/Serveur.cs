@@ -301,7 +301,8 @@ namespace AtelierXNA
 
         //number of connected clients
         int connectedClients = 0;
-
+        const int NB_MAX_DE_JOUEURS = 2;
+        const int LIMITE = 100;
         //Writers and readers to manipulate data
         MemoryStream readStream;
         MemoryStream writeStream;
@@ -314,7 +315,7 @@ namespace AtelierXNA
         /// <param name="port">The port you want to use</param>
         public Server(int port)
         {
-            const int NB_MAX_DE_JOUEURS = 2;
+            
             //Initialize the array with a maximum of the MaxClients from the config file.
             client = new Client[NB_MAX_DE_JOUEURS];
 
@@ -392,14 +393,15 @@ namespace AtelierXNA
         public Vector3 VérificationPositionServeur(Vector3 position)
         {
             float X = position.X;
-            float Y = position.Y;
             float Z = position.Z;
 
-            X = X < 10 ? X : 10;
-            Y = Y < 10 ? Y : 10;
-            Z = Z < 10 ? Z : 10;
+            X = X < LIMITE ? X : LIMITE;
+            X = X > -LIMITE ? X : -LIMITE;          
+            Z = Z < LIMITE ? Z : LIMITE;
+            Z = Z > -LIMITE ? Z : -LIMITE;
 
-            return new Vector3(X, Y, Z);
+
+            return new Vector3(X, position.Y, Z);
         }
 
         /// <summary>
