@@ -33,7 +33,7 @@ namespace AtelierXNA
 
         // server related properties
 
-        string IP = "127.0.0.1";
+        string IP = "172.22.157.39";
         int PORT = 5001;
         int BUFFER_SIZE = 2048;
         byte[] readBuffer;
