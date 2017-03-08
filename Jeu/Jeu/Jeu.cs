@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
+using System.Net.Sockets;
 
 namespace AtelierXNA
 {
@@ -20,6 +20,8 @@ namespace AtelierXNA
         MenuOption MenuDesOptions { get; set; }
         MenuLan MenuNetwork { get; set; }
         MenuProfile MenuChoixProfile { get; set; }
+        Server Serveur { get; set; }
+        TcpClient Client { get; set; }
 
         public Jeu(Game game)
             : base(game)
@@ -145,7 +147,21 @@ namespace AtelierXNA
 
         private void CréerServeur()
         {
-            //dave
+            Serveur = new Server(5001); // Demander à l'utilisateur d'inscrire son port
+            Client = new TcpClient();
+            Client.NoDelay = true;
+            Client.Connect(IP, PORT);
+
+            readBuffer = new byte[BUFFER_SIZE];
+
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.Connected);
+            writer.Write(player.Position.X);
+            writer.Write(player.Position.Y);
+            writer.Write(player.Position.Z);
+            SendData(Server.GetDataFromMemoryStream(writeStream));
+
+            client.GetStream().BeginRead(readBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
         private void ConnectionAuServeur()
         {
