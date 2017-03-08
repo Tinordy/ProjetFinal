@@ -63,10 +63,7 @@ namespace AtelierXNA
         {
             GestionInput = new InputManager(this);
             Services.AddService(typeof(InputManager), GestionInput);
-            //serveur 
-
-
-
+            //serveur             
             readStream = new MemoryStream();
             writeStream = new MemoryStream();
 
@@ -75,36 +72,36 @@ namespace AtelierXNA
 
             //
             //joueur 
-            enemy = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD);
-            player = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
+            //enemy = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD);
+            //player = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
             Vector3 positionCaméra = new Vector3(200, 10, 200);
             Vector3 cibleCaméra = new Vector3(10, 0, 10);
-            ListeSections = new List<Section>();
+            //ListeSections = new List<Section>();
 
             Components.Add(GestionInput);
             CaméraJeu = new CaméraSubjective(this, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ_STANDARD);
             Components.Add(CaméraJeu);
-            Sections = new List<Section>();
+           // Sections = new List<Section>();
             Components.Add(new Afficheur3D(this));
-            Components.Add(new ArrièrePlanDéroulant(this, "CielÉtoilé", INTERVALLE_MAJ_STANDARD));
-            for (int i = 0; i < 2; ++i)
-            {
-                for (int j = 0; j < 2; ++j)
-                {
-                    Section newSection = new Section(this, new Vector2(200 * i, 100 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, INTERVALLE_MAJ_STANDARD);
-                    Sections.Add(newSection);
-                    ListeSections.Add(newSection);
-                }
-            }
-            foreach (Section s in ListeSections)
-            {
-                Components.Add(s);
-            }
+            //Components.Add(new ArrièrePlanDéroulant(this, "CielÉtoilé", INTERVALLE_MAJ_STANDARD));
+            //for (int i = 0; i < 2; ++i)
+            //{
+            //    for (int j = 0; j < 2; ++j)
+            //    {
+            //        Section newSection = new Section(this, new Vector2(200 * i, 100 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, INTERVALLE_MAJ_STANDARD);
+            //        Sections.Add(newSection);
+            //        ListeSections.Add(newSection);
+            //    }
+            //}
+            //foreach (Section s in ListeSections)
+            //{
+            //    Components.Add(s);
+            //}
 
             //Components.Add(new Terrain(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 25, 256), "GrandeCarte", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD));
             //Components.Add(new Terrain(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), "CarteTest", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD));
-            Components.Add(new AfficheurFPS(this, "Arial20", Color.Red, INTERVALLE_CALCUL_FPS));
-            Components.Add(new Piste(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000));
+            //Components.Add(new AfficheurFPS(this, "Arial20", Color.Red, INTERVALLE_CALCUL_FPS));
+           // Components.Add(new Piste(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000));
 
             //Services.AddService(typeof(Random), new Random());
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
@@ -113,28 +110,28 @@ namespace AtelierXNA
             Services.AddService(typeof(DataPiste), new DataPiste("SplineX.txt", "SplineY.txt"));
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
-            Components.Add(player);
-            Server = new Server(PORT);           
+            //Components.Add(player);
+            //Server = new Server(PORT);           
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             base.LoadContent();
-            client = new TcpClient();
-            client.NoDelay = true;
-            client.Connect(IP, PORT);
+            //client = new TcpClient();
+            //client.NoDelay = true;
+            //client.Connect(IP, PORT);
 
-            readBuffer = new byte[BUFFER_SIZE];
+            //readBuffer = new byte[BUFFER_SIZE];
 
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.Connected);
-            writer.Write(player.Position.X);
-            writer.Write(player.Position.Y);
-            writer.Write(player.Position.Z);
-            SendData(Server.GetDataFromMemoryStream(writeStream));
+            //writeStream.Position = 0;
+            //writer.Write((byte)Protocoles.Connected);
+            //writer.Write(player.Position.X);
+            //writer.Write(player.Position.Y);
+            //writer.Write(player.Position.Z);
+            //SendData(Server.GetDataFromMemoryStream(writeStream));
 
-            client.GetStream().BeginRead(readBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+            //client.GetStream().BeginRead(readBuffer, 0, BUFFER_SIZE, StreamReceived, null);
            
 
         }
