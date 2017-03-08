@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Threading;
+using Microsoft.Xna.Framework;
 
 namespace AtelierXNA
 {
@@ -387,6 +388,19 @@ namespace AtelierXNA
             writeStream.Position = 0;
             SendData(data, sender);
         }
+        
+        public Vector3 VérificationPositionServeur(Vector3 position)
+        {
+            float X = position.X;
+            float Y = position.Y;
+            float Z = position.Z;
+
+            X = X < 10 ? X : 10;
+            Y = Y < 10 ? Y : 10;
+            Z = Z < 10 ? Z : 10;
+
+            return new Vector3(X, Y, Z);
+        }
 
         /// <summary>
         /// Converts a MemoryStream to a byte array
@@ -404,30 +418,30 @@ namespace AtelierXNA
             int bytesWritten = (int)ms.Position;
             result = new byte[bytesWritten];
             ms.Position = 0;
-            if ((int)ms.Position > 0)
-            {
-                if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
-                {
-                    X = reader.ReadSingle();
-                    Y = reader.ReadSingle();
-                    Z = reader.ReadSingle();
+            //if ((int)ms.Position > 0)
+            //{
+            //    if ((Protocoles)reader.ReadByte() == Protocoles.PlayerMoved)
+            //    {
+            //        X = reader.ReadSingle();
+            //        Y = reader.ReadSingle();
+            //        Z = reader.ReadSingle();
 
-                    X = X < 10 ? X : 10;
-                    Y = Y < 10 ? Y : 10;
-                    Z = Z < 10 ? Z : 10;
+            //        X = X < 10 ? X : 10;
+            //        Y = Y < 10 ? Y : 10;
+            //        Z = Z < 10 ? Z : 10;
 
-                    // réécrire le memory Stream
+            //        // réécrire le memory Stream
 
-                    writeStream.Position = 0;
+            //        writeStream.Position = 0;
 
-                    writer.Write((byte)Protocoles.PlayerMoved);
-                    writer.Write(X);
-                    writer.Write(Y);
-                    writer.Write(Z);
-                    writeStream.Read(result, 0, bytesWritten);
-                    return result;
-                }
-            }
+            //        writer.Write((byte)Protocoles.PlayerMoved);
+            //        writer.Write(X);
+            //        writer.Write(Y);
+            //        writer.Write(Z);
+            //        writeStream.Read(result, 0, bytesWritten);
+            //        return result;
+            //    }
+            //}
             ms.Read(result, 0, bytesWritten);
 
             return result;

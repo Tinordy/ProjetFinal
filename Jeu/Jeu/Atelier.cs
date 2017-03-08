@@ -29,7 +29,7 @@ namespace AtelierXNA
         List<Section> ListeSections { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         TcpClient client;
-        Server server { get; set; }
+        Server Server { get; set; }
 
         // server related properties
 
@@ -113,7 +113,7 @@ namespace AtelierXNA
             GestionSprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), GestionSprites);
             Components.Add(player);
-            server = new Server(PORT);           
+            Server = new Server(PORT);           
             base.Initialize();
         }
 
@@ -156,14 +156,14 @@ namespace AtelierXNA
 
             if (delta != Vector3.Zero)
             {
-                player.Position = nPosition;
+                player.Position = Server.VérificationPositionServeur(nPosition);
                 player.CalculerMatriceMonde();
                 writeStream.Position = 0;
                 writer.Write((byte)Protocoles.PlayerMoved);
                 writer.Write(player.Position.X);
                 writer.Write(player.Position.Y);
                 writer.Write(player.Position.Z);
-                SendData(server.GetDataFromMemoryStream(writeStream));
+                SendData(Server.GetDataFromMemoryStream(writeStream));
 
             }
         }
@@ -238,7 +238,7 @@ namespace AtelierXNA
 
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
-                    SendData(server.GetDataFromMemoryStream(writeStream));
+                    SendData(Server.GetDataFromMemoryStream(writeStream));
                 }
 
             }
