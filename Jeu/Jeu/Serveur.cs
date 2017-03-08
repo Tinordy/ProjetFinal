@@ -300,7 +300,7 @@ namespace AtelierXNA
         Client[] client;
 
         //number of connected clients
-        public int connectedClients = 0;
+        public int connectedClients { get; private set; } = 0;
         const int NB_MAX_DE_JOUEURS = 2;
         const int LIMITE = 100;
         //Writers and readers to manipulate data

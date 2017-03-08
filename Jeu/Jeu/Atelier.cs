@@ -188,11 +188,12 @@ namespace AtelierXNA
 
         private void DéconnectionDeJoueur()
         {
-
+            
             if(Server.connectedClients < ancienNbDeClients )
             {
                 Components.Remove(enemy);
             }
+            ancienNbDeClients = Server.connectedClients;
         }
 
         void StreamReceived(IAsyncResult ar)
