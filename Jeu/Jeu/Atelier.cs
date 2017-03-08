@@ -246,6 +246,7 @@ namespace AtelierXNA
             }
             else if (p == Protocoles.Disconnected)
             {
+                Components.Remove(enemy);
                 enemyConnected = false;
                 enemy.Enabled = false;
             }
