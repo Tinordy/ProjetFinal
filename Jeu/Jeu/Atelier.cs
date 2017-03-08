@@ -126,7 +126,16 @@ namespace AtelierXNA
             client.Connect(IP, PORT);
 
             readBuffer = new byte[BUFFER_SIZE];
+
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.Connected);
+            writer.Write(player.Position.X);
+            writer.Write(player.Position.Y);
+            writer.Write(player.Position.Z);
+            SendData(Server.GetDataFromMemoryStream(writeStream));
+
             client.GetStream().BeginRead(readBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+           
 
         }
 
@@ -246,7 +255,11 @@ namespace AtelierXNA
                 if (!enemyConnected)
                 {
                     enemyConnected = true;
-                    enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(0, 0, 5), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
+                    float X = reader.ReadSingle();
+                    float Y = reader.ReadSingle();
+                    float Z = reader.ReadSingle();
+                    enemy.Position = new Vector3(X, Y, Z);
+                    enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
                     Components.Add(enemy);
 
 
