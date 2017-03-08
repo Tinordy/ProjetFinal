@@ -156,7 +156,8 @@ namespace AtelierXNA
 
             if (delta != Vector3.Zero)
             {
-                player.Position = Server.VérificationPositionServeur(nPosition);
+                //player.Position = Server.VérificationPositionServeur(nPosition);
+                player.Position = nPosition;
                 //player.CalculerMatriceMonde();
                 writeStream.Position = 0;
                 writer.Write((byte)Protocoles.PlayerMoved);
