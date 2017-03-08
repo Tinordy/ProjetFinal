@@ -35,8 +35,14 @@ namespace AtelierXNA
             noms.Add("Dragon");
             noms.Add("brique1");
             Composantes.Add(new DéfileurSprite(Game,noms, new Rectangle(0,Game.Window.ClientBounds.Height/3, Game.Window.ClientBounds.Width,2* Game.Window.ClientBounds.Height/3), 0.01f));
+            Composantes.Add(new BoutonDeCommande(Game, "Démarrer", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 2, 8 * Game.Window.ClientBounds.Height / 9), true, Démarrer, 0.01f));
 
             Activer();
+        }
+
+        private void Démarrer()
+        {
+            Choix = ChoixMenu.JOUER;
         }
         //methode pour pseu et voiture... att pseu vide?
     }

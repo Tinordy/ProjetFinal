@@ -34,15 +34,12 @@ namespace AtelierXNA
         {
             État = ÉtatsJeu.MENU_PRINCIPAL;
             MenuPrincipal.Enabled = true;
-            //MenuNetwork.Enabled = false;
-            //MenuDesOptions.Enabled = false;
-            //MenuChoixProfile.Enabled = false;
+
         }
 
         public override void Update(GameTime gameTime)
         {
             GérerTransition();
-            //base.Update(gameTime);
         }
 
         void GérerTransition()
@@ -58,9 +55,27 @@ namespace AtelierXNA
                 case ÉtatsJeu.CHOIX_LAN:
                     GérerTransitionMenuChoixLan();
                     break;
+                case ÉtatsJeu.CHOIX_PROFILE:
+                    GérerTransitionMenuProfile();
+                    break;
             }
 
         }
+
+        private void GérerTransitionMenuProfile()
+        {
+            switch(MenuChoixProfile.Choix)
+            {
+                case ChoixMenu.EN_ATTENTE:
+                    break;
+                case ChoixMenu.JOUER:
+                    DémarrerLeJeu();
+                    break;
+            }
+        }
+
+
+
         void GérerTransitionMenuPrincipal()
         {
             switch (MenuPrincipal.Choix)
@@ -134,6 +149,10 @@ namespace AtelierXNA
         {
             //dave
         }
+        private void DémarrerLeJeu()
+        {
+            //démarre le jeu peu importe si c'est un simple jouer ou multijoueur... dérivée de la classe jeu?
+        }
         #region Création Des Menus
         void CréerMenuPrincipal()
         {
@@ -156,5 +175,6 @@ namespace AtelierXNA
             Game.Components.Add(MenuChoixProfile);
         }
         #endregion
+
     }
 }
