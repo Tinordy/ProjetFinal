@@ -34,6 +34,9 @@ namespace AtelierXNA
         BinaryReader reader;
         BinaryWriter writer;
 
+        Maison Joueur { get; set; }
+        Maison Ennemi { get; set; }
+
         public Jeu(Game game)
             : base(game)
         {
@@ -241,7 +244,15 @@ namespace AtelierXNA
         }
         private void DémarrerLeJeu()
         {
-            //démarre le jeu peu importe si c'est un simple jouer ou multijoueur... dérivée de la classe jeu?
+            Joueur = new Maison(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.PositionInitiale);
+            writer.Write(Joueur.Position.X);
+            writer.Write(Joueur.Position.Y);
+            writer.Write(Joueur.Position.Z);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+
         }
         #region Création Des Menus
         void CréerMenuPrincipal()
@@ -343,7 +354,26 @@ namespace AtelierXNA
             }
             else if (p == Protocoles.PlayerMoved)
             {
+                float X = reader.ReadSingle();
+                float Y = reader.ReadSingle();
+                float Z = reader.ReadSingle();
 
+                Ennemi.Position = new Vector3(X, Y, Z);
+            }
+            else if(p == Protocoles.PositionInitiale)
+            {
+                float X = reader.ReadSingle();
+                float Y = reader.ReadSingle();
+                float Z = reader.ReadSingle();
+
+                Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+
+                writeStream.Position = 0;
+                writer.Write((byte)Protocoles.PlayerMoved);
+                writer.Write(Joueur.Position.X);
+                writer.Write(Joueur.Position.Y);
+                writer.Write(Joueur.Position.Z);
+                SendData(Serveur.GetDataFromMemoryStream(writeStream));
             }
         }
         public void SendData(byte[] b)
