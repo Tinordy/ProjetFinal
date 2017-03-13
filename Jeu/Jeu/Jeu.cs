@@ -95,7 +95,6 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.CHOIX_PROFILE;
                 MenuServeur.Enabled = false;
-                MenuClient.Enabled = false;
                 MenuChoixProfile.Enabled = true;
             }
         }
@@ -194,10 +193,13 @@ namespace AtelierXNA
         {
             switch(MenuClient.Choix)
             {
+
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.CONNECTION:
                     État = ÉtatsJeu.CHOIX_PROFILE;
+                    MenuClient.Enabled = false;
+                    MenuChoixProfile.Enabled = true;
                     ConnectionAuServeur(MenuClient.IP, MenuClient.Port);
                     break;
             }
