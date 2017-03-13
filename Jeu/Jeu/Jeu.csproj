@@ -99,6 +99,7 @@
     <Compile Include="Jeu.cs" />
     <Compile Include="Maison.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="MenuIP.cs" />
     <Compile Include="MenuIPClient.cs" />
     <Compile Include="MenuIPServeur.cs" />
     <Compile Include="MenuLan.cs" />
