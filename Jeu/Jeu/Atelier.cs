@@ -255,20 +255,20 @@ namespace AtelierXNA
                 if (!enemyConnected)
                 {
                     enemyConnected = true;
-                    float X = reader.ReadSingle();
-                    float Y = reader.ReadSingle();
-                    float Z = reader.ReadSingle();
-                    enemy.Position = new Vector3(X, Y, Z);
-                    enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
-                    Components.Add(enemy);
+                    //float X = reader.ReadSingle();
+                    //float Y = reader.ReadSingle();
+                    //float Z = reader.ReadSingle();
+                    //enemy.Position = new Vector3(X, Y, Z);
+                    //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
+                    //Components.Add(enemy);
 
 
-                    writeStream.Position = 0;
-                    writer.Write((byte)Protocoles.Connected);
-                    writer.Write(player.Position.X);
-                    writer.Write(player.Position.Y);
-                    writer.Write(player.Position.Z);
-                    SendData(Server.GetDataFromMemoryStream(writeStream));
+                    //writeStream.Position = 0;
+                    //writer.Write((byte)Protocoles.Connected);
+                    //writer.Write(player.Position.X);
+                    //writer.Write(player.Position.Y);
+                    //writer.Write(player.Position.Z);
+                    //SendData(Server.GetDataFromMemoryStream(writeStream));
                 }
 
             }

@@ -9,12 +9,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Net.Sockets;
+using System.Windows.Forms;
+using System.IO;
 
 namespace AtelierXNA
 {
     enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        const int BUFFER_SIZE = 2048;
         ÉtatsJeu État { get; set; }
         MenuPrincipal MenuPrincipal { get; set; }
         MenuOption MenuDesOptions { get; set; }
@@ -22,6 +25,12 @@ namespace AtelierXNA
         MenuProfile MenuChoixProfile { get; set; }
         Server Serveur { get; set; }
         TcpClient Client { get; set; }
+        byte[] ReadBuffer { get; set; }
+        bool enemiConnecté { get; set; }
+        MemoryStream readStream, writeStream;
+
+        BinaryReader reader;
+        BinaryWriter writer;
 
         public Jeu(Game game)
             : base(game)
@@ -149,19 +158,22 @@ namespace AtelierXNA
         {
             Serveur = new Server(5001); // Demander à l'utilisateur d'inscrire son port
             Client = new TcpClient();
+            readStream = new MemoryStream();
+            writeStream = new MemoryStream();
+
+            enemiConnecté = false;
+
+            reader = new BinaryReader(readStream);
+            writer = new BinaryWriter(writeStream);
             Client.NoDelay = true;
             Client.Connect(IP, PORT);
 
-            readBuffer = new byte[BUFFER_SIZE];
+            ReadBuffer = new byte[BUFFER_SIZE];
 
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Connected);
-            writer.Write(player.Position.X);
-            writer.Write(player.Position.Y);
-            writer.Write(player.Position.Z);
-            SendData(Server.GetDataFromMemoryStream(writeStream));
-
-            client.GetStream().BeginRead(readBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
         private void ConnectionAuServeur()
         {
@@ -191,6 +203,94 @@ namespace AtelierXNA
         {
             MenuChoixProfile = new MenuProfile(Game);
             Game.Components.Add(MenuChoixProfile);
+        }
+        void StreamReceived(IAsyncResult ar)
+        {
+            int bytesRead = 0;
+
+            try
+            {
+                lock (Client.GetStream())
+                {
+                    bytesRead = Client.GetStream().EndRead(ar);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "1");
+            }
+
+            if (bytesRead == 0)
+            {
+                Client.Close();
+                return;
+            }
+
+            byte[] data = new byte[bytesRead];
+
+            for (int cpt = 0; cpt < bytesRead; cpt++)
+                data[cpt] = ReadBuffer[cpt];
+
+            ProcessData(data);
+
+
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+        }
+
+        private void ProcessData(byte[] data)
+        {
+            readStream.SetLength(0);
+            readStream.Position = 0;
+            readStream.Write(data, 0, data.Length);
+            readStream.Position = 0;
+
+            Protocoles p;
+
+            //try
+            //{
+            p = (Protocoles)reader.ReadByte();
+
+            if (p == Protocoles.Connected)
+            {
+                if (!enemiConnecté)
+                {
+                    enemiConnecté = true;
+                    //float X = reader.ReadSingle();
+                    //float Y = reader.ReadSingle();
+                    //float Z = reader.ReadSingle();
+                    //enemy.Position = new Vector3(X, Y, Z);
+                    //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
+                    //Components.Add(enemy);
+
+
+                    writeStream.Position = 0;
+                    writer.Write((byte)Protocoles.Connected);                   
+                    SendData(Serveur.GetDataFromMemoryStream(writeStream));
+                }
+
+            }
+            else if (p == Protocoles.Disconnected)
+            {
+                enemiConnecté = false;
+            }
+            else if (p == Protocoles.PlayerMoved)
+            {
+
+            }
+        }
+        public void SendData(byte[] b)
+        {
+            try
+            {
+                lock (Client.GetStream())
+                {
+                    Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
         }
         #endregion
 
