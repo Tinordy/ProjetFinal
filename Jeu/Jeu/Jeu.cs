@@ -56,6 +56,19 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             GÈrerTransition();
+            GÈrer…tat();
+        }
+
+        private void GÈrer…tat()
+        {
+            switch(…tat)
+            {
+                case …tatsJeu.JEU:
+                    //Collision, gagnant..???
+                    break;
+            }
+
+
         }
 
         void GÈrerTransition()
@@ -107,6 +120,7 @@ namespace AtelierXNA
                     break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
+                    …tat = …tatsJeu.JEU;
                     MenuChoixProfile.Enabled = false;
                     DÈmarrerLeJeu();
                     break;
