@@ -14,7 +14,7 @@ using System.IO;
 
 namespace AtelierXNA
 {
-    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE }
+    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const int BUFFER_SIZE = 2048;
@@ -23,6 +23,8 @@ namespace AtelierXNA
         MenuOption MenuDesOptions { get; set; }
         MenuLan MenuNetwork { get; set; }
         MenuProfile MenuChoixProfile { get; set; }
+        MenuIPServeur MenuServeur { get; set; }
+        MenuIPClient MenuClient { get; set; }
         Server Serveur { get; set; }
         TcpClient Client { get; set; }
         byte[] ReadBuffer { get; set; }
@@ -39,7 +41,10 @@ namespace AtelierXNA
             CréerMenuLan();
             CréerMenuOption();
             CréerMenuProfile();
+            CréerMenusIP();
         }
+
+
 
         public override void Initialize()
         {
@@ -69,8 +74,30 @@ namespace AtelierXNA
                 case ÉtatsJeu.CHOIX_PROFILE:
                     GérerTransitionMenuProfile();
                     break;
+                case ÉtatsJeu.ENTRÉE_PORT_SERVEUR:
+                    GérerTransitionMenuServeur();
+                    break;
+                case ÉtatsJeu.ENTRÉE_PORT_CLIENT:
+                    GérerTransitionMenuClient();
+                    break;
+                case ÉtatsJeu.CONNECTION:
+                    GérerTransitionConnection();
+                    break;
             }
 
+        }
+
+
+
+        private void GérerTransitionConnection()
+        {
+            if(Serveur.connectedClients == 2)
+            {
+                État = ÉtatsJeu.CHOIX_PROFILE;
+                MenuServeur.Enabled = false;
+                MenuClient.Enabled = false;
+                MenuChoixProfile.Enabled = true;
+            }
         }
 
         private void GérerTransitionMenuProfile()
@@ -129,22 +156,20 @@ namespace AtelierXNA
             {
                 case ChoixMenu.EN_ATTENTE:
                     break;
-                case ChoixMenu.PROFILE_SOLO:
+                case ChoixMenu.SOLO:
                     État = ÉtatsJeu.CHOIX_PROFILE;
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     break;
-                case ChoixMenu.PROFILE_MULTI:
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                case ChoixMenu.REJOINDRE:
+                    État = ÉtatsJeu.ENTRÉE_PORT_CLIENT; 
                     MenuNetwork.Enabled = false;
-                    MenuChoixProfile.Enabled = true;
-                    ConnectionAuServeur();
+                    MenuClient.Enabled = true;
                     break;
                 case ChoixMenu.SERVEUR:
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    État = ÉtatsJeu.ENTRÉE_PORT_SERVEUR;
                     MenuNetwork.Enabled = false;
-                    MenuChoixProfile.Enabled = true;
-                    CréerServeur();
+                    MenuServeur.Enabled = true; 
                     break;
                 case ChoixMenu.RETOUR:
                     État = ÉtatsJeu.MENU_PRINCIPAL;
@@ -153,10 +178,33 @@ namespace AtelierXNA
                     break;
             }
         }
-
-        private void CréerServeur()
+        void GérerTransitionMenuServeur()
         {
-            Serveur = new Server(5001); // Demander à l'utilisateur d'inscrire son port
+            switch (MenuServeur.Choix)
+            {
+                case ChoixMenu.EN_ATTENTE:
+                    break;
+                case ChoixMenu.CONNECTION:
+                    État = ÉtatsJeu.CONNECTION;
+                    ConnectionAuServeur(MenuServeur.IP, MenuServeur.Port);
+                    break;
+            }
+        }
+        private void GérerTransitionMenuClient()
+        {
+            switch(MenuClient.Choix)
+            {
+                case ChoixMenu.EN_ATTENTE:
+                    break;
+                case ChoixMenu.CONNECTION:
+                    État = ÉtatsJeu.CONNECTION;
+                    ConnectionAuServeur(MenuClient.IP, MenuClient.Port);
+                    break;
+            }
+        }
+        private void ConnectionAuServeur(string ip, int port)
+        {
+            Serveur = new Server(port); 
             Client = new TcpClient();
             readStream = new MemoryStream();
             writeStream = new MemoryStream();
@@ -166,7 +214,7 @@ namespace AtelierXNA
             reader = new BinaryReader(readStream);
             writer = new BinaryWriter(writeStream);
             Client.NoDelay = true;
-            Client.Connect(IP, PORT);
+            Client.Connect(ip, port);
 
             ReadBuffer = new byte[BUFFER_SIZE];
 
@@ -174,10 +222,6 @@ namespace AtelierXNA
             writer.Write((byte)Protocoles.Connected);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
             Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
-        }
-        private void ConnectionAuServeur()
-        {
-            //dave
         }
         private void DémarrerLeJeu()
         {
@@ -203,6 +247,14 @@ namespace AtelierXNA
         {
             MenuChoixProfile = new MenuProfile(Game);
             Game.Components.Add(MenuChoixProfile);
+        }
+        private void CréerMenusIP()
+        {
+            MenuServeur = new MenuIPServeur(Game);
+            Game.Components.Add(MenuServeur);
+            MenuClient = new MenuIPClient(Game);
+            Game.Components.Add(MenuClient);
+            //une fonction?
         }
         void StreamReceived(IAsyncResult ar)
         {

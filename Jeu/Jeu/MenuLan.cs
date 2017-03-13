@@ -42,7 +42,7 @@ namespace AtelierXNA
 
         private void JouerSolo()
         {
-            Choix = ChoixMenu.PROFILE_SOLO;
+            Choix = ChoixMenu.SOLO;
         }
 
         public void Annuler()
@@ -51,7 +51,7 @@ namespace AtelierXNA
         }
         public void Rejoindre()
         {
-            Choix = ChoixMenu.PROFILE_MULTI;
+            Choix = ChoixMenu.REJOINDRE;
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public enum ChoixMenu { EN_ATTENTE, JOUER, OPTION, QUITTER, RETOUR, PROFILE_SOLO, PROFILE_MULTI, SERVEUR }
+    public enum ChoixMenu { EN_ATTENTE, JOUER, OPTION, QUITTER, RETOUR, SOLO, REJOINDRE, SERVEUR, CONNECTION }
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
         protected List<DrawableGameComponent> Composantes { get; private set; }

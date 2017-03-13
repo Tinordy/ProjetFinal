@@ -29,7 +29,7 @@ namespace AtelierXNA
             base.Initialize();
             Composantes.Add(new ArrièrePlan(Game, "MenuOption"));
             Composantes.Add(new Titre(Game, "Pseudonyme: ", "Arial", new Vector2(Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Blanc"));
-            Composantes.Add(new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20"));
+            Composantes.Add(new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20", 10));
             List<string> noms = new List<string>();
             noms.Add("CielÉtoilé");
             noms.Add("Neige");
