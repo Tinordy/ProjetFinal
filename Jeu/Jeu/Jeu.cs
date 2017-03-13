@@ -197,7 +197,7 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.CONNECTION:
-                    État = ÉtatsJeu.CONNECTION;
+                    État = ÉtatsJeu.CHOIX_PROFILE;
                     ConnectionAuServeur(MenuClient.IP, MenuClient.Port);
                     break;
             }
