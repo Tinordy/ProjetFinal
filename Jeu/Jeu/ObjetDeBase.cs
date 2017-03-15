@@ -13,7 +13,7 @@ namespace AtelierXNA
       Caméra CaméraJeu { get; set; }
       protected float Échelle { get; set; }
       protected Vector3 Rotation { get; set; }
-      protected Vector3 Position { get; set; }
+      public Vector3 Position { get; set; } //REMETTRE PROTECTED!!!!
 
       protected Model Modèle { get; private set; }
       protected Matrix[] TransformationsModèle { get; private set; }

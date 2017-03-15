@@ -79,7 +79,7 @@ namespace AtelierXNA
             if (GestionInput.EstEnfoncée(Keys.W) || GestionInput.EstEnfoncée(Keys.S))
             {
                int sens = GérerTouche(Keys.W) - GérerTouche(Keys.S);
-               Direction = sens * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
+               Direction = 5* sens * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
                Position += Direction;
                ChangementEffectué = true;
             }

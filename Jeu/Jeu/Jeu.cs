@@ -27,6 +27,7 @@ namespace AtelierXNA
       MenuProfile MenuChoixProfile { get; set; }
       MenuIPServeur MenuServeur { get; set; }
       MenuIPClient MenuClient { get; set; }
+
       Server Serveur { get; set; }
       TcpClient Client { get; set; }
       byte[] ReadBuffer { get; set; }
@@ -290,8 +291,17 @@ namespace AtelierXNA
       }
       private void DémarrerLeJeu()
       {
-         //Joueur = new Voiture(Game, )
+         //changer de caméra?
+         Vector3 positionCaméra = new Vector3(200, 10, 200);
+         Vector3 cibleCaméra = new Vector3(10, 0, 10);
+         CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up, 0.01f);
+         Game.Components.Add(CaméraJeu);
+         Game.Services.AddService(typeof(Caméra), CaméraJeu);
+
+
+         Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, Vector3.Zero, 0.01f);
          Game.Components.Add(Joueur);
+
          //INITIALISATION??
 
 
@@ -407,6 +417,7 @@ namespace AtelierXNA
             float Y = reader.ReadSingle();
             float Z = reader.ReadSingle();
 
+            //faire une fonction!
             Ennemi.Position = new Vector3(X, Y, Z);
          }
          else if (p == Protocoles.PositionInitiale)
@@ -415,7 +426,8 @@ namespace AtelierXNA
             float Y = reader.ReadSingle();
             float Z = reader.ReadSingle();
 
-            Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+            //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+            //voiture mtn...
 
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.PlayerMoved);
