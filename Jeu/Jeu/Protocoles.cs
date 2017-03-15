@@ -10,6 +10,7 @@ namespace AtelierXNA
         Disconnected = 0,
         Connected = 1,
         PlayerMoved = 2,
-        PositionInitiale = 3
+        PositionInitiale = 3,
+        ReadyToPlayChanged = 4
     }
 }

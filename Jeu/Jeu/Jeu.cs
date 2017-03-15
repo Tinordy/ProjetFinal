@@ -14,11 +14,13 @@ using System.IO;
 
 namespace AtelierXNA
 {
-    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION }
+    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS }
+    enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT}
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const int BUFFER_SIZE = 2048;
         ÉtatsJeu État { get; set; }
+        ÉtatsJoueur ÉtatJoueur { get; set; }
         MenuPrincipal MenuPrincipal { get; set; }
         MenuOption MenuDesOptions { get; set; }
         MenuLan MenuNetwork { get; set; }
@@ -36,7 +38,7 @@ namespace AtelierXNA
 
         Maison Joueur { get; set; }
         Maison Ennemi { get; set; }
-
+        bool EnnemiPrêtÀJouer { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -51,6 +53,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
+            EnnemiPrêtÀJouer = false;
             État = ÉtatsJeu.MENU_PRINCIPAL;
             MenuPrincipal.Enabled = true;
 
@@ -99,11 +102,38 @@ namespace AtelierXNA
                 case ÉtatsJeu.CONNECTION:
                     GérerTransitionConnection();
                     break;
+                case ÉtatsJeu.ATTENTE_JOUEURS:
+                    GérerTransitionAttenteJoueurs();
+                    break;
             }
 
         }
 
-
+        private void GérerTransitionAttenteJoueurs()
+        {
+            switch(ÉtatJoueur)
+            {
+                case ÉtatsJoueur.SOLO:
+                    MenuChoixProfile.ActiverBtnDémarrer();
+                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    break;
+                case ÉtatsJoueur.CLIENT:
+                    if(EnnemiPrêtÀJouer)
+                    {
+                        //INITIALISATION?
+                        DémarrerLeJeu();
+                        État = ÉtatsJeu.JEU;
+                    }
+                    break;
+                case ÉtatsJoueur.SERVEUR:
+                    if(EnnemiPrêtÀJouer)
+                    {
+                        État = ÉtatsJeu.CHOIX_PROFILE;
+                        MenuChoixProfile.ActiverBtnDémarrer();
+                    }
+                    break;
+            }
+        }
 
         private void GérerTransitionConnection()
         {
@@ -121,8 +151,18 @@ namespace AtelierXNA
             {
                 case ChoixMenu.EN_ATTENTE:
                     break;
+                case ChoixMenu.VALIDATION:
+                    if(ÉtatJoueur == ÉtatsJoueur.CLIENT)
+                    {
+                        writeStream.Position = 0;
+                        writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                        writer.Write(true);
+                    }
+                    État = ÉtatsJeu.ATTENTE_JOUEURS;
+                    break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
+                    //INITIALISATION??
                     État = ÉtatsJeu.JEU;
                     MenuChoixProfile.Enabled = false;
                     DémarrerLeJeu();
@@ -176,16 +216,19 @@ namespace AtelierXNA
                     État = ÉtatsJeu.CHOIX_PROFILE;
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
+                    ÉtatJoueur = ÉtatsJoueur.SOLO;
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT; 
                     MenuNetwork.Enabled = false;
                     MenuClient.Enabled = true;
+                    ÉtatJoueur = ÉtatsJoueur.CLIENT;
                     break;
                 case ChoixMenu.SERVEUR:
                     État = ÉtatsJeu.ENTRÉE_PORT_SERVEUR;
                     MenuNetwork.Enabled = false;
-                    MenuServeur.Enabled = true; 
+                    MenuServeur.Enabled = true;
+                    ÉtatJoueur = ÉtatsJoueur.SERVEUR;
                     break;
                 case ChoixMenu.RETOUR:
                     État = ÉtatsJeu.MENU_PRINCIPAL;
@@ -245,13 +288,15 @@ namespace AtelierXNA
         private void DémarrerLeJeu()
         {
             Joueur = new Maison(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+            //INITIALISATION??
 
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.PositionInitiale);
-            writer.Write(Joueur.Position.X);
-            writer.Write(Joueur.Position.Y);
-            writer.Write(Joueur.Position.Z);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+
+            //writeStream.Position = 0;
+            //writer.Write((byte)Protocoles.PositionInitiale);
+            //writer.Write(Joueur.Position.X);
+            //writer.Write(Joueur.Position.Y);
+            //writer.Write(Joueur.Position.Z);
+            //SendData(Serveur.GetDataFromMemoryStream(writeStream));
 
         }
         #region Création Des Menus
@@ -343,7 +388,7 @@ namespace AtelierXNA
 
 
                     writeStream.Position = 0;
-                    writer.Write((byte)Protocoles.Connected);                   
+                    writer.Write((byte)Protocoles.Connected);
                     SendData(Serveur.GetDataFromMemoryStream(writeStream));
                 }
 
@@ -360,7 +405,7 @@ namespace AtelierXNA
 
                 Ennemi.Position = new Vector3(X, Y, Z);
             }
-            else if(p == Protocoles.PositionInitiale)
+            else if (p == Protocoles.PositionInitiale)
             {
                 float X = reader.ReadSingle();
                 float Y = reader.ReadSingle();
@@ -374,6 +419,10 @@ namespace AtelierXNA
                 writer.Write(Joueur.Position.Y);
                 writer.Write(Joueur.Position.Z);
                 SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            }
+            else if (p == Protocoles.ReadyToPlayChanged)
+            {
+                EnnemiPrêtÀJouer = reader.ReadBoolean();
             }
         }
         public void SendData(byte[] b)
