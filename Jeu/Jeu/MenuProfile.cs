@@ -24,12 +24,14 @@ namespace AtelierXNA
         DéfileurSprite ChoixVoiture { get; set; }
         BoutonDeCommande BtnValider { get; set; }
         BoutonDeCommande BtnDémarrer { get; set; }
+        Server Serveur { get; set; }
         public MenuProfile(Game game)
             : base(game)
         { }
 
         public override void Initialize()
         {
+            Serveur = Game.Services.GetService(typeof(Server)) as Server;
             List<string> noms = new List<string>();
             noms.Add("CielÉtoilé");
             noms.Add("Neige");

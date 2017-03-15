@@ -56,7 +56,6 @@ namespace AtelierXNA
             EnnemiPrêtÀJouer = false;
             État = ÉtatsJeu.MENU_PRINCIPAL;
             MenuPrincipal.Enabled = true;
-
         }
 
         public override void Update(GameTime gameTime)
@@ -217,6 +216,7 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
+                    ConnectionAuServeur("127.0.0.1", 5001); //ok?
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT; 
@@ -266,7 +266,10 @@ namespace AtelierXNA
         }
         private void ConnectionAuServeur(string ip, int port)
         {
-            Serveur = new Server(port); 
+            Serveur = new Server(port);
+            Game.Services.AddService(typeof(Server), Serveur);
+
+
             Client = new TcpClient();
             readStream = new MemoryStream();
             writeStream = new MemoryStream();
@@ -284,6 +287,9 @@ namespace AtelierXNA
             writer.Write((byte)Protocoles.Connected);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
             Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+
+            Game.Services.AddService(typeof(BinaryReader), writer);
+            Game.Services.AddService(typeof(MemoryStream), writeStream); //dans classe serveur??
         }
         private void DémarrerLeJeu()
         {
