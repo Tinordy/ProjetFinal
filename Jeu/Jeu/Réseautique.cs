@@ -97,14 +97,6 @@ namespace AtelierXNA
                 if (!enemiConnecté)
                 {
                     enemiConnecté = true;
-                    //float X = reader.ReadSingle();
-                    //float Y = reader.ReadSingle();
-                    //float Z = reader.ReadSingle();
-                    //PositionEnnemi = new Vector3(X, Y, Z);
-                    //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
-                    //Components.Add(enemy);
-
-
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
                     SendData(Serveur.GetDataFromMemoryStream(writeStream));
@@ -120,9 +112,7 @@ namespace AtelierXNA
                 float X = reader.ReadSingle();
                 float Y = reader.ReadSingle();
                 float Z = reader.ReadSingle();
-
-                //faire une fonction!
-                //Ennemi.Position = new Vector3(X, Y, Z);
+                //pas fini...
             }
             else if (p == Protocoles.PositionInitiale)
             {
@@ -130,15 +120,6 @@ namespace AtelierXNA
                 float Y = reader.ReadSingle();
                 float Z = reader.ReadSingle();
                 PositionEnnemi = new Vector3(X, Y, Z);
-                //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
-                //voiture mtn...
-
-                //writeStream.Position = 0;
-                //writer.Write((byte)Protocoles.PlayerMoved);
-                //writer.Write(Joueur.Position.X);
-                //writer.Write(Joueur.Position.Y);
-                //writer.Write(Joueur.Position.Z);
-                //SendData(Serveur.GetDataFromMemoryStream(writeStream));
             }
             else if (p == Protocoles.ReadyToPlayChanged)
             {
