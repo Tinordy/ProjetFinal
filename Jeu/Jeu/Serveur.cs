@@ -7,6 +7,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using Microsoft.Xna.Framework;
+using System.Windows.Forms;
 
 namespace AtelierXNA
 {
@@ -286,39 +287,48 @@ namespace AtelierXNA
 
     public class Server
     {
+        const int BUFFER_SIZE = 2048;
         //Singleton in case we need to access this object without a reference (call <Class_Name>.singleton)
         public static Server singleton;
 
         //Create an object of the Listener class.
         Listener listener;
+        TcpClient Client;
+        byte[] ReadBuffer { get; set; }
         public Listener Listener
         {
             get { return listener; }
         }
 
+        public Vector3 PositionJoueur { get; private set; }
+        public Vector3 PositionEnemi { get; private set; }
         //Array of clients
         Client[] client;
 
         //number of connected clients
         public int connectedClients { get; private set; } = 0;
+
+        public bool enemyConnected { get; private set; }
+        public bool EnnemiPrêtÀJouer { get; private set; }
+
         const int NB_MAX_DE_JOUEURS = 2;
         const int LIMITE = 100;
         //Writers and readers to manipulate data
-        MemoryStream readStream;
-        MemoryStream writeStream;
-        BinaryReader reader;
-        BinaryWriter writer;
+        public MemoryStream readStream;
+        public MemoryStream writeStream;
+        public BinaryReader reader;
+        public BinaryWriter writer;
 
         /// <summary>
         /// Create a new Server object
         /// </summary>
         /// <param name="port">The port you want to use</param>
-        public Server(int port)
+        public Server(int port, string ip)
         {
-            
+
             //Initialize the array with a maximum of the MaxClients from the config file.
             client = new Client[NB_MAX_DE_JOUEURS];
-
+            enemyConnected = false;
             //Create a new Listener object
             listener = new Listener(port);
             listener.userAdded += new ConnectionEvent(listener_userAdded);
@@ -329,9 +339,17 @@ namespace AtelierXNA
             writeStream = new MemoryStream();
             reader = new BinaryReader(readStream);
             writer = new BinaryWriter(writeStream);
+            Client = new TcpClient();
 
+            Client.NoDelay = true;
+            Client.Connect(ip, port);
             //Set the singleton to the current object
             Server.singleton = this;
+
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.Connected);
+            SendData(GetDataFromMemoryStream(writeStream));
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
 
         /// <summary>
@@ -389,19 +407,19 @@ namespace AtelierXNA
             writeStream.Position = 0;
             SendData(data, sender);
         }
-        
-        public Vector3 VérificationPositionServeur(Vector3 position)
+
+        public void VérificationPositionServeur(Vector3 position)
         {
             float X = position.X;
             float Z = position.Z;
 
             X = X < LIMITE ? X : LIMITE;
-            X = X > -LIMITE ? X : -LIMITE;          
+            X = X > -LIMITE ? X : -LIMITE;
             Z = Z < LIMITE ? Z : LIMITE;
             Z = Z > -LIMITE ? Z : -LIMITE;
 
-
-            return new Vector3(X, position.Y, Z);
+            PositionJoueur = new Vector3(X, position.Y, Z);
+            // return new Vector3(X, position.Y, Z);
         }
 
         /// <summary>
@@ -420,7 +438,7 @@ namespace AtelierXNA
             int bytesWritten = (int)ms.Position;
             result = new byte[bytesWritten];
             ms.Position = 0;
-           
+
             //if ((int)ms.Position > 0)
             //{
             //    Protocoles p = (Protocoles)reader.ReadByte();
@@ -484,7 +502,7 @@ namespace AtelierXNA
         /// </summary>
         /// <param name="data">Data to send</param>
         /// <param name="sender">Client that should not receive the message</param>
-        private void SendData(byte[] data, Client sender)
+        public void SendData(byte[] data, Client sender)
         {
             foreach (Client c in client)
             {
@@ -502,7 +520,7 @@ namespace AtelierXNA
         /// Sends data to all clients
         /// </summary>
         /// <param name="data">Data to send</param>
-        private void SendData(byte[] data)
+        public void SendData(byte[] data)
         {
             foreach (Client c in client)
             {
@@ -512,6 +530,98 @@ namespace AtelierXNA
 
             //Reset the writestream's position
             writeStream.Position = 0;
+        }
+        private void ProcessData(byte[] data)
+        {
+            readStream.SetLength(0);
+            readStream.Position = 0;
+            readStream.Write(data, 0, data.Length);
+            readStream.Position = 0;
+
+            Protocoles p;
+
+            //try
+            //{
+            p = (Protocoles)reader.ReadByte();
+
+            if (p == Protocoles.Connected)
+            {
+                if (!enemyConnected)
+                {
+                    enemyConnected = true;
+
+                    writeStream.Position = 0;
+                    writer.Write((byte)Protocoles.Connected);
+
+                    SendData(GetDataFromMemoryStream(writeStream));
+                }
+
+            }
+            else if (p == Protocoles.Disconnected)
+            {
+                enemyConnected = false;
+
+            }
+            else if (p == Protocoles.PlayerMoved)
+            {
+                float X = reader.ReadSingle();
+                float Y = reader.ReadSingle();
+                float Z = reader.ReadSingle();
+                PositionEnemi = new Vector3(X, Y, Z);
+            }
+            else if (p == Protocoles.PositionInitiale)
+            {
+                float X = reader.ReadSingle();
+                float Y = reader.ReadSingle();
+                float Z = reader.ReadSingle();
+
+                //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+                //voiture mtn...
+
+                writeStream.Position = 0;
+                writer.Write((byte)Protocoles.PlayerMoved);
+                writer.Write(PositionJoueur.X);
+                writer.Write(PositionJoueur.Y);
+                writer.Write(PositionJoueur.Z);
+                SendData(GetDataFromMemoryStream(writeStream));
+            }
+            else if (p == Protocoles.ReadyToPlayChanged)
+            {
+                EnnemiPrêtÀJouer = reader.ReadBoolean();
+            }
+        }
+        void StreamReceived(IAsyncResult ar)
+        {
+            int bytesRead = 0;
+
+            try
+            {
+                lock (Client.GetStream())
+                {
+                    bytesRead = Client.GetStream().EndRead(ar);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "1");
+            }
+
+            if (bytesRead == 0)
+            {
+                Client.Close();
+                return;
+            }
+
+            byte[] data = new byte[bytesRead];
+
+            for (int cpt = 0; cpt < bytesRead; cpt++)
+                data[cpt] = ReadBuffer[cpt];
+
+            ProcessData(data);
+
+
+            int BUFFER_SIZE = 0;
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
     }
 

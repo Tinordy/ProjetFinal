@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JeuContent", "ProjetFinal\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeu", "Jeu\Jeu\Jeu.csproj", "{2155818E-1385-457A-9351-6B65FE802BD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayServer", "..\..\Serveur\Serveur\RelayServer\RelayServer.csproj", "{936720BA-0015-4574-8891-54617F3E63CE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,10 +19,6 @@ Global
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Debug|x86.Build.0 = Debug|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Release|x86.ActiveCfg = Release|x86
 		{2155818E-1385-457A-9351-6B65FE802BD6}.Release|x86.Build.0 = Release|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.ActiveCfg = Debug|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Debug|x86.Build.0 = Debug|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.ActiveCfg = Release|x86
-		{936720BA-0015-4574-8891-54617F3E63CE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

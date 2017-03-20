@@ -287,7 +287,7 @@ namespace AtelierXNA
          writeStream.Position = 0;
          writer.Write((byte)Protocoles.Connected);
          SendData(Serveur.GetDataFromMemoryStream(writeStream));
-         Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+         Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, Serveur.StreamReceived, null);
       }
       private void DémarrerLeJeu()
       {
@@ -342,120 +342,120 @@ namespace AtelierXNA
          Game.Components.Add(MenuClient);
          //une fonction?
       }
-      void StreamReceived(IAsyncResult ar)
-      {
-         int bytesRead = 0;
+        void StreamReceived(IAsyncResult ar)
+        {
+            int bytesRead = 0;
 
-         try
-         {
-            lock (Client.GetStream())
+            try
             {
-               bytesRead = Client.GetStream().EndRead(ar);
+                lock (Client.GetStream())
+                {
+                    bytesRead = Client.GetStream().EndRead(ar);
+                }
             }
-         }
-         catch (Exception ex)
-         {
-            MessageBox.Show(ex.Message + "1");
-         }
-
-         if (bytesRead == 0)
-         {
-            Client.Close();
-            return;
-         }
-
-         byte[] data = new byte[bytesRead];
-
-         for (int cpt = 0; cpt < bytesRead; cpt++)
-            data[cpt] = ReadBuffer[cpt];
-
-         ProcessData(data);
-
-
-         Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
-      }
-
-      private void ProcessData(byte[] data)
-      {
-         readStream.SetLength(0);
-         readStream.Position = 0;
-         readStream.Write(data, 0, data.Length);
-         readStream.Position = 0;
-
-         Protocoles p;
-
-         //try
-         //{
-         p = (Protocoles)reader.ReadByte();
-
-         if (p == Protocoles.Connected)
-         {
-            if (!enemiConnecté)
+            catch (Exception ex)
             {
-               enemiConnecté = true;
-               //float X = reader.ReadSingle();
-               //float Y = reader.ReadSingle();
-               //float Z = reader.ReadSingle();
-               //enemy.Position = new Vector3(X, Y, Z);
-               //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
-               //Components.Add(enemy);
-
-
-               writeStream.Position = 0;
-               writer.Write((byte)Protocoles.Connected);
-               SendData(Serveur.GetDataFromMemoryStream(writeStream));
+                MessageBox.Show(ex.Message + "1");
             }
 
-         }
-         else if (p == Protocoles.Disconnected)
-         {
-            enemiConnecté = false;
-         }
-         else if (p == Protocoles.PlayerMoved)
-         {
-            float X = reader.ReadSingle();
-            float Y = reader.ReadSingle();
-            float Z = reader.ReadSingle();
-
-            //faire une fonction!
-            Ennemi.Position = new Vector3(X, Y, Z);
-         }
-         else if (p == Protocoles.PositionInitiale)
-         {
-            float X = reader.ReadSingle();
-            float Y = reader.ReadSingle();
-            float Z = reader.ReadSingle();
-
-            //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
-            //voiture mtn...
-
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.PlayerMoved);
-            writer.Write(Joueur.Position.X);
-            writer.Write(Joueur.Position.Y);
-            writer.Write(Joueur.Position.Z);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
-         }
-         else if (p == Protocoles.ReadyToPlayChanged)
-         {
-            EnnemiPrêtÀJouer = reader.ReadBoolean();
-         }
-      }
-      public void SendData(byte[] b)
-      {
-         try
-         {
-            lock (Client.GetStream())
+            if (bytesRead == 0)
             {
-               Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+                Client.Close();
+                return;
             }
-         }
-         catch (Exception e)
-         {
 
-         }
-      }
-      #endregion
+            byte[] data = new byte[bytesRead];
 
-   }
+            for (int cpt = 0; cpt < bytesRead; cpt++)
+                data[cpt] = ReadBuffer[cpt];
+
+            ProcessData(data);
+
+
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+        }
+
+        //private void ProcessData(byte[] data)
+        //{
+        //   readStream.SetLength(0);
+        //   readStream.Position = 0;
+        //   readStream.Write(data, 0, data.Length);
+        //   readStream.Position = 0;
+
+        //   Protocoles p;
+
+        //   //try
+        //   //{
+        //   p = (Protocoles)reader.ReadByte();
+
+        //   if (p == Protocoles.Connected)
+        //   {
+        //      if (!enemiConnecté)
+        //      {
+        //         enemiConnecté = true;
+        //         //float X = reader.ReadSingle();
+        //         //float Y = reader.ReadSingle();
+        //         //float Z = reader.ReadSingle();
+        //         //enemy.Position = new Vector3(X, Y, Z);
+        //         //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
+        //         //Components.Add(enemy);
+
+
+        //         writeStream.Position = 0;
+        //         writer.Write((byte)Protocoles.Connected);
+        //         SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        //      }
+
+        //   }
+        //   else if (p == Protocoles.Disconnected)
+        //   {
+        //      enemiConnecté = false;
+        //   }
+        //   else if (p == Protocoles.PlayerMoved)
+        //   {
+        //      float X = reader.ReadSingle();
+        //      float Y = reader.ReadSingle();
+        //      float Z = reader.ReadSingle();
+
+        //      //faire une fonction!
+        //      Ennemi.Position = new Vector3(X, Y, Z);
+        //   }
+        //   else if (p == Protocoles.PositionInitiale)
+        //   {
+        //      float X = reader.ReadSingle();
+        //      float Y = reader.ReadSingle();
+        //      float Z = reader.ReadSingle();
+
+        //      //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+        //      //voiture mtn...
+
+        //      writeStream.Position = 0;
+        //      writer.Write((byte)Protocoles.PlayerMoved);
+        //      writer.Write(Joueur.Position.X);
+        //      writer.Write(Joueur.Position.Y);
+        //      writer.Write(Joueur.Position.Z);
+        //      SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        //   }
+        //   else if (p == Protocoles.ReadyToPlayChanged)
+        //   {
+        //      EnnemiPrêtÀJouer = reader.ReadBoolean();
+        //   }
+        //}
+        //public void SendData(byte[] b)
+        //{
+        //   try
+        //   {
+        //      lock (Client.GetStream())
+        //      {
+        //         Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+        //      }
+        //   }
+        //   catch (Exception e)
+        //   {
+
+        //   }
+        // }
+        #endregion
+
+    }
 }
