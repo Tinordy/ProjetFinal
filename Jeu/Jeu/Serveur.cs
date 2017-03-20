@@ -380,8 +380,11 @@ namespace AtelierXNA
             //Add to the client array
             client[user.id] = user;
         }
-        public void Envoyer(/*Protocoles protocole, bool val*/)
+        public void Envoyer(Protocoles protocole, bool val)
         {
+            writeStream.Position = 0;
+            writer.Write((byte)protocole);
+            writer.Write(val);
             SendData(GetDataFromMemoryStream(writeStream));
         }
         /// <summary>

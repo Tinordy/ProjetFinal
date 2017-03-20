@@ -154,11 +154,11 @@ namespace AtelierXNA
                 case ChoixMenu.VALIDATION:
                     if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                     {
-                        Serveur.writeStream.Position = 0;
-                        Serveur.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                        Serveur.writer.Write(true);
+                        //Serveur.writeStream.Position = 0;
+                        //Serveur.writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                        //Serveur.writer.Write(true);
                         //Serveur.SendData(Serveur.GetDataFromMemoryStream(Serveur.writeStream));
-                        Serveur.Envoyer();
+                        Serveur.Envoyer(Protocoles.ReadyToPlayChanged, true);
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
                     break;
