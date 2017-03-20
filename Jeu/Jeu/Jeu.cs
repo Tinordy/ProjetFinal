@@ -273,7 +273,7 @@ namespace AtelierXNA
             Serveur = new Server(port, ip);
             Game.Services.AddService(typeof(Server), Serveur); //nécessaire?
             NetworkManager = new Réseautique(Serveur, ip, port);
-
+            Game.Services.AddService(typeof(Réseautique), NetworkManager);
             //Client = new TcpClient();
             //readStream = new MemoryStream();
             //writeStream = new MemoryStream();
