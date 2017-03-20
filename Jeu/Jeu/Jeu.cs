@@ -314,6 +314,7 @@ namespace AtelierXNA
             NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
 
             Ennemi = new Voiture(Game, "unicorn", 20f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            Game.Components.Add(Ennemi);
         }
         #region Création Des Menus
         void CréerMenuPrincipal()
