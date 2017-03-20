@@ -333,7 +333,7 @@ namespace AtelierXNA
             listener = new Listener(port);
             listener.userAdded += new ConnectionEvent(listener_userAdded);
             listener.Start();
-
+            ReadBuffer = new byte[BUFFER_SIZE];
             //Create the readers and writers.
             readStream = new MemoryStream();
             writeStream = new MemoryStream();
