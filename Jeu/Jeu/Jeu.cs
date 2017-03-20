@@ -122,6 +122,7 @@ namespace AtelierXNA
                     if (NetworkManager.EnnemiPrêtÀJouer)
                     {
                         //INITIALISATION?
+                        MenuChoixProfile.Enabled = false;
                         DémarrerLeJeu();
                         État = ÉtatsJeu.JEU;
                     }
