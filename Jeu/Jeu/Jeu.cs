@@ -29,17 +29,17 @@ namespace AtelierXNA
         MenuIPClient MenuClient { get; set; }
 
         Server Serveur { get; set; }
-        //TcpClient Client { get; set; }
-        //byte[] ReadBuffer { get; set; }
-        //bool enemiConnecté { get; set; }
-        //MemoryStream readStream, writeStream;
+        TcpClient Client { get; set; }
+        byte[] ReadBuffer { get; set; }
+        bool enemiConnecté { get; set; }
+        MemoryStream readStream, writeStream;
 
-        //BinaryReader reader;
-        //BinaryWriter writer;
+        BinaryReader reader;
+        BinaryWriter writer;
 
         Voiture Joueur { get; set; }
         Voiture Ennemi { get; set; }
-        //bool EnnemiPrêtÀJouer { get; set; }
+        bool EnnemiPrêtÀJouer { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -54,7 +54,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
-            //EnnemiPrêtÀJouer = false;
+            EnnemiPrêtÀJouer = false;
             État = ÉtatsJeu.MENU_PRINCIPAL;
             MenuPrincipal.Enabled = true;
         }
@@ -118,7 +118,7 @@ namespace AtelierXNA
                     État = ÉtatsJeu.CHOIX_PROFILE;
                     break;
                 case ÉtatsJoueur.CLIENT:
-                    if (Serveur.EnnemiPrêtÀJouer)
+                    if (EnnemiPrêtÀJouer)
                     {
                         //INITIALISATION?
                         DémarrerLeJeu();
@@ -126,7 +126,7 @@ namespace AtelierXNA
                     }
                     break;
                 case ÉtatsJoueur.SERVEUR:
-                    if (Serveur.EnnemiPrêtÀJouer)
+                    if (EnnemiPrêtÀJouer)
                     {
                         État = ÉtatsJeu.CHOIX_PROFILE;
                         MenuChoixProfile.ActiverBtnDémarrer();
@@ -154,11 +154,11 @@ namespace AtelierXNA
                 case ChoixMenu.VALIDATION:
                     if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                     {
-                        //Serveur.writeStream.Position = 0;
-                        //Serveur.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                        //Serveur.writer.Write(true);
-                        //Serveur.SendData(Serveur.GetDataFromMemoryStream(Serveur.writeStream));
-                        Serveur.Envoyer(Protocoles.ReadyToPlayChanged, true);
+                        writeStream.Position = 0;
+                        writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                        writer.Write(true);
+                        SendData(Serveur.GetDataFromMemoryStream(Serveur.writeStream));
+                        //Serveur.Envoyer(Protocoles.ReadyToPlayChanged, true);
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
                     break;
@@ -289,7 +289,7 @@ namespace AtelierXNA
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Connected);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
-            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, Serveur.StreamReceived, null);
+            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
         private void DémarrerLeJeu()
         {
