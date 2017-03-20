@@ -348,7 +348,7 @@ namespace AtelierXNA
 
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Connected);
-            SendData(GetDataFromMemoryStream(writeStream));
+            SendDataClient(GetDataFromMemoryStream(writeStream));
             Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
 
@@ -385,7 +385,7 @@ namespace AtelierXNA
             writeStream.Position = 0;
             writer.Write((byte)protocole);
             writer.Write(val);
-            SendData(GetDataFromMemoryStream(writeStream));
+            SendDataClient(GetDataFromMemoryStream(writeStream));
         }
         /// <summary>
         /// Method that is performed when a new user is disconnected.
@@ -522,21 +522,6 @@ namespace AtelierXNA
             writeStream.Position = 0;
         }
 
-        /// <summary>
-        /// Sends data to all clients
-        /// </summary>
-        /// <param name="data">Data to send</param>
-        public void SendData(byte[] data)
-        {
-            foreach (Client c in client)
-            {
-                if (c != null)
-                    c.SendData(data);
-            }
-
-            //Reset the writestream's position
-            writeStream.Position = 0;
-        }
         private void ProcessData(byte[] data)
         {
             readStream.SetLength(0);
@@ -559,7 +544,7 @@ namespace AtelierXNA
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
 
-                    SendData(GetDataFromMemoryStream(writeStream));
+                    SendDataClient(GetDataFromMemoryStream(writeStream));
                 }
 
             }
@@ -589,11 +574,26 @@ namespace AtelierXNA
                 writer.Write(PositionJoueur.X);
                 writer.Write(PositionJoueur.Y);
                 writer.Write(PositionJoueur.Z);
-                SendData(GetDataFromMemoryStream(writeStream));
+                SendDataClient(GetDataFromMemoryStream(writeStream));
             }
             else if (p == Protocoles.ReadyToPlayChanged)
             {
                 EnnemiPrêtÀJouer = reader.ReadBoolean();
+            }
+        }
+
+        public void SendDataClient(byte[] b)
+        {
+            try
+            {
+                lock (Client.GetStream())
+                {
+                    Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+                }
+            }
+            catch (Exception e)
+            {
+
             }
         }
         void StreamReceived(IAsyncResult ar)
