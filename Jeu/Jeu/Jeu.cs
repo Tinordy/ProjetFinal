@@ -306,16 +306,14 @@ namespace AtelierXNA
             Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, Vector3.Zero, 0.01f);
             Game.Components.Add(Joueur);
 
-            //INITIALISATION??
+            NetworkManager.writeStream.Position = 0;
+            NetworkManager.writer.Write((byte)Protocoles.PositionInitiale);
+            NetworkManager.writer.Write(Joueur.Position.X);
+            NetworkManager.writer.Write(Joueur.Position.Y);
+            NetworkManager.writer.Write(Joueur.Position.Z);
+            NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
 
-
-            //writeStream.Position = 0;
-            //writer.Write((byte)Protocoles.PositionInitiale);
-            //writer.Write(Joueur.Position.X);
-            //writer.Write(Joueur.Position.Y);
-            //writer.Write(Joueur.Position.Z);
-            //SendData(Serveur.GetDataFromMemoryStream(writeStream));
-
+            Ennemi = new Voiture(Game, "unicorn", 20f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
         }
         #region Création Des Menus
         void CréerMenuPrincipal()

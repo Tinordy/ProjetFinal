@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,12 +11,14 @@ namespace AtelierXNA
 {
     class Réseautique
     {
+
         const int BUFFER_SIZE = 2048;
         Server Serveur { get; set; }
         TcpClient Client { get; set; }
         byte[] ReadBuffer { get; set; }
         public bool enemiConnecté { get; private set; }
         public MemoryStream readStream, writeStream;
+        public Vector3 PositionEnnemi { get; private set; }
 
         public BinaryReader reader;
         public BinaryWriter writer;
@@ -97,7 +100,7 @@ namespace AtelierXNA
                     //float X = reader.ReadSingle();
                     //float Y = reader.ReadSingle();
                     //float Z = reader.ReadSingle();
-                    //enemy.Position = new Vector3(X, Y, Z);
+                    //PositionEnnemi = new Vector3(X, Y, Z);
                     //enemy = new Maison(this, 1f, Vector3.Zero, new Vector3(X,Y,Z), new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
                     //Components.Add(enemy);
 
@@ -119,14 +122,14 @@ namespace AtelierXNA
                 float Z = reader.ReadSingle();
 
                 //faire une fonction!
-               //Ennemi.Position = new Vector3(X, Y, Z);
+                //Ennemi.Position = new Vector3(X, Y, Z);
             }
             else if (p == Protocoles.PositionInitiale)
             {
                 float X = reader.ReadSingle();
                 float Y = reader.ReadSingle();
                 float Z = reader.ReadSingle();
-
+                PositionEnnemi = new Vector3(X, Y, Z);
                 //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
                 //voiture mtn...
 
