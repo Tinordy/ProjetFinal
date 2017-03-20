@@ -341,15 +341,15 @@ namespace AtelierXNA
             writer = new BinaryWriter(writeStream);
             Client = new TcpClient();
 
-            Client.NoDelay = true;
-            Client.Connect(ip, port);
+            //Client.NoDelay = true;
+            //Client.Connect(ip, port);
             //Set the singleton to the current object
             Server.singleton = this;
 
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.Connected);
-            SendDataClient(GetDataFromMemoryStream(writeStream));
-            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+            //writeStream.Position = 0;
+            //writer.Write((byte)Protocoles.Connected);
+            //SendDataClient(GetDataFromMemoryStream(writeStream));
+            //Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
 
         /// <summary>
@@ -360,6 +360,7 @@ namespace AtelierXNA
         private void listener_userAdded(object sender, Client user)
         {
             connectedClients++;
+
 
 
             writeStream.Position = 0;
@@ -380,13 +381,13 @@ namespace AtelierXNA
             //Add to the client array
             client[user.id] = user;
         }
-        public void Envoyer(Protocoles protocole, bool val)
-        {
-            writeStream.Position = 0;
-            writer.Write((byte)protocole);
-            writer.Write(val);
-            SendDataClient(GetDataFromMemoryStream(writeStream));
-        }
+        //public void Envoyer(Protocoles protocole, bool val)
+        //{
+        //    writeStream.Position = 0;
+        //    writer.Write((byte)protocole);
+        //    writer.Write(val);
+        //    SendDataClient(GetDataFromMemoryStream(writeStream));
+        //}
         /// <summary>
         /// Method that is performed when a new user is disconnected.
         /// </summary>
@@ -522,113 +523,125 @@ namespace AtelierXNA
             writeStream.Position = 0;
         }
 
-        private void ProcessData(byte[] data)
+        private void SendData(byte[] data)
         {
-            readStream.SetLength(0);
-            readStream.Position = 0;
-            readStream.Write(data, 0, data.Length);
-            readStream.Position = 0;
-
-            Protocoles p;
-
-            //try
-            //{
-            p = (Protocoles)reader.ReadByte();
-
-            if (p == Protocoles.Connected)
+            foreach (Client c in client)
             {
-                if (!enemyConnected)
-                {
-                    enemyConnected = true;
-
-                    writeStream.Position = 0;
-                    writer.Write((byte)Protocoles.Connected);
-
-                    SendDataClient(GetDataFromMemoryStream(writeStream));
-                }
-
+                if (c != null)
+                    c.SendData(data);
             }
-            else if (p == Protocoles.Disconnected)
-            {
-                enemyConnected = false;
 
-            }
-            else if (p == Protocoles.PlayerMoved)
-            {
-                float X = reader.ReadSingle();
-                float Y = reader.ReadSingle();
-                float Z = reader.ReadSingle();
-                PositionEnemi = new Vector3(X, Y, Z);
-            }
-            else if (p == Protocoles.PositionInitiale)
-            {
-                float X = reader.ReadSingle();
-                float Y = reader.ReadSingle();
-                float Z = reader.ReadSingle();
-
-                //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
-                //voiture mtn...
-
-                writeStream.Position = 0;
-                writer.Write((byte)Protocoles.PlayerMoved);
-                writer.Write(PositionJoueur.X);
-                writer.Write(PositionJoueur.Y);
-                writer.Write(PositionJoueur.Z);
-                SendDataClient(GetDataFromMemoryStream(writeStream));
-            }
-            else if (p == Protocoles.ReadyToPlayChanged)
-            {
-                EnnemiPrêtÀJouer = reader.ReadBoolean();
-            }
+            //Reset the writestream's position
+            writeStream.Position = 0;
         }
 
-        public void SendDataClient(byte[] b)
-        {
-            try
-            {
-                lock (Client.GetStream())
-                {
-                    Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
-                }
-            }
-            catch (Exception e)
-            {
+        //private void ProcessData(byte[] data)
+        //{
+        //    readStream.SetLength(0);
+        //    readStream.Position = 0;
+        //    readStream.Write(data, 0, data.Length);
+        //    readStream.Position = 0;
 
-            }
-        }
-        void StreamReceived(IAsyncResult ar)
-        {
-            int bytesRead = 0;
+        //    Protocoles p;
 
-            try
-            {
-                lock (Client.GetStream())
-                {
-                    bytesRead = Client.GetStream().EndRead(ar);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "1");
-            }
+        //    //try
+        //    //{
+        //    p = (Protocoles)reader.ReadByte();
 
-            if (bytesRead == 0)
-            {
-                Client.Close();
-                return;
-            }
+        //    if (p == Protocoles.Connected)
+        //    {
+        //        if (!enemyConnected)
+        //        {
+        //            enemyConnected = true;
 
-            byte[] data = new byte[bytesRead];
+        //            writeStream.Position = 0;
+        //            writer.Write((byte)Protocoles.Connected);
 
-            for (int cpt = 0; cpt < bytesRead; cpt++)
-                data[cpt] = ReadBuffer[cpt];
+        //            SendDataClient(GetDataFromMemoryStream(writeStream));
+        //        }
 
-            ProcessData(data);
+        //    }
+        //    else if (p == Protocoles.Disconnected)
+        //    {
+        //        enemyConnected = false;
+
+        //    }
+        //    else if (p == Protocoles.PlayerMoved)
+        //    {
+        //        float X = reader.ReadSingle();
+        //        float Y = reader.ReadSingle();
+        //        float Z = reader.ReadSingle();
+        //        PositionEnemi = new Vector3(X, Y, Z);
+        //    }
+        //    else if (p == Protocoles.PositionInitiale)
+        //    {
+        //        float X = reader.ReadSingle();
+        //        float Y = reader.ReadSingle();
+        //        float Z = reader.ReadSingle();
+
+        //        //Ennemi = new Maison(Game, 1f, Vector3.Zero, new Vector3(X, Y, Z), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+        //        //voiture mtn...
+
+        //        writeStream.Position = 0;
+        //        writer.Write((byte)Protocoles.PlayerMoved);
+        //        writer.Write(PositionJoueur.X);
+        //        writer.Write(PositionJoueur.Y);
+        //        writer.Write(PositionJoueur.Z);
+        //        SendDataClient(GetDataFromMemoryStream(writeStream));
+        //    }
+        //    else if (p == Protocoles.ReadyToPlayChanged)
+        //    {
+        //        EnnemiPrêtÀJouer = reader.ReadBoolean();
+        //    }
+        //}
+
+        //public void SendDataClient(byte[] b)
+        //{
+        //    try
+        //    {
+        //        lock (Client.GetStream())
+        //        {
+        //            Client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //    }
+        //}
+        //void StreamReceived(IAsyncResult ar)
+        //{
+        //    int bytesRead = 0;
+
+        //    try
+        //    {
+        //        lock (Client.GetStream())
+        //        {
+        //            bytesRead = Client.GetStream().EndRead(ar);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message + "1");
+        //    }
+
+        //    if (bytesRead == 0)
+        //    {
+        //        Client.Close();
+        //        return;
+        //    }
+
+        //    byte[] data = new byte[bytesRead];
+
+        //    for (int cpt = 0; cpt < bytesRead; cpt++)
+        //        data[cpt] = ReadBuffer[cpt];
+
+        //    ProcessData(data);
 
 
-            int BUFFER_SIZE = 0;
-            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
-        }
+        //    int BUFFER_SIZE = 0;
+        //    Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+        //}
     }
 
 }
