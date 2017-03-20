@@ -57,6 +57,7 @@ namespace AtelierXNA
          Pseudonyme = LecteurPseudonyme.ObtenirEntrée();
          Voiture = ChoixVoiture.DonnerChoixVoiture();
          BtnValider.EstActif = false;
+            //désactiver le reste (pseudonyme et voiture)
       }
       private void Démarrer()
       {
