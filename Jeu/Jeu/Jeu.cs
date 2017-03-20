@@ -29,13 +29,13 @@ namespace AtelierXNA
       MenuIPClient MenuClient { get; set; }
 
       Server Serveur { get; set; }
-      TcpClient Client { get; set; }
-      byte[] ReadBuffer { get; set; }
-      bool enemiConnecté { get; set; }
-      MemoryStream readStream, writeStream;
+      //TcpClient Client { get; set; }
+      //byte[] ReadBuffer { get; set; }
+      //bool enemiConnecté { get; set; }
+      //MemoryStream readStream, writeStream;
 
-      BinaryReader reader;
-      BinaryWriter writer;
+      //BinaryReader reader;
+      //BinaryWriter writer;
 
       Voiture Joueur { get; set; }
       Voiture Ennemi { get; set; }
@@ -154,9 +154,9 @@ namespace AtelierXNA
             case ChoixMenu.VALIDATION:
                if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                {
-                  writeStream.Position = 0;
-                  writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                  writer.Write(true);
+                  Serveur.writeStream.Position = 0;
+                  Serveur.writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                  Serveur.writer.Write(true);
                }
                État = ÉtatsJeu.ATTENTE_JOUEURS;
                break;
@@ -267,27 +267,27 @@ namespace AtelierXNA
       }
       private void ConnectionAuServeur(string ip, int port)
       {
-         Serveur = new Server(port);
-         Game.Services.AddService(typeof(Server), Serveur);
+         Serveur = new Server(port, ip);
+         //Game.Services.AddService(typeof(Server), Serveur);
 
 
-         Client = new TcpClient();
-         readStream = new MemoryStream();
-         writeStream = new MemoryStream();
+         //Client = new TcpClient();
+         //readStream = new MemoryStream();
+         //writeStream = new MemoryStream();
 
-         enemiConnecté = false;
+         //enemiConnecté = false;
 
-         reader = new BinaryReader(readStream);
-         writer = new BinaryWriter(writeStream);
-         Client.NoDelay = true;
-         Client.Connect(ip, port);
+         //reader = new BinaryReader(readStream);
+         //writer = new BinaryWriter(writeStream);
+         //Client.NoDelay = true;
+         //Client.Connect(ip, port);
 
-         ReadBuffer = new byte[BUFFER_SIZE];
+         //ReadBuffer = new byte[BUFFER_SIZE];
 
-         writeStream.Position = 0;
-         writer.Write((byte)Protocoles.Connected);
-         SendData(Serveur.GetDataFromMemoryStream(writeStream));
-         Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, Serveur.StreamReceived, null);
+         //writeStream.Position = 0;
+         //writer.Write((byte)Protocoles.Connected);
+         //SendData(Serveur.GetDataFromMemoryStream(writeStream));
+         //Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, Serveur.StreamReceived, null);
       }
       private void DémarrerLeJeu()
       {
@@ -342,38 +342,38 @@ namespace AtelierXNA
          Game.Components.Add(MenuClient);
          //une fonction?
       }
-        void StreamReceived(IAsyncResult ar)
-        {
-            int bytesRead = 0;
+        //void StreamReceived(IAsyncResult ar)
+        //{
+        //    int bytesRead = 0;
 
-            try
-            {
-                lock (Client.GetStream())
-                {
-                    bytesRead = Client.GetStream().EndRead(ar);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "1");
-            }
+        //    try
+        //    {
+        //        lock (Client.GetStream())
+        //        {
+        //            bytesRead = Client.GetStream().EndRead(ar);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message + "1");
+        //    }
 
-            if (bytesRead == 0)
-            {
-                Client.Close();
-                return;
-            }
+        //    if (bytesRead == 0)
+        //    {
+        //        Client.Close();
+        //        return;
+        //    }
 
-            byte[] data = new byte[bytesRead];
+        //    byte[] data = new byte[bytesRead];
 
-            for (int cpt = 0; cpt < bytesRead; cpt++)
-                data[cpt] = ReadBuffer[cpt];
+        //    for (int cpt = 0; cpt < bytesRead; cpt++)
+        //        data[cpt] = ReadBuffer[cpt];
 
-            ProcessData(data);
+        //    ProcessData(data);
 
 
-            Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
-        }
+        //    Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+        //}
 
         //private void ProcessData(byte[] data)
         //{

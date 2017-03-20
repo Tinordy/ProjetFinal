@@ -167,14 +167,14 @@ namespace AtelierXNA
 
          if (delta != Vector3.Zero)
          {
-            player.Position = Server.VérificationPositionServeur(nPosition);
-            player.CalculerMatriceMonde();
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.PlayerMoved);
-            writer.Write(player.Position.X);
-            writer.Write(player.Position.Y);
-            writer.Write(player.Position.Z);
-            SendData(Server.GetDataFromMemoryStream(writeStream));
+            //player.Position = Server.VérificationPositionServeur(nPosition);
+            //player.CalculerMatriceMonde();
+            //writeStream.Position = 0;
+            //writer.Write((byte)Protocoles.PlayerMoved);
+            //writer.Write(player.Position.X);
+            //writer.Write(player.Position.Y);
+            //writer.Write(player.Position.Z);
+            //SendData(Server.GetDataFromMemoryStream(writeStream));
 
          }
       }
