@@ -32,8 +32,6 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
-            NetworkManager = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
-            Serveur = Game.Services.GetService(typeof(Server)) as Server;
             List<string> noms = new List<string>();
             noms.Add("CielÉtoilé");
             noms.Add("Neige");
@@ -55,6 +53,10 @@ namespace AtelierXNA
 
         private void Valider()
         {
+            //pas plus tot car créé au début... changer ordre??
+            NetworkManager = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
+            Serveur = Game.Services.GetService(typeof(Server)) as Server;
+
             Choix = ChoixMenu.VALIDATION;
             Pseudonyme = LecteurPseudonyme.ObtenirEntrée();
             Voiture = ChoixVoiture.DonnerChoixVoiture();
