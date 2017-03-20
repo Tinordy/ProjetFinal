@@ -380,7 +380,10 @@ namespace AtelierXNA
             //Add to the client array
             client[user.id] = user;
         }
-
+        public void Envoyer(/*Protocoles protocole, bool val*/)
+        {
+            SendData(GetDataFromMemoryStream(writeStream));
+        }
         /// <summary>
         /// Method that is performed when a new user is disconnected.
         /// </summary>
