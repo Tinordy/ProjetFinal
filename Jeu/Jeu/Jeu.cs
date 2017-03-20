@@ -157,7 +157,7 @@ namespace AtelierXNA
                         writeStream.Position = 0;
                         writer.Write((byte)Protocoles.ReadyToPlayChanged);
                         writer.Write(true);
-                        SendData(Serveur.GetDataFromMemoryStream(Serveur.writeStream));
+                        SendData(Serveur.GetDataFromMemoryStream(writeStream));
                         //Serveur.Envoyer(Protocoles.ReadyToPlayChanged, true);
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
