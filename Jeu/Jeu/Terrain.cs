@@ -196,6 +196,7 @@ namespace AtelierXNA
             foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
             {
                 passeEffet.Apply();
+                //GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
                 GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, Sommets, 0, NbTrianglesDansTerrain / NB_TRIANGLES_PAR_TUILE);
             }
             base.Draw(gameTime);
