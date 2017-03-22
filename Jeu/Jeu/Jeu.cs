@@ -318,7 +318,7 @@ namespace AtelierXNA
         private void CréerJoueur()
         {
 
-            Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, Vector3.Zero, 0.01f);
+            Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, new Vector3(100,0,50), 0.01f);
             Game.Components.Add(Joueur);
 
             NetworkManager.writeStream.Position = 0;
