@@ -286,10 +286,10 @@ namespace AtelierXNA
             {
                 CréerEnnemi();
             }
-            CréerTerrain();
+            CréerEnvironnement();
         }
 
-        private void CréerTerrain() //fonctionne pas!
+        private void CréerEnvironnement()
         {
             Sections = new List<Section>();
             for (int i = 0; i < 2; ++i)
