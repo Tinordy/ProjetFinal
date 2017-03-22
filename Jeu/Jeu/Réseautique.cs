@@ -133,22 +133,22 @@ namespace AtelierXNA
             }
             else if (p == Protocoles.PlayerMoved)
             {
-                float m11 = reader.Read();
-                float m12 = reader.Read();
-                float m13 = reader.Read();
-                float m14 = reader.Read();
-                float m21 = reader.Read();
-                float m22 = reader.Read();
-                float m23 = reader.Read();
-                float m24 = reader.Read();
-                float m31 = reader.Read();
-                float m32 = reader.Read();
-                float m33 = reader.Read();
-                float m34 = reader.Read();
-                float m41 = reader.Read();
-                float m42 = reader.Read();
-                float m43 = reader.Read();
-                float m44 = reader.Read();
+                float m11 = reader.ReadSingle();
+                float m12 = reader.ReadSingle();
+                float m13 = reader.ReadSingle();
+                float m14 = reader.ReadSingle();
+                float m21 = reader.ReadSingle();
+                float m22 = reader.ReadSingle();
+                float m23 = reader.ReadSingle();
+                float m24 = reader.ReadSingle();
+                float m31 = reader.ReadSingle();
+                float m32 = reader.ReadSingle();
+                float m33 = reader.ReadSingle();
+                float m34 = reader.ReadSingle();
+                float m41 = reader.ReadSingle();
+                float m42 = reader.ReadSingle();
+                float m43 = reader.ReadSingle();
+                float m44 = reader.ReadSingle();
 
                 MatriceMondeEnnemi = new Matrix(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);
                 //si c'est pas legit, envoie nouveau protocole.
