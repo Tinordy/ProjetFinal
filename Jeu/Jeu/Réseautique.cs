@@ -19,7 +19,7 @@ namespace AtelierXNA
         public bool enemiConnecté { get; private set; }
         public MemoryStream readStream, writeStream;
         public Vector3 PositionEnnemi { get; private set; }
-
+        public Matrix MatriceMondeEnnemi { get; private set; }
         public BinaryReader reader;
         public BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
@@ -45,6 +45,30 @@ namespace AtelierXNA
             writer.Write((byte)Protocoles.Connected);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
             Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+        }
+
+        public void SendMatriceMonde(Matrix m)
+        {
+            writeStream.Position = 0;
+            writer.Write(((byte)Protocoles.PlayerMoved));
+            writer.Write(m.M11);
+            writer.Write(m.M12);
+            writer.Write(m.M13);
+            writer.Write(m.M14);
+            writer.Write(m.M21);
+            writer.Write(m.M22);
+            writer.Write(m.M23);
+            writer.Write(m.M24);
+            writer.Write(m.M31);
+            writer.Write(m.M32);
+            writer.Write(m.M33);
+            writer.Write(m.M34);
+            writer.Write(m.M41);
+            writer.Write(m.M42);
+            writer.Write(m.M43);
+            writer.Write(m.M44);
+
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
         void StreamReceived(IAsyncResult ar)
         {
@@ -109,10 +133,24 @@ namespace AtelierXNA
             }
             else if (p == Protocoles.PlayerMoved)
             {
-                float X = reader.ReadSingle();
-                float Y = reader.ReadSingle();
-                float Z = reader.ReadSingle();
-                //pas fini...
+                float m11 = reader.Read();
+                float m12 = reader.Read();
+                float m13 = reader.Read();
+                float m14 = reader.Read();
+                float m21 = reader.Read();
+                float m22 = reader.Read();
+                float m23 = reader.Read();
+                float m24 = reader.Read();
+                float m31 = reader.Read();
+                float m32 = reader.Read();
+                float m33 = reader.Read();
+                float m34 = reader.Read();
+                float m41 = reader.Read();
+                float m42 = reader.Read();
+                float m43 = reader.Read();
+                float m44 = reader.Read();
+
+                MatriceMondeEnnemi = new Matrix(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);
             }
             else if (p == Protocoles.PositionInitiale)
             {
