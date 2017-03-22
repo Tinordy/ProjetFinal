@@ -60,6 +60,12 @@ namespace AtelierXNA
             switch (État)
             {
                 case ÉtatsJeu.JEU:
+                    //if player moved?
+                    if(ÉtatJoueur != ÉtatsJoueur.SOLO)
+                    {
+                        Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
+                    }
+
                     //Collision, gagnant..???
                     break;
             }

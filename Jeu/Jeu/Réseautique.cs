@@ -151,6 +151,7 @@ namespace AtelierXNA
                 float m44 = reader.Read();
 
                 MatriceMondeEnnemi = new Matrix(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);
+                //si c'est pas legit, envoie nouveau protocole.
             }
             else if (p == Protocoles.PositionInitiale)
             {

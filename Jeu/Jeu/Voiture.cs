@@ -25,6 +25,7 @@ namespace AtelierXNA
         float IntervalleMAJ { get; set; }
         float IntervalleAccélération { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
+        Réseautique GérerRéseau { get; set; }
         public float AngleVolant
         {
             get
@@ -83,6 +84,7 @@ namespace AtelierXNA
         /// </summary>
         public override void Initialize()
         {
+            GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             IntervalleAccélération = 1f / 5f;
             Direction = new Vector3(-1, 0, 0);
             Vitesse = 0;
@@ -149,8 +151,7 @@ namespace AtelierXNA
         {
 
             //pédales + ajouter accélération??
-            if (Vitesse > 0)
-            {
+
                 Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
                 Position += Direction;
                 //Position += Vitesse;
@@ -164,7 +165,7 @@ namespace AtelierXNA
                     Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 50f, Rotation.Z);
                     ChangementEffectué = true;
                 }
-            }
+
             //DéplacerCaméra();
         }
 
@@ -177,11 +178,17 @@ namespace AtelierXNA
         {
             if (ChangementEffectué)
             {
+                GérerRéseau.SendMatriceMonde(Monde);
+                //juste si le déplacement est good
                 Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
+
                 ChangementEffectué = false;
             }
         }
-
+        public void AjusterPosition(Matrix nouvelleMatriceMonde)
+        {
+            Monde = nouvelleMatriceMonde;
+        }
         public void RecréerMonde()
         {
             Monde = Matrix.Identity;
