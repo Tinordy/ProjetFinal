@@ -20,6 +20,7 @@ namespace AtelierXNA
         Vector2 Étendue { get; set; }
         Vector2 Extrémité { get; set; }
         double NormeÉtendue { get; set; }
+        Maison Test { get; set; }
         
         List<GameComponent> Components { get; set; }
         public Section(Game game, Vector2 origine, Vector2 étendue2,float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector3 étendue,
@@ -27,18 +28,21 @@ namespace AtelierXNA
             : base(game, origine,homothétieInitiale, rotationInitiale, positionInitiale, étendue, nomsTexturesTerrain, intervalleMAJ)
         {
             Étendue = étendue2;
+
         }
 
         public override void Initialize()
         {
             Extrémité = Coin + Étendue;
+            Test = new Maison(Game, 10f, Vector3.Zero, Vector3.Zero, new Vector3(2,2,2), "brique1", "roof", 0.01f);
+            Game.Components.Add(Test);
             NormeÉtendue = Math.Sqrt(Math.Pow(Étendue.X, 2) + Math.Pow(Étendue.Y, 2));
             base.Initialize();
         }
 
-        public void AddComponent(GameComponent x)
-        {
-            Components.Add(x);
-        }
+        //public void AddComponent(GameComponent x)
+        //{
+        //    Components.Add(x);
+        //}
     }
 }
