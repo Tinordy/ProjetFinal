@@ -23,6 +23,7 @@ namespace AtelierXNA
         const int INCRÉMENT_ANGLE = 10;
         const int RAYON_VOITURE = 10;
         float IntervalleMAJ { get; set; }
+        Vector3 PositionCaméra { get; set; }
         float IntervalleAccélération { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         Réseautique GérerRéseau { get; set; }
@@ -164,9 +165,13 @@ namespace AtelierXNA
                     //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                     Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 50f, Rotation.Z);
                     ChangementEffectué = true;
-                }
+                }           
+        }
 
-            //DéplacerCaméra();
+        private void DéplacerCaméra()
+        {
+            PositionCaméra = Position - Direction * 100 + new Vector3(0, 20, 0);
+            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
@@ -181,7 +186,7 @@ namespace AtelierXNA
                 GérerRéseau.SendMatriceMonde(Monde);
                 //juste si le déplacement est good
                 Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
-
+                DéplacerCaméra();
                 ChangementEffectué = false;
             }
         }
