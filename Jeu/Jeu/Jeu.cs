@@ -32,6 +32,8 @@ namespace AtelierXNA
         Réseautique NetworkManager { get; set; }
         Voiture Joueur { get; set; }
         Voiture Ennemi { get; set; }
+        List<Section> Sections { get; set; }
+
         public Jeu(Game game)
             : base(game)
         {
@@ -41,9 +43,6 @@ namespace AtelierXNA
             CréerMenuProfile();
             CréerMenusIP();
         }
-
-
-
         public override void Initialize()
         {
             État = ÉtatsJeu.MENU_PRINCIPAL;
@@ -67,7 +66,7 @@ namespace AtelierXNA
 
 
         }
-
+        #region Transitions
         void GérerTransition()
         {
             switch (État)
@@ -241,6 +240,11 @@ namespace AtelierXNA
                     État = ÉtatsJeu.CONNECTION;
                     ConnectionAuServeur(MenuServeur.IP, MenuServeur.Port);
                     break;
+                case ChoixMenu.QUITTER:
+                    État = ÉtatsJeu.CHOIX_LAN;
+                    MenuServeur.Enabled = false;
+                    MenuNetwork.Enabled = true;
+                    break;
             }
         }
         private void GérerTransitionMenuClient()
@@ -256,8 +260,14 @@ namespace AtelierXNA
                     MenuChoixProfile.Enabled = true;
                     ConnectionAuServeur(MenuClient.IP, MenuClient.Port);
                     break;
+                case ChoixMenu.QUITTER:
+                    État = ÉtatsJeu.CHOIX_LAN;
+                    MenuClient.Enabled = false;
+                    MenuNetwork.Enabled = true;
+                    break;
             }
         }
+        #endregion
         private void ConnectionAuServeur(string ip, int port)
         {
             Serveur = new Server(port, ip);
@@ -266,15 +276,41 @@ namespace AtelierXNA
             Game.Services.AddService(typeof(Réseautique), NetworkManager);
 
         }
+        #region initialisation du jeu
         private void DémarrerLeJeu()
         {
             //changer de caméra?
-            Vector3 positionCaméra = new Vector3(200, 10, 200);
-            Vector3 cibleCaméra = new Vector3(10, 0, 10);
-            CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up, 0.01f);
-            Game.Components.Add(CaméraJeu);
-            Game.Services.AddService(typeof(Caméra), CaméraJeu);
+            CréerCaméra();
+            CréerJoueur();
+            if(ÉtatJoueur != ÉtatsJoueur.SOLO)
+            {
+                CréerEnnemi();
+            }
+            CréerTerrain();
+        }
 
+        private void CréerTerrain() //fonctionne pas!
+        {
+            Sections = new List<Section>();
+            for (int i = 0; i < 2; ++i)
+            {
+                for (int j = 0; j < 2; ++j)
+                {
+                    Section newSection = new Section(Game, new Vector2(200 * i, 100 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f);
+                    Sections.Add(newSection);
+                    Game.Components.Add(newSection);
+                }
+            }
+        }
+
+        private void CréerEnnemi()
+        {
+            Ennemi = new Voiture(Game, "unicorn", 20f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            Game.Components.Add(Ennemi);
+        }
+
+        private void CréerJoueur()
+        {
 
             Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, Vector3.Zero, 0.01f);
             Game.Components.Add(Joueur);
@@ -285,11 +321,19 @@ namespace AtelierXNA
             NetworkManager.writer.Write(Joueur.Position.Y);
             NetworkManager.writer.Write(Joueur.Position.Z);
             NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
-
-            Ennemi = new Voiture(Game, "unicorn", 20f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
-            Game.Components.Add(Ennemi);
         }
-        #region Création Des Menus
+
+        private void CréerCaméra()
+        {
+            Vector3 positionCaméra = new Vector3(200, 10, 200);
+            Vector3 cibleCaméra = new Vector3(10, 0, 10);
+            CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up, 0.01f);
+            Game.Components.Add(CaméraJeu);
+            Game.Services.AddService(typeof(Caméra), CaméraJeu);
+        }
+        #endregion
+
+        #region Création Des Menus //juste les nécess?
         void CréerMenuPrincipal()
         {
             MenuPrincipal = new MenuPrincipal(Game);
