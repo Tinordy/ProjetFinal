@@ -12,90 +12,183 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-   public class Voiture : ObjetDeBase
-   {
-      const float INCRÉMENT_ROTATION = (float)Math.PI / 120;
+    /// <summary>
+    /// This is a game component that implements IUpdateable.
+    /// </summary>
+    public class Voiture : ObjetDeBase
+    {
+        const float INCRÉMENT_ROTATION = (float)Math.PI / 180;
 
-      float IntervalleMAJ { get; set; }
-      float TempsÉcouléDepuisMAJ { get; set; }
-      InputManager GestionInput { get; set; }
-      Vector3 Direction { get; set; }
-      bool ChangementEffectué { get; set; }
-      Caméra Caméra { get; set; }
+        const float FACTEUR_ACCÉLÉRATION = 3;
+        const int INCRÉMENT_ANGLE = 10;
+        const int RAYON_VOITURE = 10;
+        float IntervalleMAJ { get; set; }
+        float IntervalleAccélération { get; set; }
+        float TempsÉcouléDepuisMAJ { get; set; }
+        public float AngleVolant
+        {
+            get
+            { return angleVolant; }
+            private set
+            {
+                angleVolant = value;
+                if (value < -0.3f) { angleVolant = -0.3f; }
+                if (value > 0.3f) { angleVolant = 0.3f; }
+            }
+        }
 
-      //Rotation... changement effextué? prp auto
+        public float Vitesse
+        {
+            get
+            { return vitesse; }
+            private set
+            {
+                vitesse = value;
+                if (value < -10) { vitesse = -10; }
+                if (value > 50) { vitesse = 50; }
+            }
+        }
+        public float TempsAccélération
+        {
+            get { return tempsAccélération; }
+            private set
+            {
+                tempsAccélération = value;
+                if (value < -2) { tempsAccélération = -2; }
+                if (value > 20) { tempsAccélération = 20; }
+            }
+        }
 
-      public Voiture(Game game, string nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
-          : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
-      {
-         IntervalleMAJ = intervalleMAJ;
-      }
+        float vitesse;
+        float tempsAccélération;
+        float angleVolant;
 
-      public override void Initialize()
-      {
-         //ok?
-         Direction = new Vector3(-1, 0, 0);
-         GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-         Caméra = Game.Services.GetService(typeof(Caméra)) as Caméra;
-         base.Initialize();//keep
-      }
+        Vector3 Direction { get; set; }
+        bool ChangementEffectué { get; set; }
+        Caméra Caméra { get; set; }
 
-      public override void Update(GameTime gameTime)
-      {
-         float tempsécoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
-         TempsÉcouléDepuisMAJ += tempsécoulé;
-         if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
-         {
-            GérerVolant();
-            //DéplacerCaméra();
-            EffectuerTransformations();
-            TempsÉcouléDepuisMAJ = 0;
-         }
-      }
-      //marche po...
-      //private void DéplacerCaméra()
-      //{
-      //   Vector3 anciennePositionCaméra = Caméra.Position;
-      //   Vector3 nouvellePositionCaméra = Position - Direction * 500 + new Vector3(0, 3, 0); //const hauteur de la caméra
-      //   Vector3 déplacementCaméra = (nouvellePositionCaméra - anciennePositionCaméra) / 20;
+        InputManager GestionInput { get; set; }
 
-      //   Caméra.Déplacer(anciennePositionCaméra + déplacementCaméra/*new Vector3(déplacementCaméra.X, 0, déplacementCaméra.Z)*/, Position, Vector3.Up);
-      //}
+        public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
+            : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
+        {
+            IntervalleMAJ = intervalleMAJ;
 
-      private void EffectuerTransformations()
-      {
-         if (ChangementEffectué)
-         {
-            Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
-            ChangementEffectué = false;
-         }
-      }
+            // TODO: Construct any child components here
+        }
 
-      private void GérerVolant()
-      {
-         if (GestionInput.EstClavierActivé)
-         {
+        /// <summary>
+        /// Allows the game component to perform any initialization it needs to before starting
+        /// to run.  This is where it can query for any required services and load content.
+        /// </summary>
+        public override void Initialize()
+        {
+            IntervalleAccélération = 1f / 5f;
+            Direction = new Vector3(-1, 0, 0);
+            Vitesse = 0;
+            // TODO: Add your initialization code here
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            Caméra = Game.Services.GetService(typeof(Caméra)) as Caméra;
+
+            base.LoadContent();
+        }
+
+        /// <summary>
+        /// Allows the game component to update itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public override void Update(GameTime gameTime)
+        {
+            float tempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            TempsÉcouléDepuisMAJ += tempsÉcoulé;
+            if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
+            {
+                VarierVitesse();
+                CalculerVitesse();
+                AjusterPosition();
+                EffectuerTransformations();
+                //RecréerMonde();
+                Game.Window.Title = Vitesse.ToString("0.000");
+
+                TempsÉcouléDepuisMAJ = 0;
+            }
+
+            base.Update(gameTime);
+        }
+
+
+        void VarierVitesse()
+        {
+            bool accélération = GestionInput.EstEnfoncée(Keys.W);
+            bool freinage = GestionInput.EstEnfoncée(Keys.S);
+            int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
+
+
+            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * IntervalleAccélération; }
+            if (accélération) { TempsAccélération += 2f * IntervalleAccélération; }
+            if (freinage) { TempsAccélération -= 3f * IntervalleAccélération; }
+
+        }
+        void CalculerVitesse()
+        {
+            Vitesse = FACTEUR_ACCÉLÉRATION * TempsAccélération;
+        }
+        int GérerTouche(Keys touche)
+        {
+            return GestionInput.EstEnfoncée(touche) ? INCRÉMENT_ANGLE : 0;
+        }
+
+
+        void AjusterPosition()
+        {
+
             //pédales + ajouter accélération??
-            if (GestionInput.EstEnfoncée(Keys.W) || GestionInput.EstEnfoncée(Keys.S))
+            if (Vitesse > 0)
             {
-               int sens = GérerTouche(Keys.W) - GérerTouche(Keys.S);
-               Direction = 5* sens * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
-               Position += Direction;
-               ChangementEffectué = true;
-            }
-            //Volant... degrés??
-            if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
-            {
-               int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
-               Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
-               ChangementEffectué = true;
+                Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
+                Position += Direction;
+                //Position += Vitesse;
+                ChangementEffectué = true;
+
+                //Volant... degrés??
+                if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
+                {
+                    int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
+                    //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
+                    Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 50f, Rotation.Z);
+                    ChangementEffectué = true;
+                }
             }
             //DéplacerCaméra();
-         }
-      }
-      int GérerTouche(Keys Touche)
-      {
-         return GestionInput.EstEnfoncée(Touche) ? 1 : 0;
-      }
-   }
+        }
+
+        float CalculerPosition(int déplacement, float posActuelle)
+        {
+            return posActuelle + déplacement;
+        }
+
+        private void EffectuerTransformations()
+        {
+            if (ChangementEffectué)
+            {
+                Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
+                ChangementEffectué = false;
+            }
+        }
+
+        public void RecréerMonde()
+        {
+            Monde = Matrix.Identity;
+            Monde *= Matrix.CreateScale(Échelle);
+            Monde *= Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
+            Monde *= Matrix.CreateTranslation(Position);
+        }
+
+    }
 }
