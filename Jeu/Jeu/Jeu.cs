@@ -192,7 +192,7 @@ namespace AtelierXNA
 
         private void InitialiserDécompte()
         {
-            DécompteInitial = new TimerDiminue(Game, 1, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, 1f);
+            DécompteInitial = new TimerDiminue(Game, 5, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, 1f);
             Game.Components.Add(DécompteInitial);
         }
 
