@@ -44,7 +44,7 @@ namespace AtelierXNA
 
         private void CréerPiste()
         {
-           // throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         //public void AddComponent(GameComponent x)
