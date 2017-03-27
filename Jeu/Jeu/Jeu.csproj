@@ -119,6 +119,8 @@
     <Compile Include="Sprite.cs" />
     <Compile Include="Terrain.cs" />
     <Compile Include="Timer.cs" />
+    <Compile Include="TimerAugmente.cs" />
+    <Compile Include="TimerDiminue.cs" />
     <Compile Include="Titre.cs" />
     <Compile Include="Voiture.cs" />
   </ItemGroup>
