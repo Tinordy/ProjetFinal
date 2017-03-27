@@ -150,11 +150,13 @@ namespace AtelierXNA
         {
             if (CaméraJeu.Frustum.Intersects(SphereDeCollision))
             {
-                EnableDraw = true;
+                //EnableDraw = true;
+                Visible = true;
             }
             else
             {
-                EnableDraw = false;
+                Visible = false;
+                //EnableDraw = false;
             }
         }
 

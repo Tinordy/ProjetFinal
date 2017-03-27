@@ -209,7 +209,7 @@ namespace AtelierXNA
                 GérerRéseau.SendMatriceMonde(Monde);
                 //juste si le déplacement est good
                 Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
-                DéplacerCaméra();
+                //DéplacerCaméra();
                 ChangementEffectué = false;
             }
         }
