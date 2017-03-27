@@ -107,7 +107,7 @@
     <Compile Include="MenuPrincipal.cs" />
     <Compile Include="MenuProfile.cs" />
     <Compile Include="ObjetDeBase.cs" />
-    <Compile Include="Piste.cs" />
+    <Compile Include="PisteSectionnée.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
     <Compile Include="PrimitiveDeBaseAnimée.cs" />
     <Compile Include="Program.cs" />

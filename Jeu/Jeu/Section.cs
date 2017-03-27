@@ -15,8 +15,9 @@ namespace AtelierXNA
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Section :Terrain
+    public class Section : Terrain
     {
+        const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         Vector2 Étendue { get; set; }
         Vector2 Extrémité { get; set; }
         double NormeÉtendue { get; set; }
@@ -44,7 +45,7 @@ namespace AtelierXNA
 
         private void CréerPiste()
         {
-            throw new NotImplementedException();
+            Components.Add(new PisteSectionnée(Game, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue));
         }
 
         //public void AddComponent(GameComponent x)

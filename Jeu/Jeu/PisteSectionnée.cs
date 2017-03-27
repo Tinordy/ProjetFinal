@@ -12,16 +12,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public class Piste : PrimitiveDeBaseAnimée
+    public class PisteSectionnée : PrimitiveDeBaseAnimée
     {
         DataPiste DonnéesPiste { get; set; }
         int HAUTEUR_INITIALE = 1;
 
         Vector3 Origine { get; set; }
-        List<Vector2> PointsBordureExt { get; set; }
-        List<Vector2> PointsBordureInt { get; set; }
-        List<Vector2> PointsCentraux { get; set; }
-        List<Vector2> PointsPointillés { get; set; }
+        protected List<Vector2> PointsBordureExt { get; set; }
+        protected List<Vector2> PointsBordureInt { get; set; }
+        protected List<Vector2> PointsCentraux { get; set; }
+        protected List<Vector2> PointsPointillés { get; set; }
         Color CouleurPiste { get; set; }
         int NbDeTriangles { get; set; }
         int NbDeSommets { get; set; }
@@ -30,11 +30,16 @@ namespace AtelierXNA
         BasicEffect EffetDeBase { get; set; }
         int NbColonnes { get; set; }
         int NbRangées { get; set; }
-        public Piste(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, int nbColonnes, int nbRangées)
+        public BoundingSphere SphereDeCollision { get; private set; }
+        Vector2 Coin { get; set; }
+        Vector2 Étendue { get; set; }
+        public PisteSectionnée(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, int nbColonnes, int nbRangées, Vector2 coin, Vector2 étendue)
             : base(jeu, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
             NbColonnes = nbColonnes;
             NbRangées = nbRangées;
+            Coin = coin;
+            Étendue = étendue;
         }
         public override void Initialize()
         {
@@ -88,10 +93,24 @@ namespace AtelierXNA
         }
         void ObtenirDonnéesPiste()
         {
-            PointsBordureExt = DonnéesPiste.GetBordureExtérieure();
-            PointsBordureInt = DonnéesPiste.GetBordureIntérieur();
-            PointsCentraux = DonnéesPiste.GetPointsCentraux();
-            PointsPointillés = DonnéesPiste.GetPointsPointillés();
+            PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
+            PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
+            PointsCentraux = GénérerListeRestreinte(DonnéesPiste.GetPointsCentraux());
+            PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
+        }
+
+        List<Vector2> GénérerListeRestreinte(List<Vector2> points)
+        {
+            Vector2 pointMax = Coin + Étendue;
+            List<Vector2> temp = new List<Vector2>();
+            foreach(Vector2 point in points)
+            {
+                if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
+                {
+                    temp.Add(point);
+                }
+            }
+            return temp;
         }
         void InitialiserParamètresEffetDeBase()
         {
@@ -103,6 +122,7 @@ namespace AtelierXNA
             DepthStencilState temporaire = new DepthStencilState();
             temporaire.DepthBufferEnable = false;
             GraphicsDevice.DepthStencilState = temporaire;
+            GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
@@ -113,6 +133,7 @@ namespace AtelierXNA
                 GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
             }
             GraphicsDevice.DepthStencilState = ancienDepthStencilState;
+            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
         }
     }
 }
