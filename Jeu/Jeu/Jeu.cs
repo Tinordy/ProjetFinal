@@ -33,7 +33,8 @@ namespace AtelierXNA
         Voiture Joueur { get; set; }
         Voiture Ennemi { get; set; }
         List<Section> Sections { get; set; }
-        Timer DécompteInitial { get; set; }
+        TimerDiminue DécompteInitial { get; set; }
+        TimerAugmente TempsDeCourse { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -119,6 +120,8 @@ namespace AtelierXNA
                 Joueur.Enabled = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
+                TempsDeCourse = new TimerAugmente(Game, 0, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, 0.01f);
+                Game.Components.Add(TempsDeCourse);
             }
         }
 
@@ -189,7 +192,7 @@ namespace AtelierXNA
 
         private void InitialiserDécompte()
         {
-            DécompteInitial = new Timer(Game, 1,0, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, "00:00", 1f);
+            DécompteInitial = new TimerDiminue(Game, 1, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, 1f);
             Game.Components.Add(DécompteInitial);
         }
 
