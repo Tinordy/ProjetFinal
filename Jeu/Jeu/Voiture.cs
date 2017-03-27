@@ -51,7 +51,7 @@ namespace AtelierXNA
             {
                 vitesse = value;
                 if (value < -10) { vitesse = -10; }
-                if (value > 50) { vitesse = 50; }
+                if (value > 500) { vitesse = 500; }
             }
         }
         public float TempsAccélération
@@ -194,7 +194,15 @@ namespace AtelierXNA
 
         void CalculerPositionCaméra(Vector3 direction)
         {
-            PositionCaméra = Position - direction * 100 + new Vector3(0, 20, 0);
+            if(Vitesse > 25)
+            {
+                PositionCaméra = Position - direction * Vitesse * 2 + new Vector3(0, 20, 0);
+            }
+            else
+            {
+                PositionCaméra = Position - direction * 25 * 2 + new Vector3(0, 20, 0);
+            }
+
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
@@ -209,7 +217,7 @@ namespace AtelierXNA
                 GérerRéseau.SendMatriceMonde(Monde);
                 //juste si le déplacement est good
                 Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
-                //DéplacerCaméra();
+                DéplacerCaméra();
                 ChangementEffectué = false;
             }
         }
