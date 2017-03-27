@@ -27,17 +27,24 @@ namespace AtelierXNA
                        string[] nomsTexturesTerrain, float intervalleMAJ)
             : base(game, origine,homothétieInitiale, rotationInitiale, positionInitiale, étendue, nomsTexturesTerrain, intervalleMAJ)
         {
-            Étendue = étendue2;
+            //Étendue = étendue2;
+            Étendue = new Vector2(étendue.X, étendue.Z);
 
         }
 
         public override void Initialize()
         {
             Extrémité = Coin + Étendue;
-            Test = new Maison(Game, 10f, Vector3.Zero, Vector3.Zero, new Vector3(2,2,2), "brique1", "roof", 0.01f);
+            Test = new Maison(Game, 10f, Vector3.Zero, new Vector3(Coin.X/* + Étendue.X*/, 0, Coin.Y - Étendue.Y), new Vector3(2,2,2), "brique1", "roof", 0.01f);
             Game.Components.Add(Test);
             NormeÉtendue = Math.Sqrt(Math.Pow(Étendue.X, 2) + Math.Pow(Étendue.Y, 2));
+            CréerPiste();
             base.Initialize();
+        }
+
+        private void CréerPiste()
+        {
+            throw new NotImplementedException();
         }
 
         //public void AddComponent(GameComponent x)

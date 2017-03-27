@@ -65,7 +65,6 @@ namespace AtelierXNA
                     {
                         Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
                     }
-
                     //Collision, gagnant..???
                     break;
             }
@@ -293,16 +292,17 @@ namespace AtelierXNA
                 CréerEnnemi();
             }
             CréerEnvironnement();
+            Game.Components.Add(new AfficheurFPS(Game, "Arial20", Color.White, 1f));
         }
 
         private void CréerEnvironnement()
         {
             Sections = new List<Section>();
-            for (int i = 0; i < 2; ++i)
+            for (int i = 0; i < 4; ++i)
             {
-                for (int j = 0; j < 2; ++j)
+                for (int j = 0; j < 4; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(200 * i, 100 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f);
+                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 400), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 400), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
                 }
