@@ -17,8 +17,8 @@ namespace AtelierXNA
     /// </summary>
     public class Titre : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        string Message { get; set; }
-        SpriteBatch GestionSprites { get; set; }
+        protected string Message { get; set; }
+        protected SpriteBatch GestionSprites { get; private set; }
         string NomPolice { get; set; }
         SpriteFont Police { get; set; }
         Vector2 Position { get; set; }
@@ -50,7 +50,7 @@ namespace AtelierXNA
         {
             GestionSprites.Begin();
             GestionSprites.Draw(Texture, Destination, Color.White);
-            GestionSprites.DrawString(Police, Message, Position, Color.Black);
+            GestionSprites.DrawString(Police, Message, Position, Color.Fuchsia);
             GestionSprites.End();
         }
     }

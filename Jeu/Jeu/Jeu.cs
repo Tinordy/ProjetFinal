@@ -14,7 +14,7 @@ using System.IO;
 
 namespace AtelierXNA
 {
-    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS }
+    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE }
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
@@ -33,7 +33,7 @@ namespace AtelierXNA
         Voiture Joueur { get; set; }
         Voiture Ennemi { get; set; }
         List<Section> Sections { get; set; }
-
+        Timer DécompteInitial { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -60,17 +60,21 @@ namespace AtelierXNA
             switch (État)
             {
                 case ÉtatsJeu.JEU:
-                    //if player moved?
-                    if(ÉtatJoueur != ÉtatsJoueur.SOLO)
-                    {
-                        Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
-                    }
-                    //Collision, gagnant..???
+                    GérerÉtatJeu();
                     break;
             }
-
-
         }
+
+        private void GérerÉtatJeu()
+        {
+            //if player moved?
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO)
+            {
+                Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
+            }
+            //Collision, gagnant..???
+        }
+
         #region Transitions
         void GérerTransition()
         {
@@ -100,8 +104,22 @@ namespace AtelierXNA
                 case ÉtatsJeu.ATTENTE_JOUEURS:
                     GérerTransitionAttenteJoueurs();
                     break;
+                case ÉtatsJeu.DÉCOMPTE:
+                    GérerTransitionDécompte();
+                    break;
             }
 
+        }
+
+        private void GérerTransitionDécompte()
+        {
+            if(!DécompteInitial.EstActif)
+            {
+                État = ÉtatsJeu.JEU;
+                Joueur.Enabled = true;
+                DécompteInitial.Enabled = false;
+                DécompteInitial.Visible = false;
+            }
         }
 
         private void GérerTransitionAttenteJoueurs()
@@ -117,8 +135,9 @@ namespace AtelierXNA
                     {
                         //INITIALISATION?
                         MenuChoixProfile.Enabled = false;
-                        DémarrerLeJeu();
-                        État = ÉtatsJeu.JEU;
+                        InitialiserLeJeu();
+                        État = ÉtatsJeu.DÉCOMPTE;
+                        InitialiserDécompte();
                     }
                     break;
                 case ÉtatsJoueur.SERVEUR:
@@ -160,14 +179,19 @@ namespace AtelierXNA
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
                     //INITIALISATION??
-                    État = ÉtatsJeu.JEU;
+                    État = ÉtatsJeu.DÉCOMPTE;
                     MenuChoixProfile.Enabled = false;
-                    DémarrerLeJeu();
+                    InitialiserLeJeu();
+                    InitialiserDécompte();
                     break;
             }
         }
 
-
+        private void InitialiserDécompte()
+        {
+            DécompteInitial = new Timer(Game, 1,0, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, "00:00", 1f);
+            Game.Components.Add(DécompteInitial);
+        }
 
         void GérerTransitionMenuPrincipal()
         {
@@ -282,12 +306,12 @@ namespace AtelierXNA
 
         }
         #region initialisation du jeu
-        private void DémarrerLeJeu()
+        private void InitialiserLeJeu()
         {
             //changer de caméra?
             CréerCaméra();
             CréerJoueur();
-            if(ÉtatJoueur != ÉtatsJoueur.SOLO)
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO)
             {
                 CréerEnnemi();
             }
@@ -319,6 +343,7 @@ namespace AtelierXNA
         {
 
             Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, new Vector3(100,0,50), 0.01f);
+            Joueur.Enabled = false;
             Game.Components.Add(Joueur);
 
             NetworkManager.writeStream.Position = 0;
