@@ -17,16 +17,20 @@ namespace AtelierXNA
     /// </summary>
     public class Voiture : ObjetDeBase
     {
-        const float INCRÉMENT_ROTATION = (float)Math.PI / 180;
+        const float INCRÉMENT_ROTATION = (float)Math.PI / 360;
 
         const float FACTEUR_ACCÉLÉRATION = 3;
         const int INCRÉMENT_ANGLE = 10;
-        const int RAYON_VOITURE = 10;
+        const int RAYON_VOITURE = 10;       
         float IntervalleMAJ { get; set; }
         Vector3 PositionCaméra { get; set; }
+        Vector3 AncienneDirection { get; set; }
+        Vector3 DirectionCaméra { get; set; }
+        float NormeDirection { get; set; }
         float IntervalleAccélération { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         Réseautique GérerRéseau { get; set; }
+        bool FirstTime { get; set; }
         public float AngleVolant
         {
             get
@@ -47,7 +51,7 @@ namespace AtelierXNA
             {
                 vitesse = value;
                 if (value < -10) { vitesse = -10; }
-                if (value > 50) { vitesse = 50; }
+                if (value > 500) { vitesse = 500; }
             }
         }
         public float TempsAccélération
@@ -70,6 +74,7 @@ namespace AtelierXNA
         Caméra Caméra { get; set; }
 
         InputManager GestionInput { get; set; }
+        bool DirectionModifiée { get; set; }
 
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
@@ -89,8 +94,6 @@ namespace AtelierXNA
             IntervalleAccélération = 1f / 5f;
             Direction = new Vector3(-1, 0, 0);
             Vitesse = 0;
-            // TODO: Add your initialization code here
-
             base.Initialize();
         }
 
@@ -134,7 +137,7 @@ namespace AtelierXNA
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * IntervalleAccélération; }
-            if (accélération) { TempsAccélération += 2f * IntervalleAccélération; }
+            if (accélération) { TempsAccélération += 2f * IntervalleAccélération; DirectionModifiée = true; }
             if (freinage) { TempsAccélération -= 3f * IntervalleAccélération; }
 
         }
@@ -153,25 +156,53 @@ namespace AtelierXNA
 
             //pédales + ajouter accélération??
 
-                Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
-                Position += Direction;
-                //Position += Vitesse;
-                ChangementEffectué = true;
+            Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y))) / 100f;
+            Position += Direction;
+            //Position += Vitesse;
+            ChangementEffectué = true;
 
-                //Volant... degrés??
-                if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
-                {
-                    int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
-                    //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
-                    Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 50f, Rotation.Z);
-                    ChangementEffectué = true;
-                }           
+            //Volant... degrés??
+            if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
+            {
+                int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
+                //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
+                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 50f, Rotation.Z);
+                ChangementEffectué = true;
+            }
         }
 
         private void DéplacerCaméra()
         {
-            PositionCaméra = Position - Direction * 100 + new Vector3(0, 20, 0);
-            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+            if (DirectionModifiée)
+            {
+                if(Vitesse > 30)
+                {
+                    AncienneDirection = new Vector3(Direction.X, Direction.Y, Direction.Z);
+                }
+                
+                CalculerPositionCaméra(Direction);
+                Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+                DirectionModifiée = false;
+            }
+            else
+            {
+                CalculerPositionCaméra(AncienneDirection);
+                Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+            }
+
+        }
+
+        void CalculerPositionCaméra(Vector3 direction)
+        {
+            if(Vitesse > 25)
+            {
+                PositionCaméra = Position - direction * Vitesse * 2 + new Vector3(0, 20, 0);
+            }
+            else
+            {
+                PositionCaméra = Position - direction * 25 * 2 + new Vector3(0, 20, 0);
+            }
+
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
