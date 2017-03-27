@@ -117,6 +117,8 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.JEU;
                 Joueur.Enabled = true;
+                DécompteInitial.Enabled = false;
+                DécompteInitial.Visible = false;
             }
         }
 
@@ -187,7 +189,7 @@ namespace AtelierXNA
 
         private void InitialiserDécompte()
         {
-            DécompteInitial = new Timer(Game, 5,0, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, "00:00", 1f);
+            DécompteInitial = new Timer(Game, 1,0, "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, "00:00", 1f);
             Game.Components.Add(DécompteInitial);
         }
 
