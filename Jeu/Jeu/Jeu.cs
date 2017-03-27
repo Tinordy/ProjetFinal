@@ -326,7 +326,7 @@ namespace AtelierXNA
             {
                 for (int j = 0; j < 4; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 400), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 400), new string[] { "Herbe", "Sable" }, 0.01f); //double??
+                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
                 }

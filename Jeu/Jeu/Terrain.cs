@@ -40,6 +40,7 @@ namespace AtelierXNA
         protected Vector2 Coin { get; private set; }
         Point[] Sections { get; set; }
         public BoundingSphere SphereDeCollision { get; private set; }
+        public BoundingBox BoxDeCollision { get; private set; }
 
         // à compléter en ajoutant les propriétés qui vous seront nécessaires pour l'implémentation du composant
 
@@ -60,6 +61,7 @@ namespace AtelierXNA
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             base.Initialize();
             SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + Étendue.X/2, 0, Origine.Z + Étendue.Z/2), 200);
+            BoxDeCollision = new BoundingBox(Origine, Origine + Étendue);
         }
 
         //
@@ -121,7 +123,7 @@ namespace AtelierXNA
             {
                 for (int col = 0; col < NbColonnes + 1; ++col)
                 {
-                    Points[NbColonnes - col, row] = new Vector3(Origine.X + (NbColonnes - col) * DeltaX, 0, Origine.Z - row * DeltaZ);
+                    Points[NbColonnes - col, row] = new Vector3(Origine.X + (NbColonnes - col) * DeltaX, 0, Origine.Z + row * DeltaZ);
                     ++noSommet;
                 }
             }
@@ -164,16 +166,17 @@ namespace AtelierXNA
             Sommets = new VertexPositionTexture[NbTrianglesDansTerrain * NB_SOMMETS_PAR_TRIANGLE];
             int noSommets = -1;
 
-            for (int cptRow = 0; cptRow < NbColonnes; ++cptRow)
+            for (int cptRow = 0; cptRow < NbRangées; ++cptRow)
             {
                 for (int cptCol = 0; cptCol < NbColonnes; ++cptCol)
                 {
-                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol, cptRow], PointsTexture[cptCol, cptRow]);
-                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol, cptRow + 1], PointsTexture[cptCol, cptRow + 1]);
+                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol, cptRow], PointsTexture[cptCol, cptRow]);                    
                     Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol + 1, cptRow], PointsTexture[cptCol + 1, cptRow]);
                     Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol, cptRow + 1], PointsTexture[cptCol, cptRow + 1]);
+
+                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol, cptRow + 1], PointsTexture[cptCol, cptRow + 1]);                   
+                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol + 1, cptRow], PointsTexture[cptCol + 1, cptRow]);
                     Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol + 1, cptRow + 1], PointsTexture[cptCol + 1, cptRow + 1]);
-                    Sommets[++noSommets] = new VertexPositionTexture(Points[cptCol + 1, cptRow], PointsTexture[cptCol + 1, cptRow]);
                 }
             }
         }
@@ -198,7 +201,7 @@ namespace AtelierXNA
             {
                 passeEffet.Apply();
                 //GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
-                GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, Sommets, 0, NbTrianglesDansTerrain / NB_TRIANGLES_PAR_TUILE);
+                GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, Sommets, 0, 2*NbTrianglesDansTerrain / NB_TRIANGLES_PAR_TUILE);
             }
             base.Draw(gameTime);
         }
