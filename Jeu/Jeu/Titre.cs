@@ -50,7 +50,7 @@ namespace AtelierXNA
         {
             GestionSprites.Begin();
             GestionSprites.Draw(Texture, Destination, Color.White);
-            GestionSprites.DrawString(Police, Message, Position, Color.Black);
+            GestionSprites.DrawString(Police, Message, Position, Color.Fuchsia);
             GestionSprites.End();
         }
     }
