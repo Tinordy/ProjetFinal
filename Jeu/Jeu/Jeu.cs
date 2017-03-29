@@ -30,6 +30,7 @@ namespace AtelierXNA
             {
                 pause = value;
                 Joueur.Enabled = !value;
+                TempsDeCourse.EstActif = !value;
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -156,7 +157,6 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Space))
             {
                 État = ÉtatsJeu.JEU;
-                TempsDeCourse.EstActif = true;
                 Pause = false;
             }
         }
@@ -173,7 +173,6 @@ namespace AtelierXNA
                 if (GestionInput.EstNouvelleTouche(Keys.Space))
                 {
                     État = ÉtatsJeu.PAUSE;
-                    TempsDeCourse.EstActif = false;
                     Pause = true;
                     //Ouvirir menu pause
                     //fonction...
