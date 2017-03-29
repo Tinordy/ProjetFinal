@@ -430,7 +430,7 @@ namespace AtelierXNA
         private void CréerJoueur()
         {
 
-         Joueur = new Voiture(Game, "small car", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
+         Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
          Joueur.Enabled = false;
          Game.Components.Add(Joueur);
 
