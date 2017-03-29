@@ -423,7 +423,7 @@ namespace AtelierXNA
 
       private void CréerEnnemi()
       {
-         Ennemi = new Voiture(Game, "small car", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+         Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
          Game.Components.Add(Ennemi);
       }
 
