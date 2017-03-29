@@ -148,6 +148,7 @@ namespace AtelierXNA
             if(NetworkManager.EnnemiPrêtÀJouer)
             {
                 État = ÉtatsJeu.JEU;
+                Pause = false;
             }
         }
 
