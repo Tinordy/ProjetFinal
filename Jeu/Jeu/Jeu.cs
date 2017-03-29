@@ -340,14 +340,14 @@ namespace AtelierXNA
 
       private void CréerEnnemi()
       {
-         Ennemi = new Voiture(Game, "unicorn", 20f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+         Ennemi = new Voiture(Game, "small car", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
          Game.Components.Add(Ennemi);
       }
 
       private void CréerJoueur()
       {
 
-         Joueur = new Voiture(Game, "unicorn", 20f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
+         Joueur = new Voiture(Game, "small car", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
          Joueur.Enabled = false;
          Game.Components.Add(Joueur);
 
