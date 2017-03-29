@@ -47,7 +47,7 @@ namespace AtelierXNA
       //lol
       private void CréerPiste()
       {
-         //Components.Add(new PisteSectionnée(Game, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue));
+         Game.Components.Add(new PisteSectionnée(Game, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue));
       }
       protected override void OnVisibleChanged(object sender, EventArgs args)
       {

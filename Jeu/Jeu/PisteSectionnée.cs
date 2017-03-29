@@ -59,7 +59,7 @@ namespace AtelierXNA
         }
         protected override void InitialiserSommets()
         {
-            for (int i = 0; i < NbDeSommets - 3; i += 2)
+            for (int i = 0; i < Math.Min(PointsBordureExt.Count, PointsBordureInt.Count) * 2 - 3; i += 2)
             {
                 float posXExt = Origine.X + PointsBordureExt[i / 2].X;
                 float posZExt = Origine.Z + PointsBordureExt[i / 2].Y;
@@ -71,7 +71,7 @@ namespace AtelierXNA
             }
             Sommets[NbDeSommets - 2] = Sommets[0];
             Sommets[NbDeSommets - 1] = Sommets[1];
-            InitialiserSommetsPointillés();
+            //InitialiserSommetsPointillés();
         }
 
         protected void InitialiserSommetsPointillés()
@@ -103,7 +103,7 @@ namespace AtelierXNA
         {
             Vector2 pointMax = Coin + Étendue;
             List<Vector2> temp = new List<Vector2>();
-            foreach(Vector2 point in points)
+            foreach (Vector2 point in points)
             {
                 if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
                 {
@@ -126,11 +126,16 @@ namespace AtelierXNA
             EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
-            foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
+            if (NbDeTriangles != 0)
             {
-                passeEffet.Apply();
-                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
-                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
+                foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
+                {
+                    passeEffet.Apply();
+
+                    GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
+                    GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
+
+                }
             }
             GraphicsDevice.DepthStencilState = ancienDepthStencilState;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
