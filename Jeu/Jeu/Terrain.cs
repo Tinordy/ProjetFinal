@@ -40,7 +40,6 @@ namespace AtelierXNA
         protected Vector2 Coin { get; private set; }
         Point[] Sections { get; set; }
         public BoundingSphere SphereDeCollision { get; private set; }
-        public BoundingBox BoxDeCollision { get; private set; }
 
         // à compléter en ajoutant les propriétés qui vous seront nécessaires pour l'implémentation du composant
 
@@ -60,8 +59,7 @@ namespace AtelierXNA
         {
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             base.Initialize();
-            SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + Étendue.X/2, 0, Origine.Z + Étendue.Z/2), 200);
-            BoxDeCollision = new BoundingBox(Origine, Origine + Étendue);
+            SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + Étendue.X/2, 0, Origine.Z + Étendue.Z/2), 300);
         }
 
         //
