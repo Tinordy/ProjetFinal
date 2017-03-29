@@ -15,7 +15,7 @@ namespace AtelierXNA
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Voiture : ObjetDeBase
+    public class Voiture : ObjetDeBase/*, ICollisionable*/
     {
         const float INCRÉMENT_ROTATION = (float)Math.PI / 720;
         Vector2 ÉtendueTotale { get; set; }
