@@ -12,23 +12,20 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
     public class TimerDiminue : Timer
     {
-        const string FORMAT = "0";
-        public TimerDiminue(Game game, float départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
-            : base(game, (départ + 0.01f).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, intervalleDeMAJ)
+        const string FORMAT = "ss";
+        public TimerDiminue(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
+            : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, intervalleDeMAJ)
         {
         }
-        protected override void Incrémenter(float val)
+        protected override void Incrémenter(TimeSpan val)
         {
             ValeurTimer -= val;
-            if (ValeurTimer < 0)
+            if (ValeurTimer < new TimeSpan(0))
             {
                 EstActif = false;
-                ValeurTimer = 0;
+                ValeurTimer = new TimeSpan(0);
             }
             Message = ValeurTimer.ToString(FORMAT);
         }

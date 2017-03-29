@@ -15,11 +15,13 @@ namespace AtelierXNA
 
     abstract public class Timer: Titre
     {
-        protected float ValeurTimer { get; set; }
+       // protected float ValeurTimer { get; set; }
+
+        protected TimeSpan ValeurTimer { get; set; }
         float IntervalleDeMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
-        public bool EstActif { get; protected set; }
-        public Timer(Game game,string format, float départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
+        public bool EstActif { get; set; }
+        public Timer(Game game,string format, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
             : base(game, format, nomPolice, position, nomTexture) // po legit
         {
             ValeurTimer = départ;
@@ -33,17 +35,11 @@ namespace AtelierXNA
 
         public override void Update(GameTime gameTime)
         {
-            if(EstActif)
+            if (EstActif)
             {
-                float tempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                TempsÉcouléDepuisMAJ += tempsÉcoulé;
-                if (TempsÉcouléDepuisMAJ >= IntervalleDeMAJ)
-                {
-                    Incrémenter(TempsÉcouléDepuisMAJ);
-                    TempsÉcouléDepuisMAJ = 0;
-                }
+                Incrémenter(gameTime.ElapsedGameTime);
             }
         }
-        protected abstract void Incrémenter(float val);
+        protected abstract void Incrémenter(TimeSpan val);
     }
 }
