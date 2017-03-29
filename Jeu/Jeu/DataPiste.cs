@@ -12,7 +12,7 @@ namespace AtelierXNA
         const int NB_COEFFICIENTS_PAR_LIGNE = 4;
         const int NB_PTS_INTERMÉDIAIRES = 34;
         const int INTERVALLE_POINTS_PATROUILLE = 5;
-        const float LARGEUR_PISTE = 10;
+        const float LARGEUR_PISTE = 2;
         const string CHEMIN = "../../../";
         const char ESPACE = ' ';
         const char TAB = '\t';
