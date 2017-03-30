@@ -14,7 +14,7 @@ using System.IO;
 
 namespace AtelierXNA
 {
-   enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY }
+   enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU }
    enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
    public class Jeu : Microsoft.Xna.Framework.GameComponent
    {
@@ -33,6 +33,25 @@ namespace AtelierXNA
             TempsDeCourse.EstActif = !value;
             //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
+         }
+      }
+      bool gagné;
+      bool Gagné
+      {
+         get
+         {
+            return gagné;
+         }
+         set
+         {
+            gagné = value;
+            État = gagné ? ÉtatsJeu.GAGNÉ : ÉtatsJeu.PERDU;
+            Pause = true; //ouin...
+            Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
+            if (gagné)
+            {
+               //send protocole gagné?
+            }
          }
       }
       ÉtatsJeu État { get; set; }
@@ -93,7 +112,7 @@ namespace AtelierXNA
             Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
 
          }
-         //Collision, gagnant..???
+         //Collision, nb tours?
       }
 
 
@@ -170,28 +189,30 @@ namespace AtelierXNA
 
       private void GérerGagnant()
       {
-         //ARRETER LE JEU!!!!!
          if (NetworkManager.EnnemiGagnant)
          {
-            //etat = perdant
+            Gagné = false;
          }
          else
          {
-            if (Joueur.Position == new Vector3(500, 0, 400))
+            if (JoueurEstÀArrivée())
             {
                if(ÉtatJoueur == ÉtatsJoueur.SOLO)
                {
-                  Game.Components.Add(new Titre(Game, "HELL YEAH", "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
-                  //comparer temps
-                  //gagnant ou perdant
+                  Gagné = TempsDeCourse.ValeurTimer < new TimeSpan(0, 0, 10);
                }
                else
                {
-                  //send gagné
-                  //gagnant
+                  Gagné = true;
                }
             }
          }
+      }
+
+      private bool JoueurEstÀArrivée()
+      {
+         //modifier
+         return 492 < Joueur.Position.X && 508 > Joueur.Position.X && 392 < Joueur.Position.Z && 408 > Joueur.Position.Z;
       }
 
       private void GérerChangementPause()

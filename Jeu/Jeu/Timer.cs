@@ -17,7 +17,7 @@ namespace AtelierXNA
     {
        // protected float ValeurTimer { get; set; }
 
-        protected TimeSpan ValeurTimer { get; set; }
+        public TimeSpan ValeurTimer { get; protected set; }
         float IntervalleDeMAJ { get; set; }
         float Temps…coulÈDepuisMAJ { get; set; }
         public bool EstActif { get; set; }
