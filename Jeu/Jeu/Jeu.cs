@@ -47,14 +47,10 @@ namespace AtelierXNA
             {
                 gagné = value;
                 État = gagné ? ÉtatsJeu.GAGNÉ : ÉtatsJeu.PERDU;
-                Pause = !gagné;
+                Pause = !gagné; //Pas faire pause, laisser perdant continuer..?
                 //différent
                 Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
-                if (gagné)
-                {
-                    NetworkManager.SendGagné(); //true or false..?
-                    //Pause = true; //seulement pour le joueur gagnant...
-                }
+                NetworkManager.SendGagné(gagné);
             }
         }
         ÉtatsJeu État { get; set; }
@@ -180,8 +176,7 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Space))
             {
                 État = ÉtatsJeu.JEU;
-                //Pause = false;
-                //NetworkManager.SendPrêtJeu(true);
+                Pause = false;
             }
         }
 
@@ -203,7 +198,7 @@ namespace AtelierXNA
                 {
                     if (ÉtatJoueur == ÉtatsJoueur.SOLO)
                     {
-                        Gagné = TempsDeCourse.ValeurTimer < new TimeSpan(0, 0, 10);
+                        Gagné = TempsDeCourse.ValeurTimer < new TimeSpan(0, 0, 10); //obtenir vraie valeur
                     }
                     else
                     {
@@ -228,13 +223,6 @@ namespace AtelierXNA
                     État = ÉtatsJeu.PAUSE;
                     Pause = true;
                     //Ouvirir menu pause
-                    //fonction...
-                    //NetworkManager.SendPrêtJeu(false);
-                    //NetworkManager.writeStream.Position = 0;
-                    //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                    //NetworkManager.writer.Write(false);
-                    //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
-
                 }
             }
             else
