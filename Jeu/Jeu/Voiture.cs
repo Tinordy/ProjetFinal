@@ -18,6 +18,7 @@ namespace AtelierXNA
     public class Voiture : ObjetDeBase, ICollisionable
     {
         const float INCRÉMENT_ROTATION = (float)Math.PI / 720;
+        const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
         Vector2 ÉtendueTotale { get; set; }
         const float FACTEUR_ACCÉLÉRATION = 3;
         const int INCRÉMENT_ANGLE = 10;
@@ -172,7 +173,7 @@ namespace AtelierXNA
                 {
                     DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
                     Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
-                    Position += (Direction + DirectionDérapage) / 2;
+                    Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
                     if (GestionInput.EstEnfoncée(Keys.Tab))
                     {
                         Position += Direction;
