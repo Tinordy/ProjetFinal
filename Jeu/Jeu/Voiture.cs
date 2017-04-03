@@ -24,13 +24,11 @@ namespace AtelierXNA
         const int RAYON_VOITURE = 10;
         float IntervalleMAJ { get; set; }
         Vector3 PositionCaméra { get; set; }
-        Vector3 AncienneDirection { get; set; }
         Vector3 DirectionCaméra { get; set; }
         float NormeDirection { get; set; }
         float IntervalleAccélération { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         Réseautique GérerRéseau { get; set; }
-        bool FirstTime { get; set; }
         Vector3 DirectionDérapage { get; set; }
         bool PremièreBoucleDérapage { get; set; }
         public BoundingSphere SphèreDeCollision { get; set; }
@@ -77,8 +75,6 @@ namespace AtelierXNA
         Caméra Caméra { get; set; }
 
         InputManager GestionInput { get; set; }
-        bool DirectionModifiée { get; set; }
-
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
@@ -96,9 +92,10 @@ namespace AtelierXNA
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 5f;
-            Direction = new Vector3(0,0,75);
-            Vitesse = 0;
+            Direction = new Vector3(0, 0, 75);
+            Vitesse = 0;            
             base.Initialize();
+            DéplacerCaméra();
         }
 
         protected override void LoadContent()
@@ -141,7 +138,7 @@ namespace AtelierXNA
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * IntervalleAccélération; }
-            if (accélération) { TempsAccélération += 2f * IntervalleAccélération; DirectionModifiée = true; }
+            if (accélération) { TempsAccélération += 2f * IntervalleAccélération;}
             if (freinage) { TempsAccélération -= 3f * IntervalleAccélération; }
 
         }
@@ -176,7 +173,7 @@ namespace AtelierXNA
                     DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
                     Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
                     Position += (Direction + DirectionDérapage) / 2;
-                    if(GestionInput.EstEnfoncée(Keys.Tab))
+                    if (GestionInput.EstEnfoncée(Keys.Tab))
                     {
                         Position += Direction;
                     }
@@ -194,37 +191,18 @@ namespace AtelierXNA
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                 Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 60f, Rotation.Z);
                 ChangementEffectué = true;
-                DirectionModifiée = true;
             }
         }
 
         private void DéplacerCaméra()
         {
-
-            if (DirectionModifiée)
-            {
-                if (Vitesse > 50)
-                {
-                    AncienneDirection = new Vector3(Direction.X, Direction.Y, Direction.Z);
-                }
-
-                CalculerPositionCaméra(AncienneDirection);
-                Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
-                DirectionModifiée = false;
-            }
-            else
-            {
-                CalculerPositionCaméra(AncienneDirection);
-                Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
-            }
-
-
+            CalculerPositionCaméra();
+            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
-        void CalculerPositionCaméra(Vector3 direction)
+        void CalculerPositionCaméra()
         {
-
-            PositionCaméra = Position - direction * 100 + new Vector3(0, 20, 0);
+            PositionCaméra = Position - (Monde.Forward - Monde.Backward) * 400 + new Vector3(0, 30, 0);
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
