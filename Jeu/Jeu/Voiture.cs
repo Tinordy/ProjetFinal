@@ -244,5 +244,10 @@ namespace AtelierXNA
             }
             return valeurRetour;
         }
+        public void Rebondir()
+        {
+            Vitesse = -Vitesse;
+            //Je sais ca marche po lolo
+        }
     }
 }
