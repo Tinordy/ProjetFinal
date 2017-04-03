@@ -15,6 +15,7 @@ using System.IO;
 namespace AtelierXNA
 {
     //GROSSE CLASSE MENUSDEJEU???
+    //
     enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE }
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
@@ -509,7 +510,7 @@ namespace AtelierXNA
         private void CréerEnnemi()
         {
             //Vrai Posinitiale
-            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 0.01f); //Get choix de voiture??
             Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
