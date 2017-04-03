@@ -248,7 +248,7 @@ namespace AtelierXNA
         }
         public void Rebondir()
         {
-            Vitesse = -Vitesse;
+            TempsAccélération = -TempsAccélération;
             //Je sais ca marche po lolo
         }
     }
