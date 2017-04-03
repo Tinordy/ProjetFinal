@@ -180,8 +180,7 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Space))
             {
                 État = ÉtatsJeu.JEU;
-                //Pause = false;
-                //NetworkManager.SendPrêtJeu(true);
+                Pause = false;
             }
         }
 
@@ -228,13 +227,6 @@ namespace AtelierXNA
                     État = ÉtatsJeu.PAUSE;
                     Pause = true;
                     //Ouvirir menu pause
-                    //fonction...
-                    //NetworkManager.SendPrêtJeu(false);
-                    //NetworkManager.writeStream.Position = 0;
-                    //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                    //NetworkManager.writer.Write(false);
-                    //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
-
                 }
             }
             else
