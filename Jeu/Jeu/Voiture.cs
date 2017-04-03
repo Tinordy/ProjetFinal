@@ -221,7 +221,7 @@ namespace AtelierXNA
                 Monde = Matrix.CreateScale(Échelle) * Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * Matrix.CreateTranslation(Position);
                 DéplacerCaméra();
                 ChangementEffectué = false;
-                SphèreDeCollision = new BoundingSphere(Position, (Monde.Backward - Monde.Forward).Length());
+                SphèreDeCollision = new BoundingSphere(Position, 12f);
             }
         }
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
