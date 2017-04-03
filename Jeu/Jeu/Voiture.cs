@@ -91,6 +91,7 @@ namespace AtelierXNA
         /// </summary>
         public override void Initialize()
         {
+            SphèreDeCollision = new BoundingSphere(Position, 12f);
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 5f;
