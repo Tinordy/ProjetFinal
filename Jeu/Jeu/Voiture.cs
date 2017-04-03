@@ -53,7 +53,7 @@ namespace AtelierXNA
             private set
             {
                 vitesse = value;
-                if (value < -1000) { vitesse = -1000; }
+                if (value < -500) { vitesse = -500; }
                 if (value > 500) { vitesse = 500; }
             }
         }
