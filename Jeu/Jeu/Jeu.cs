@@ -29,8 +29,9 @@ namespace AtelierXNA
             set
             {
                 pause = value;
-                Joueur.Enabled = !value;
-                TempsDeCourse.EstActif = !value;
+                //Joueur.Enabled = !value;
+                Joueur.EstActif = !pause;
+                TempsDeCourse.EstActif = !pause;
                 //NetworkManager.SendPrêtJeu(!pause);
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
@@ -188,7 +189,8 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 TempsDeCourse.EstActif = false;
-                Joueur.Enabled = false;
+                //Joueur.Enabled = false;
+                Joueur.EstActif = false;
                 NetworkManager.SendTerminé(true);
             }
         }
@@ -280,7 +282,8 @@ namespace AtelierXNA
             if (!DécompteInitial.EstActif)
             {
                 État = ÉtatsJeu.JEU;
-                Joueur.Enabled = true;
+                //Joueur.Enabled = true;
+                Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
                 TempsDeCourse = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, 0.01f);
@@ -520,7 +523,8 @@ namespace AtelierXNA
         {
 
             Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
-            Joueur.Enabled = false;
+            //Joueur.Enabled = false;
+            Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
         }

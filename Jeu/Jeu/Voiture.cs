@@ -32,6 +32,7 @@ namespace AtelierXNA
         Réseautique GérerRéseau { get; set; }
         Vector3 DirectionDérapage { get; set; }
         bool PremièreBoucleDérapage { get; set; }
+        public bool EstActif { get; set; }
         public BoundingSphere SphèreDeCollision { get; set; }
         public float AngleVolant
         {
@@ -90,6 +91,7 @@ namespace AtelierXNA
         /// </summary>
         public override void Initialize()
         {
+            EstActif = true;
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 5f;
@@ -115,7 +117,7 @@ namespace AtelierXNA
         {
             float tempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += tempsÉcoulé;
-            if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
+            if (TempsÉcouléDepuisMAJ >= IntervalleMAJ && EstActif)
             {
                 VarierVitesse();
                 CalculerVitesse();
