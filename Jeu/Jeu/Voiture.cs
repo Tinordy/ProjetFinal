@@ -96,7 +96,7 @@ namespace AtelierXNA
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 5f;
-            Direction = new Vector3(-1, 0, 0);
+            Direction = new Vector3(0,50,75);
             Vitesse = 0;
             base.Initialize();
         }
