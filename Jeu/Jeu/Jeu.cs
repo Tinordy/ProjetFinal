@@ -14,11 +14,11 @@ using System.IO;
 
 namespace AtelierXNA
 {
+    //GROSSE CLASSE MENUSDEJEU???
     enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE }
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        //const int BUFFER_SIZE = 2048;
         bool pause;
         bool Pause
         {
@@ -29,10 +29,9 @@ namespace AtelierXNA
             set
             {
                 pause = value;
-                //Joueur.Enabled = !value;
                 Joueur.EstActif = !pause;
                 TempsDeCourse.EstActif = !pause;
-                //NetworkManager.SendPrêtJeu(!pause);
+                NetworkManager.SendPrêtJeu(!pause);
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -197,7 +196,7 @@ namespace AtelierXNA
 
         private void GérerTransitionGagné()
         {
-            if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO) ;
+            if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 Joueur.Enabled = false;
@@ -221,7 +220,7 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.JEU;
                 Pause = false;
-                NetworkManager.SendPrêtJeu(true);
+                //NetworkManager.SendPrêtJeu(true);
             }
         }
 
@@ -262,7 +261,7 @@ namespace AtelierXNA
                 {
                     État = ÉtatsJeu.PAUSE;
                     Pause = true;
-                    NetworkManager.SendPrêtJeu(false);
+                    //NetworkManager.SendPrêtJeu(false);
                     //Ouvirir menu pause
                 }
             }
@@ -339,16 +338,11 @@ namespace AtelierXNA
                     if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                     {
                         NetworkManager.SendPrêtJeu(true);
-                        //NetworkManager.writeStream.Position = 0;
-                        //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                        //NetworkManager.writer.Write(true);
-                        //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
                     break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
-                    //INITIALISATION??
                     État = ÉtatsJeu.DÉCOMPTE;
                     MenuChoixProfile.Enabled = false;
                     InitialiserLeJeu();
@@ -516,6 +510,7 @@ namespace AtelierXNA
         {
             //Vrai Posinitiale
             Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
 
