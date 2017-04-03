@@ -31,7 +31,7 @@ namespace AtelierXNA
                 pause = value;
                 Joueur.Enabled = !value;
                 TempsDeCourse.EstActif = !value;
-                NetworkManager.SendPrêtJeu(!pause);
+                //NetworkManager.SendPrêtJeu(!pause);
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -513,13 +513,7 @@ namespace AtelierXNA
             Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
             Joueur.Enabled = false;
             Game.Components.Add(Joueur);
-            NetworkManager.SendPosIni(Joueur.Position);
-            //NetworkManager.writeStream.Position = 0;
-            //NetworkManager.writer.Write((byte)Protocoles.PositionInitiale);
-            //NetworkManager.writer.Write(Joueur.Position.X);
-            //NetworkManager.writer.Write(Joueur.Position.Y);
-            //NetworkManager.writer.Write(Joueur.Position.Z);
-            //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
+            NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
         }
 
         private void CréerCaméra()
