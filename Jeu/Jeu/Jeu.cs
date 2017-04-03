@@ -121,7 +121,7 @@ namespace AtelierXNA
         private void GÈrer…tatJeu()
         {
             //if player moved?
-            if (…tatJoueur != …tatsJoueur.SOLO)
+            if (…tatJoueur != …tatsJoueur.SOLO && NetworkManager.EnnemiPrÍt¿Jouer) //TEST
             {
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
 
