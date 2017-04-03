@@ -23,11 +23,11 @@ namespace AtelierXNA
         /*public */BinaryReader reader;
         /*public */BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
-        public bool EnnemiGagnant { get; private set; }
-        public void SendGagné(bool val)
+        public bool EnnemiEstArrivé { get; private set; }
+        public void SendTerminé(bool val)
         {
             writeStream.Position = 0;
-            writer.Write((byte)Protocoles.GameWon);
+            writer.Write((byte)Protocoles.HasArrivedToEnd);
             writer.Write(val);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
@@ -179,9 +179,9 @@ namespace AtelierXNA
             {
                 EnnemiPrêtÀJouer = reader.ReadBoolean();
             }
-            else if(p == Protocoles.GameWon)
+            else if(p == Protocoles.HasArrivedToEnd)
             {
-                EnnemiGagnant = reader.ReadBoolean();
+                EnnemiEstArrivé = reader.ReadBoolean();
             }
         }
         public void SendData(byte[] b)

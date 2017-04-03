@@ -14,7 +14,7 @@ using System.IO;
 
 namespace AtelierXNA
 {
-    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU }
+    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE }
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
@@ -46,11 +46,26 @@ namespace AtelierXNA
             set
             {
                 gagné = value;
-                État = gagné ? ÉtatsJeu.GAGNÉ : ÉtatsJeu.PERDU;
-                Pause = !gagné; //Pas faire pause, laisser perdant continuer..?
-                //différent
+                NetworkManager.SendTerminé(gagné);
+                if(gagné)
+                {
+                    État = ÉtatsJeu.GAGNÉ;
+                    TempsDeCourse.EstActif = false;
+                }
+                else
+                {
+                    État = ÉtatsJeu.PERDU;
+                }
+                //différent, fin de partie
                 Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
-                NetworkManager.SendGagné(gagné);
+            }
+        }
+        bool JoueurEstArrivé
+        {
+            get
+            {
+                //modifier
+                return 492 < Joueur.Position.X && 508 > Joueur.Position.X && 392 < Joueur.Position.Z && 408 > Joueur.Position.Z;
             }
         }
         ÉtatsJeu État { get; set; }
@@ -157,6 +172,33 @@ namespace AtelierXNA
                 case ÉtatsJeu.STAND_BY:
                     GérerTransitionStandBy();
                     break;
+                case ÉtatsJeu.GAGNÉ:
+                    GérerTransitionGagné();
+                    break;
+                case ÉtatsJeu.PERDU:
+                    GérerTransitionPerdu();
+                    break;
+            }
+
+        }
+
+        private void GérerTransitionPerdu()
+        {
+            if(JoueurEstArrivé)
+            {
+                État = ÉtatsJeu.FIN_DE_PARTIE;
+                TempsDeCourse.EstActif = false;
+                Joueur.Enabled = false;
+                NetworkManager.SendTerminé(true);
+            }
+        }
+
+        private void GérerTransitionGagné()
+        {
+            if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO) ;
+            {
+                État = ÉtatsJeu.FIN_DE_PARTIE;
+                Joueur.Enabled = false;
             }
 
         }
@@ -188,13 +230,13 @@ namespace AtelierXNA
 
         private void GérerGagnant()
         {
-            if (NetworkManager.EnnemiGagnant)
+            if (NetworkManager.EnnemiEstArrivé)
             {
                 Gagné = false;
             }
             else
             {
-                if (JoueurEstÀArrivée())
+                if (JoueurEstArrivé)
                 {
                     if (ÉtatJoueur == ÉtatsJoueur.SOLO)
                     {
@@ -208,11 +250,6 @@ namespace AtelierXNA
             }
         }
 
-        private bool JoueurEstÀArrivée()
-        {
-            //modifier
-            return 492 < Joueur.Position.X && 508 > Joueur.Position.X && 392 < Joueur.Position.Z && 408 > Joueur.Position.Z;
-        }
 
         private void GérerChangementPause()
         {
