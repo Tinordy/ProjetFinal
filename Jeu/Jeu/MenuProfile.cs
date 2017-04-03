@@ -68,11 +68,12 @@ namespace AtelierXNA
             //INITIALISATION?
 
             //SERVEUR -- Prêt à jouer
-            NetworkManager.writeStream.Position = 0;
-            NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-            NetworkManager.writer.Write(true);
-            NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
-            Choix = ChoixMenu.JOUER;
+            NetworkManager.SendPrêtJeu(true);
+            //NetworkManager.writeStream.Position = 0;
+            //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
+            //NetworkManager.writer.Write(true);
+            //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
+            //Choix = ChoixMenu.JOUER;
         }
         public void ActiverBtnDémarrer()
         {
