@@ -45,12 +45,13 @@ namespace AtelierXNA
         {
             Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
             DonnéesPiste = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
-            CouleurPiste = Color.Yellow;
+            CouleurPiste = Color.Black;
             ObtenirPointsCentraux();
             ObtenirDonnéesPiste();
             //NbDeSommets = PointsBordureExt.Count + PointsBordureInt.Count + 2;
             NbDeTriangles = NbDeSommets - 2;
             CréerTableauSommets();
+            InitialiserSommets();
             base.Initialize();
         }
         void CréerTableauSommets()
@@ -61,7 +62,7 @@ namespace AtelierXNA
         protected override void InitialiserSommets()
         {
 
-            for (int j = 0; j < ListeSommets.Count; ++j)
+            for (int j = 0; j < Math.Min(PointsBordureExt.Count, PointsBordureInt.Count); ++j)
             {
                 NbSommets = PointsBordureExt[j].Count + PointsBordureInt[j].Count + 2;
                 VertexPositionColor[] sommets = new VertexPositionColor[NbSommets];
@@ -75,8 +76,8 @@ namespace AtelierXNA
                     sommets[i + 1] = new VertexPositionColor(new Vector3(posXExt, HAUTEUR_INITIALE, posZExt), CouleurPiste);
                     sommets[i] = new VertexPositionColor(new Vector3(posXInt, HAUTEUR_INITIALE, posZInt), CouleurPiste);
                 }
-                sommets[NbDeSommets - 2] = sommets[0];
-                sommets[NbDeSommets - 1] = sommets[1];
+                sommets[NbSommets - 2] = sommets[0];
+                sommets[NbSommets - 1] = sommets[1];
                 ListeSommets.Add(sommets);
                 //InitialiserSommetsPointillés();
             }
@@ -115,18 +116,24 @@ namespace AtelierXNA
         List<List<Vector2>> GénérerListeRestreinte(List<Vector2> points)
         {
             Vector2 pointMax = Coin + Étendue;
+            int ancienIndex = -1;
             List<List<Vector2>> temp = new List<List<Vector2>>();
+            List<Vector2> listePointTemp = new List<Vector2>();
             //foreach (Vector2 point in points)
+
             for (int i = 0; i < points.Count; ++i)
             {
                 Vector2 point = points[i];
-                for (int j = 0; j == i + 1; ++j)
+                if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
                 {
-                    if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
+                    if (ancienIndex != i - 1)
                     {
-                        temp[j].Add(point);
+                        temp.Add(listePointTemp);
+                        listePointTemp = new List<Vector2>();
                     }
-                    //int ancienIndex = i;
+                    listePointTemp.Add(point);
+                    
+                    ancienIndex = i;
                 }
             }
             return temp;
@@ -146,20 +153,22 @@ namespace AtelierXNA
             EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
-            if (NbDeTriangles != 0)
-            {
-                foreach (VertexPositionColor[] Sommets in ListeSommets)
-                {
-                    foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
-                    {
-                        passeEffet.Apply();
 
+            foreach (VertexPositionColor[] Sommets in ListeSommets)
+            {
+                foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
+                {
+                    passeEffet.Apply();
+                    NbDeTriangles = Sommets.Count() - 2;
+                    if (NbDeTriangles > 0)
+                    {
                         GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
                         //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
-
                     }
+
                 }
             }
+
             GraphicsDevice.DepthStencilState = ancienDepthStencilState;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
         }
