@@ -14,11 +14,12 @@ using System.IO;
 
 namespace AtelierXNA
 {
+    //GROSSE CLASSE MENUSDEJEU???
+    //
     enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE }
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        //const int BUFFER_SIZE = 2048;
         bool pause;
         bool Pause
         {
@@ -29,9 +30,9 @@ namespace AtelierXNA
             set
             {
                 pause = value;
-                Joueur.Enabled = !value;
-                TempsDeCourse.EstActif = !value;
-                //NetworkManager.SendPrêtJeu(!pause);
+                Joueur.EstActif = !pause;
+                TempsDeCourse.EstActif = !pause;
+                NetworkManager.SendPrêtJeu(!pause);
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -121,12 +122,22 @@ namespace AtelierXNA
         private void GérerÉtatJeu()
         {
             //if player moved?
-            if (ÉtatJoueur != ÉtatsJoueur.SOLO)
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO /*&& NetworkManager.EnnemiPrêtÀJouer*/) //TEST
             {
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
-
+                GérerCollisions();
             }
             //Collision, nb tours?
+        }
+
+        private void GérerCollisions()
+        {
+            //collision entre joueurs
+            if(Joueur.EstEnCollision(Ennemi))
+            {
+                Joueur.Rebondir();
+                Ennemi.Rebondir();
+            }
         }
 
 
@@ -188,19 +199,20 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 TempsDeCourse.EstActif = false;
-                Joueur.Enabled = false;
+                Joueur.EstActif = false;
                 NetworkManager.SendTerminé(true);
             }
+            Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
         }
 
         private void GérerTransitionGagné()
         {
-            if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO) ;
+            if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 Joueur.Enabled = false;
             }
-
+            Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
         }
 
         private void GérerTransitionStandBy()
@@ -267,7 +279,6 @@ namespace AtelierXNA
                 if (!NetworkManager.EnnemiPrêtÀJouer)
                 {
                     État = ÉtatsJeu.STAND_BY;
-                    //prop pause qui change le tout!
                     Pause = true;
                 }
             }
@@ -278,7 +289,7 @@ namespace AtelierXNA
             if (!DécompteInitial.EstActif)
             {
                 État = ÉtatsJeu.JEU;
-                Joueur.Enabled = true;
+                Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
                 TempsDeCourse = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, 0.01f);
@@ -297,7 +308,6 @@ namespace AtelierXNA
                 case ÉtatsJoueur.CLIENT:
                     if (NetworkManager.EnnemiPrêtÀJouer)
                     {
-                        //INITIALISATION?
                         MenuChoixProfile.Enabled = false;
                         InitialiserLeJeu();
                         État = ÉtatsJeu.DÉCOMPTE;
@@ -334,16 +344,11 @@ namespace AtelierXNA
                     if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                     {
                         NetworkManager.SendPrêtJeu(true);
-                        //NetworkManager.writeStream.Position = 0;
-                        //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                        //NetworkManager.writer.Write(true);
-                        //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
                     break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
-                    //INITIALISATION??
                     État = ÉtatsJeu.DÉCOMPTE;
                     MenuChoixProfile.Enabled = false;
                     InitialiserLeJeu();
@@ -375,7 +380,7 @@ namespace AtelierXNA
                     MenuDesOptions.Enabled = true;
                     break;
                 case ChoixMenu.QUITTER:
-                    Game.Exit(); // fonction?
+                    Game.Exit();
                     break;
             }
         }
@@ -403,7 +408,7 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
-                    ConnectionAuServeur("127.0.0.1", 5001); //ok?
+                    ConnectionAuServeur("127.0.0.1", 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
@@ -465,7 +470,7 @@ namespace AtelierXNA
         private void ConnectionAuServeur(string ip, int port)
         {
             Serveur = new Server(port, ip);
-            Game.Services.AddService(typeof(Server), Serveur); //nécessaire?
+            Game.Services.AddService(typeof(Server), Serveur);
             NetworkManager = new Réseautique(Serveur, ip, port);
             Game.Services.AddService(typeof(Réseautique), NetworkManager);
 
@@ -473,7 +478,6 @@ namespace AtelierXNA
         #region initialisation du jeu
         private void InitialiserLeJeu()
         {
-            //changer de caméra?
             CréerCaméra();
             CréerEnvironnement();
             CréerJoueur();
@@ -481,13 +485,17 @@ namespace AtelierXNA
             {
                 CréerEnnemi();
             }
+            foreach(Section s in Sections)
+            {
+                Game.Components.Add(s.Maison);
+            }
             
             Game.Components.Add(new AfficheurFPS(Game, "Arial20", Color.White, 1f));
         }
 
         private void CréerEnvironnement()
         {
-            Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", 0.01f));
+           // Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", 0.01f));
             Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
             Sections = new List<Section>();
             
@@ -496,7 +504,7 @@ namespace AtelierXNA
             {
                 for (int j = 0; j < 4; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Neige", "Sable" }, 0.01f); //double??
+                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
                 }
@@ -505,8 +513,9 @@ namespace AtelierXNA
 
         private void CréerEnnemi()
         {
-            //Vrai Posinitiale
-            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            //Vrai Posinitiale :(
+            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 0.01f); //Get choix de voiture??
+            Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
 
@@ -514,7 +523,7 @@ namespace AtelierXNA
         {
 
             Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
-            Joueur.Enabled = false;
+            Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
         }

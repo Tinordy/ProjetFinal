@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AtelierXNA
 {
-    class Maison : PrimitiveDeBaseAnimée
+    public class Maison : PrimitiveDeBaseAnimée
     {
         const int NB_TRIANGLES_MURS = 8;
         const int NB_SOMMETS_PAR_TRIANGLE = 3;
