@@ -483,13 +483,17 @@ namespace AtelierXNA
             {
                 CréerEnnemi();
             }
+            foreach(Section s in Sections)
+            {
+                Game.Components.Add(s.Maison);
+            }
             
             Game.Components.Add(new AfficheurFPS(Game, "Arial20", Color.White, 1f));
         }
 
         private void CréerEnvironnement()
         {
-            Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", 0.01f));
+           // Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", 0.01f));
             Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
             Sections = new List<Section>();
             
@@ -501,7 +505,6 @@ namespace AtelierXNA
                     Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
-                    Game.Components.Add(newSection.Maison);
                 }
             }
         }
