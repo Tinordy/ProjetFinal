@@ -12,5 +12,6 @@ namespace AtelierXNA
         PlayerMoved = 2,
         PositionInitiale = 3,
         ReadyToPlayChanged = 4,
+        GameWon = 5
     }
 }
