@@ -46,11 +46,12 @@ namespace AtelierXNA
             {
                 gagné = value;
                 État = gagné ? ÉtatsJeu.GAGNÉ : ÉtatsJeu.PERDU;
-                Pause = true; //ouin...
+                //différent
                 Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
                 if (gagné)
                 {
                     NetworkManager.SendGagné();
+                    Pause = true; //seulement pour le joueur gagnant...
                 }
             }
         }
@@ -177,7 +178,8 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Space))
             {
                 État = ÉtatsJeu.JEU;
-                Pause = false;
+                //Pause = false;
+                NetworkManager.SendPrêtJeu(true);
             }
         }
 
@@ -225,11 +227,11 @@ namespace AtelierXNA
                     Pause = true;
                     //Ouvirir menu pause
                     //fonction...
-
-                    NetworkManager.writeStream.Position = 0;
-                    NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                    NetworkManager.writer.Write(false);
-                    NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
+                    NetworkManager.SendPrêtJeu(false);
+                    //NetworkManager.writeStream.Position = 0;
+                    //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                    //NetworkManager.writer.Write(false);
+                    //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
 
                 }
             }
@@ -304,10 +306,11 @@ namespace AtelierXNA
                 case ChoixMenu.VALIDATION:
                     if (ÉtatJoueur == ÉtatsJoueur.CLIENT)
                     {
-                        NetworkManager.writeStream.Position = 0;
-                        NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
-                        NetworkManager.writer.Write(true);
-                        NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
+                        NetworkManager.SendPrêtJeu(true);
+                        //NetworkManager.writeStream.Position = 0;
+                        //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
+                        //NetworkManager.writer.Write(true);
+                        //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
                     break;
@@ -472,7 +475,8 @@ namespace AtelierXNA
 
         private void CréerEnnemi()
         {
-            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
+            //Vrai Posinitiale
+            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, Vector3.Zero/*NetworkManager.PositionEnnemi*/, 1.01f); //Get choix de voiture??
             Game.Components.Add(Ennemi);
         }
 
@@ -483,12 +487,12 @@ namespace AtelierXNA
             Joueur.Enabled = false;
             Game.Components.Add(Joueur);
 
-            NetworkManager.writeStream.Position = 0;
-            NetworkManager.writer.Write((byte)Protocoles.PositionInitiale);
-            NetworkManager.writer.Write(Joueur.Position.X);
-            NetworkManager.writer.Write(Joueur.Position.Y);
-            NetworkManager.writer.Write(Joueur.Position.Z);
-            NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
+            //NetworkManager.writeStream.Position = 0;
+            //NetworkManager.writer.Write((byte)Protocoles.PositionInitiale);
+            //NetworkManager.writer.Write(Joueur.Position.X);
+            //NetworkManager.writer.Write(Joueur.Position.Y);
+            //NetworkManager.writer.Write(Joueur.Position.Z);
+            //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
         }
 
         private void CréerCaméra()

@@ -17,11 +17,11 @@ namespace AtelierXNA
         TcpClient Client { get; set; }
         byte[] ReadBuffer { get; set; }
         public bool enemiConnecté { get; private set; }
-        public MemoryStream readStream, writeStream;
+        /*public */MemoryStream readStream, writeStream;
         public Vector3 PositionEnnemi { get; private set; }
         public Matrix MatriceMondeEnnemi { get; private set; }
-        public BinaryReader reader;
-        public BinaryWriter writer;
+        /*public */BinaryReader reader;
+        /*public */BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiGagnant { get; private set; }
         public void SendGagné()
@@ -29,6 +29,13 @@ namespace AtelierXNA
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.GameWon);
             writer.Write(true);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
+        public void SendPrêtJeu(bool val)
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.ReadyToPlayChanged);
+            writer.Write(val);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
         public Réseautique(Server serveur, string ip, int port)
