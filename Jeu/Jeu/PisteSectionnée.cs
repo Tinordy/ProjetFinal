@@ -18,14 +18,14 @@ namespace AtelierXNA
         int HAUTEUR_INITIALE = 1;
 
         Vector3 Origine { get; set; }
-        protected List<Vector2> PointsBordureExt { get; set; }
-        protected List<Vector2> PointsBordureInt { get; set; }
-        protected List<Vector2> PointsCentraux { get; set; }
-        protected List<Vector2> PointsPointillés { get; set; }
+        protected List<List<Vector2>> PointsBordureExt { get; set; }
+        protected List<List<Vector2>> PointsBordureInt { get; set; }
+        protected List<List<Vector2>> PointsCentraux { get; set; }
+        protected List<List<Vector2>> PointsPointillés { get; set; }
         Color CouleurPiste { get; set; }
         int NbDeTriangles { get; set; }
         int NbDeSommets { get; set; }
-        VertexPositionColor[] Sommets { get; set; }
+        List<VertexPositionColor[]> ListeSommets { get; set; }
         VertexPositionColor[] SommetsPointillés { get; set; }
         BasicEffect EffetDeBase { get; set; }
         int NbColonnes { get; set; }
@@ -45,45 +45,53 @@ namespace AtelierXNA
         {
             Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
             DonnéesPiste = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
-            CouleurPiste = Color.Blue;
+            CouleurPiste = Color.Yellow;
+            ObtenirPointsCentraux();
             ObtenirDonnéesPiste();
-            NbDeSommets = PointsBordureExt.Count + PointsBordureInt.Count + 2;
+            //NbDeSommets = PointsBordureExt.Count + PointsBordureInt.Count + 2;
             NbDeTriangles = NbDeSommets - 2;
             CréerTableauSommets();
             base.Initialize();
         }
         void CréerTableauSommets()
         {
-            Sommets = new VertexPositionColor[NbDeSommets];
-            SommetsPointillés = new VertexPositionColor[NbDeSommets];
+            ListeSommets = new List<VertexPositionColor[]>();
+            //SommetsPointillés = new VertexPositionColor[NbDeSommets];
         }
         protected override void InitialiserSommets()
         {
-            for (int i = 0; i < Math.Min(PointsBordureExt.Count, PointsBordureInt.Count) * 2 - 3; i += 2)
-            {
-                float posXExt = Origine.X + PointsBordureExt[i / 2].X;
-                float posZExt = Origine.Z + PointsBordureExt[i / 2].Y;
-                float posXInt = Origine.X + PointsBordureInt[i / 2].X;
-                float posZInt = Origine.Z + PointsBordureInt[i / 2].Y;
 
-                Sommets[i + 1] = new VertexPositionColor(new Vector3(posXExt, HAUTEUR_INITIALE, posZExt), CouleurPiste);
-                Sommets[i] = new VertexPositionColor(new Vector3(posXInt, HAUTEUR_INITIALE, posZInt), CouleurPiste);
+            for (int j = 0; j < ListeSommets.Count; ++j)
+            {
+                NbSommets = PointsBordureExt[j].Count + PointsBordureInt[j].Count + 2;
+                VertexPositionColor[] sommets = new VertexPositionColor[NbSommets];
+                for (int i = 0; i < Math.Min(PointsBordureExt[j].Count, PointsBordureInt[j].Count) * 2 - 3; i += 2)
+                {
+                    float posXExt = Origine.X + PointsBordureExt[j][i / 2].X;
+                    float posZExt = Origine.Z + PointsBordureExt[j][i / 2].Y;
+                    float posXInt = Origine.X + PointsBordureInt[j][i / 2].X;
+                    float posZInt = Origine.Z + PointsBordureInt[j][i / 2].Y;
+
+                    sommets[i + 1] = new VertexPositionColor(new Vector3(posXExt, HAUTEUR_INITIALE, posZExt), CouleurPiste);
+                    sommets[i] = new VertexPositionColor(new Vector3(posXInt, HAUTEUR_INITIALE, posZInt), CouleurPiste);
+                }
+                sommets[NbDeSommets - 2] = sommets[0];
+                sommets[NbDeSommets - 1] = sommets[1];
+                ListeSommets.Add(sommets);
+                //InitialiserSommetsPointillés();
             }
-            Sommets[NbDeSommets - 2] = Sommets[0];
-            Sommets[NbDeSommets - 1] = Sommets[1];
-            //InitialiserSommetsPointillés();
         }
 
-        protected void InitialiserSommetsPointillés()
-        {
-            for (int i = 0; i < NbDeSommets - 3; i += 2)
-            {
-                SommetsPointillés[i + 1] = new VertexPositionColor(new Vector3(PointsPointillés[i + 1].X, HAUTEUR_INITIALE, PointsPointillés[i + 1].Y), Color.White);
-                SommetsPointillés[i] = new VertexPositionColor(new Vector3(PointsPointillés[i].X, HAUTEUR_INITIALE, PointsPointillés[i].Y), Color.White);
-            }
-            SommetsPointillés[NbDeSommets - 2] = SommetsPointillés[0];
-            SommetsPointillés[NbDeSommets - 1] = SommetsPointillés[1];
-        }
+        //protected void InitialiserSommetsPointillés()
+        //{
+        //    for (int i = 0; i < NbDeSommets - 3; i += 2)
+        //    {
+        //        SommetsPointillés[i + 1] = new VertexPositionColor(new Vector3(PointsPointillés[i + 1].X, HAUTEUR_INITIALE, PointsPointillés[i + 1].Y), Color.White);
+        //        SommetsPointillés[i] = new VertexPositionColor(new Vector3(PointsPointillés[i].X, HAUTEUR_INITIALE, PointsPointillés[i].Y), Color.White);
+        //    }
+        //    SommetsPointillés[NbDeSommets - 2] = SommetsPointillés[0];
+        //    SommetsPointillés[NbDeSommets - 1] = SommetsPointillés[1];
+        //}
 
         protected override void LoadContent()
         {
@@ -95,23 +103,35 @@ namespace AtelierXNA
         {
             PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
             PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
-            PointsCentraux = GénérerListeRestreinte(DonnéesPiste.GetPointsCentraux());
+
             PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
         }
 
-        List<Vector2> GénérerListeRestreinte(List<Vector2> points)
+        void ObtenirPointsCentraux()
+        {
+            PointsCentraux = GénérerListeRestreinte(DonnéesPiste.GetPointsCentraux());
+        }
+
+        List<List<Vector2>> GénérerListeRestreinte(List<Vector2> points)
         {
             Vector2 pointMax = Coin + Étendue;
-            List<Vector2> temp = new List<Vector2>();
-            foreach (Vector2 point in points)
+            List<List<Vector2>> temp = new List<List<Vector2>>();
+            //foreach (Vector2 point in points)
+            for (int i = 0; i < points.Count; ++i)
             {
-                if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
+                Vector2 point = points[i];
+                for (int j = 0; j == i + 1; ++j)
                 {
-                    temp.Add(point);
+                    if (point.X > Coin.X && point.X < pointMax.X && point.Y > Coin.Y && point.Y < pointMax.Y)
+                    {
+                        temp[j].Add(point);
+                    }
+                    //int ancienIndex = i;
                 }
             }
             return temp;
         }
+
         void InitialiserParamètresEffetDeBase()
         {
             EffetDeBase.VertexColorEnabled = true;
@@ -128,13 +148,16 @@ namespace AtelierXNA
             EffetDeBase.Projection = CaméraJeu.Projection;
             if (NbDeTriangles != 0)
             {
-                foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
+                foreach (VertexPositionColor[] Sommets in ListeSommets)
                 {
-                    passeEffet.Apply();
+                    foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
+                    {
+                        passeEffet.Apply();
 
-                    GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
-                    GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
+                        GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
+                        //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
 
+                    }
                 }
             }
             GraphicsDevice.DepthStencilState = ancienDepthStencilState;
