@@ -24,11 +24,11 @@ namespace AtelierXNA
         /*public */BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiGagnant { get; private set; }
-        public void SendGagné()
+        public void SendGagné(bool val)
         {
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.GameWon);
-            writer.Write(true);
+            writer.Write(val);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
         public void SendPrêtJeu(bool val)
