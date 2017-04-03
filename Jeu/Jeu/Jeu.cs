@@ -122,12 +122,22 @@ namespace AtelierXNA
         private void GÈrer…tatJeu()
         {
             //if player moved?
-            if (…tatJoueur != …tatsJoueur.SOLO && NetworkManager.EnnemiPrÍt¿Jouer) //TEST
+            if (…tatJoueur != …tatsJoueur.SOLO /*&& NetworkManager.EnnemiPrÍt¿Jouer*/) //TEST
             {
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
-
+                GÈrerCollisions();
             }
             //Collision, nb tours?
+        }
+
+        private void GÈrerCollisions()
+        {
+            //collision entre joueurs
+            if(Joueur.EstEnCollision(Ennemi))
+            {
+                Joueur.Rebondir();
+                Ennemi.Rebondir();
+            }
         }
 
 
