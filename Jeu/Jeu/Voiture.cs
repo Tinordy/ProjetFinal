@@ -159,7 +159,7 @@ namespace AtelierXNA
         {
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
             //pédales + ajouter accélération??
-            if (!GestionInput.EstEnfoncée(Keys.LeftShift))
+            if (!GestionInput.EstEnfoncée(Keys.LeftControl))
             {
                 Position += Direction;
                 PremièreBoucleDérapage = true;
@@ -173,7 +173,8 @@ namespace AtelierXNA
                 }
                 else
                 {
-
+                    DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
+                    Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
                     Position += (Direction + DirectionDérapage) / 2;
                 }
             }
@@ -189,12 +190,12 @@ namespace AtelierXNA
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                 Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 60f, Rotation.Z);
                 ChangementEffectué = true;
-
             }
         }
 
         private void DéplacerCaméra()
         {
+
             if (DirectionModifiée)
             {
                 if (Vitesse > 50)
@@ -211,6 +212,7 @@ namespace AtelierXNA
                 CalculerPositionCaméra(AncienneDirection);
                 Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
             }
+
 
         }
 

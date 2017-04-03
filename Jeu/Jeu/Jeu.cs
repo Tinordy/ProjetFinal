@@ -493,8 +493,8 @@ namespace AtelierXNA
 
         private void CréerCaméra()
         {
-            Vector3 positionCaméra = new Vector3(200, 10, 200);
-            Vector3 cibleCaméra = new Vector3(10, 0, 10);
+            Vector3 positionCaméra = new Vector3(100, 50, 125);
+            Vector3 cibleCaméra = new Vector3(100, 0, 50);
             CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up, 0.01f);
             Game.Components.Add(CaméraJeu);
             Game.Services.AddService(typeof(Caméra), CaméraJeu);
