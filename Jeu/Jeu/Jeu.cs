@@ -199,10 +199,10 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 TempsDeCourse.EstActif = false;
-                //Joueur.Enabled = false;
                 Joueur.EstActif = false;
                 NetworkManager.SendTerminé(true);
             }
+            Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
         }
 
         private void GérerTransitionGagné()
@@ -212,7 +212,7 @@ namespace AtelierXNA
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 Joueur.Enabled = false;
             }
-
+            Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
         }
 
         private void GérerTransitionStandBy()
