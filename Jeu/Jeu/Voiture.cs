@@ -176,6 +176,10 @@ namespace AtelierXNA
                     DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
                     Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
                     Position += (Direction + DirectionDérapage) / 2;
+                    if(GestionInput.EstEnfoncée(Keys.Tab))
+                    {
+                        Position += Direction;
+                    }
                 }
             }
 
@@ -190,6 +194,7 @@ namespace AtelierXNA
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                 Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 60f, Rotation.Z);
                 ChangementEffectué = true;
+                DirectionModifiée = true;
             }
         }
 
