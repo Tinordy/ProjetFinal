@@ -73,7 +73,7 @@ namespace AtelierXNA
             //NetworkManager.writer.Write((byte)Protocoles.ReadyToPlayChanged);
             //NetworkManager.writer.Write(true);
             //NetworkManager.SendData(Serveur.GetDataFromMemoryStream(NetworkManager.writeStream));
-            //Choix = ChoixMenu.JOUER;
+            Choix = ChoixMenu.JOUER;
         }
         public void ActiverBtnDémarrer()
         {
