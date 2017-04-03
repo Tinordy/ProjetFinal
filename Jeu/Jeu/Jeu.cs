@@ -503,7 +503,7 @@ namespace AtelierXNA
         private void CréerEnnemi()
         {
             //Vrai Posinitiale
-            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, Vector3.Zero/*NetworkManager.PositionEnnemi*/, 1.01f); //Get choix de voiture??
+            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 1.01f); //Get choix de voiture??
             Game.Components.Add(Ennemi);
         }
 
@@ -513,7 +513,7 @@ namespace AtelierXNA
             Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f);
             Joueur.Enabled = false;
             Game.Components.Add(Joueur);
-
+            NetworkManager.SendPosIni(Joueur.Position);
             //NetworkManager.writeStream.Position = 0;
             //NetworkManager.writer.Write((byte)Protocoles.PositionInitiale);
             //NetworkManager.writer.Write(Joueur.Position.X);

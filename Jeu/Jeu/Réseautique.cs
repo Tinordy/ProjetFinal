@@ -24,6 +24,15 @@ namespace AtelierXNA
         /*public */BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiEstArrivé { get; private set; }
+        public void SendPosIni(Vector3 position)
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.PositionInitiale);
+            writer.Write(position.X);
+            writer.Write(position.Y);
+            writer.Write(position.Z);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
         public void SendTerminé(bool val)
         {
             writeStream.Position = 0;
