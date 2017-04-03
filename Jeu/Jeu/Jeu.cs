@@ -219,6 +219,7 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.JEU;
                 Pause = false;
+                NetworkManager.SendPrêtJeu(true);
             }
         }
 
@@ -259,6 +260,7 @@ namespace AtelierXNA
                 {
                     État = ÉtatsJeu.PAUSE;
                     Pause = true;
+                    NetworkManager.SendPrêtJeu(false);
                     //Ouvirir menu pause
                 }
             }
