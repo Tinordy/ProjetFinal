@@ -53,7 +53,7 @@ namespace AtelierXNA
             private set
             {
                 vitesse = value;
-                if (value < -10) { vitesse = -10; }
+                if (value < -1000) { vitesse = -1000; }
                 if (value > 500) { vitesse = 500; }
             }
         }
@@ -63,7 +63,7 @@ namespace AtelierXNA
             private set
             {
                 tempsAccélération = value;
-                if (value < -2) { tempsAccélération = -2; }
+                if (value < -200) { tempsAccélération = -200; }
                 if (value > 20) { tempsAccélération = 20; }
             }
         }
