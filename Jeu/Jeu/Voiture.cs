@@ -125,7 +125,7 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 Game.Window.Title = Vitesse.ToString("0.000");
-                SphèreDeCollision = new BoundingSphere(new Vector3(Monde.M11, Monde.M12, Monde.M13), 12f);
+                SphèreDeCollision = new BoundingSphere(Monde.Translation, 12f);
                 TempsÉcouléDepuisMAJ = 0;
             }
 
@@ -227,7 +227,7 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
-            SphèreDeCollision = new BoundingSphere(new Vector3(Monde.M11, Monde.M12, Monde.M13), 12f); //po legit?
+            SphèreDeCollision = new BoundingSphere(Monde.Translation, 12f); //po legit?
         }
         public void RecréerMonde()
         {
