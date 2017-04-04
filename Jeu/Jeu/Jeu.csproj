@@ -97,6 +97,7 @@
     <Compile Include="DéfileurSprite.cs" />
     <Compile Include="EntréeDeTexte.cs" />
     <Compile Include="ICollisionable.cs" />
+    <Compile Include="ISélectionnable.cs" />
     <Compile Include="Jeu.cs" />
     <Compile Include="Maison.cs" />
     <Compile Include="Menu.cs" />

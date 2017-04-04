@@ -25,6 +25,7 @@ namespace AtelierXNA
       {
          LecteurIP = new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 3), "Arial", 14);
          base.Initialize();
+         ObjetsSélectionnables.Add(LecteurIP);
          Composantes.Add(LecteurIP);
 
          Activer();
