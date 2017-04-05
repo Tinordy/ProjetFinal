@@ -25,20 +25,20 @@ namespace AtelierXNA
             return ObjetsSélectionnables.FindIndex(o => o.EstSélectionné);
          }
       }
-      protected List<ISélectionnable> ObjetsSélectionnables { get; set; }
-      //protected List<ISélectionnable> ObjetsSélectionnables
-      //{
-      //   get
-      //   {
-      //      List<ISélectionnable> liste = new List<ISélectionnable>();
-      //      foreach (DrawableGameComponent composante in Composantes.Where(c => c is ISélectionnable))
-      //      {
-      //         liste.Add(composante as ISélectionnable);
-      //      }
-      //      return liste;
-      //   }
-      //}
-      InputManager GestionInput { get; set; }
+        protected List<ISélectionnable> ObjetsSélectionnables { get; set; } //prop..? :(
+        //protected List<ISélectionnable> ObjetsSélectionnables
+        //{
+        //    get
+        //    {
+        //        List<ISélectionnable> liste = new List<ISélectionnable>();
+        //        foreach (ISélectionnable composante in Composantes.Where(c => c is ISélectionnable))
+        //        {
+        //            liste.Add(composante);
+        //        }
+        //        return liste;
+        //    }
+        //}
+        InputManager GestionInput { get; set; }
 
       public MenuIP(Game game)
           : base(game)

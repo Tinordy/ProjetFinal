@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AtelierXNA
 {
-    class Réseautique
+    class Réseautique : IResettable
     {
 
         const int BUFFER_SIZE = 2048;
@@ -24,29 +24,7 @@ namespace AtelierXNA
         /*public */BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiEstArrivé { get; private set; }
-        public void SendPosIni(Vector3 position)
-        {
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.PositionInitiale);
-            writer.Write(position.X);
-            writer.Write(position.Y);
-            writer.Write(position.Z);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
-        }
-        public void SendTerminé(bool val)
-        {
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.HasArrivedToEnd);
-            writer.Write(val);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
-        }
-        public void SendPrêtJeu(bool val)
-        {
-            writeStream.Position = 0;
-            writer.Write((byte)Protocoles.ReadyToPlayChanged);
-            writer.Write(val);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
-        }
+
         public Réseautique(Server serveur, string ip, int port)
         {
             Serveur = serveur;
@@ -207,5 +185,36 @@ namespace AtelierXNA
 
             }
         }
+        #region méthodes publiques
+        public void SendPosIni(Vector3 position)
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.PositionInitiale);
+            writer.Write(position.X);
+            writer.Write(position.Y);
+            writer.Write(position.Z);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
+        public void SendTerminé(bool val)
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.HasArrivedToEnd);
+            writer.Write(val);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
+        public void SendPrêtJeu(bool val)
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.ReadyToPlayChanged);
+            writer.Write(val);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
+        public void SendDisconnect()
+        {
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.Disconnected);
+            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+        }
+        #endregion
     }
 }

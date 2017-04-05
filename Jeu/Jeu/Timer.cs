@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    abstract public class Timer: Titre
+    abstract public class Timer: Titre, IResettable
     {
        // protected float ValeurTimer { get; set; }
 

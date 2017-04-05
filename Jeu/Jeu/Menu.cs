@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public enum ChoixMenu { EN_ATTENTE, JOUER, OPTION, QUITTER, RETOUR, SOLO, REJOINDRE, SERVEUR, CONNECTION, VALIDATION }
+    public enum ChoixMenu { EN_ATTENTE, JOUER, OPTION, QUITTER, RETOUR, SOLO, REJOINDRE, SERVEUR, CONNECTION, VALIDATION}
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
         protected List<DrawableGameComponent> Composantes { get; private set; }
@@ -33,6 +33,7 @@ namespace AtelierXNA
             foreach (DrawableGameComponent composante in Composantes)
             {
                 Game.Components.Add(composante);
+                composante.DrawOrder = 1; //mettre consante, doit être dessiné apres terrain!
             }
             Enabled = false;
         }
@@ -46,6 +47,23 @@ namespace AtelierXNA
             if (Enabled)
             {
                 Choix = ChoixMenu.EN_ATTENTE;
+                ChangerAvtivationBoutons(true);
+            }
+        }
+        void ChangerAvtivationBoutons(bool actif)
+        {
+            foreach (BoutonDeCommande bouton in Composantes.Where(c => c is BoutonDeCommande))
+            {
+                bouton.EstActif = actif;
+
+            }
+        }
+        public void ChangerActivationMenu(bool actif)
+        {
+            ChangerAvtivationBoutons(actif);
+            if (actif)
+            {
+                Choix = ChoixMenu.EN_ATTENTE; // PO LEGIT!!!
             }
         }
     }

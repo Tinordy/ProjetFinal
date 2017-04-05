@@ -159,11 +159,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\BoutonNoir.jpg">
-      <Name>BoutonNoir</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Textures\BoutonVert.png">
       <Name>BoutonVert</Name>
       <Importer>TextureImporter</Importer>
@@ -277,6 +272,20 @@
     </Compile>
     <Compile Include="Modèles\Tire.png">
       <Name>Tire</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\BoutonNoir.png">
+      <Name>BoutonNoir</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\FondPause.png">
+      <Name>FondPause</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

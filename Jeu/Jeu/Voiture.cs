@@ -15,7 +15,7 @@ namespace AtelierXNA
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Voiture : ObjetDeBase, ICollisionable
+    public class Voiture : ObjetDeBase, ICollisionable, IResettable
     {
         const float INCRÉMENT_ROTATION = (float)Math.PI / 720;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;

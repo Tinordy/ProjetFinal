@@ -40,20 +40,5 @@ namespace AtelierXNA
         {
             Choix = ChoixMenu.QUITTER;
         }
-
-        //dans menu, ou enlever?
-        public void DésactiverBoutons()
-        {
-            foreach (BoutonDeCommande bouton in Composantes.Where(c => c is BoutonDeCommande))
-            {
-                //bouton.EstActif = false;
-                bouton.EstActif = !bouton.EstActif;
-                if (bouton.EstActif)
-                {
-                    Choix = ChoixMenu.EN_ATTENTE; // PO LEGIT!!!
-                }
-            }
-
-        }
     }
 }
