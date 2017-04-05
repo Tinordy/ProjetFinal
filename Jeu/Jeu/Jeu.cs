@@ -124,13 +124,13 @@ namespace AtelierXNA
         {
             //débuter seulement lorque c'est nécessaire (après menus...)
 
-            if (ÉtatJoueur != ÉtatsJoueur.SOLO && NetworkManager != null && (NetworkManager.DéconnectéTest || Serveur.connectedClients == 1)) //null marche pas... reset?
-            {
-                État = ÉtatsJeu.MENU_PRINCIPAL;
-                MenuPrincipal.Enabled = true;
-                MenuDePause.Enabled = false;
-                //désactiver tous les menus!
-            }
+            //if (ÉtatJoueur != ÉtatsJoueur.SOLO && NetworkManager != null && (NetworkManager.DéconnectéTest || Serveur.connectedClients == 1)) //null marche pas... reset?
+            //{
+            //    État = ÉtatsJeu.MENU_PRINCIPAL;
+            //    MenuPrincipal.Enabled = true;
+            //    MenuDePause.Enabled = false;
+            //    //désactiver tous les menus!
+            //}
         }
 
         private void GérerÉtat()
