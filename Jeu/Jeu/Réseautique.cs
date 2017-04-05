@@ -11,7 +11,6 @@ namespace AtelierXNA
 {
     class Réseautique : IResettable
     {
-        public bool DéconnectéTest { get; private set; }
         const int BUFFER_SIZE = 2048;
         Server Serveur { get; set; }
         TcpClient Client { get; set; }
@@ -27,7 +26,6 @@ namespace AtelierXNA
 
         public Réseautique(Server serveur, string ip, int port)
         {
-            DéconnectéTest = false;
             Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
@@ -133,7 +131,6 @@ namespace AtelierXNA
             else if (p == Protocoles.Disconnected)
             {
                 enemiConnecté = false;
-                DéconnectéTest = true;
             }
             else if (p == Protocoles.PlayerMoved)
             {

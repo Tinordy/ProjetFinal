@@ -110,6 +110,7 @@
     <Compile Include="MenuPause.cs" />
     <Compile Include="MenuPrincipal.cs" />
     <Compile Include="MenuProfile.cs" />
+    <Compile Include="MenusDeJeu.cs" />
     <Compile Include="ObjetDeBase.cs" />
     <Compile Include="PisteSectionnée.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
