@@ -124,7 +124,7 @@ namespace AtelierXNA
         {
             //débuter seulement lorque c'est nécessaire (après menus...)
 
-            if (ÉtatJoueur != ÉtatsJoueur.SOLO && NetworkManager.DéconnectéTest)
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO && NetworkManager != null &&NetworkManager.DéconnectéTest) //null marche pas... reset?
             {
                 État = ÉtatsJeu.MENU_PRINCIPAL;
                 MenuPrincipal.Enabled = true;
