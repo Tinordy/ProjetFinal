@@ -53,8 +53,9 @@ namespace AtelierXNA
             private set
             {
                 vitesse = value;
-                if (value < -500) { vitesse = -500; }
-                if (value > 500) { vitesse = 500; }
+                if (value < -20) { vitesse = -20; }
+                if (value > 130) { vitesse = 130; }
+               
             }
         }
         public float TempsAccélération
@@ -64,7 +65,7 @@ namespace AtelierXNA
             {
                 tempsAccélération = value;
                 if (value < -200) { tempsAccélération = -200; }
-                if (value > 20) { tempsAccélération = 20; }
+                if (value > 200) { tempsAccélération = 200; }
             }
         }
 
