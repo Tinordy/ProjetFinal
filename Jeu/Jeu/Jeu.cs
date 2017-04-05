@@ -123,7 +123,10 @@ namespace AtelierXNA
         private void GérerDéconnection()
         {
             //débuter seulement lorque c'est nécessaire (après menus...)
+            if(NetworkManager != null && NetworkManager.DisconectedT)
+            {
 
+            }
             //if (ÉtatJoueur != ÉtatsJoueur.SOLO && NetworkManager != null && (NetworkManager.DéconnectéTest || Serveur.connectedClients == 1)) //null marche pas... reset?
             //{
             //    État = ÉtatsJeu.MENU_PRINCIPAL;
@@ -373,10 +376,18 @@ namespace AtelierXNA
             }
         }
 
+
+
+
+
+        //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON! Trouver solution..?
+        //bool t { get; set; }
         private void GérerTransitionConnection()
         {
-            if (Serveur.connectedClients == 2)
+            if (/*Serveur.connectedClients == 2*/NetworkManager.enemiConnecté)
             {
+                //t = true;
+                //bool test = NetworkManager.enemiConnecté;
                 État = ÉtatsJeu.CHOIX_PROFILE;
                 MenuServeur.Enabled = false;
                 MenuChoixProfile.Enabled = true;
@@ -385,6 +396,8 @@ namespace AtelierXNA
 
         private void GérerTransitionMenuProfile()
         {
+            //bool k = NetworkManager.enemiConnecté;
+            //t = true;
             switch (MenuChoixProfile.Choix)
             {
                 case ChoixMenu.EN_ATTENTE:

@@ -396,7 +396,9 @@ namespace AtelierXNA
         private void user_UserDisconnected(object sender, Client user)
         {
             connectedClients--;
-
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.Disconnected);
+            SendData(GetDataFromMemoryStream(writeStream));
             //Print the removed player message to the server window.
             Console.WriteLine(user.ToString() + " disconnected\tConnected Clients:  " + connectedClients + "\n");
 
