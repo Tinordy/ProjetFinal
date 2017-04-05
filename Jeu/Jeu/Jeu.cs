@@ -600,7 +600,7 @@ namespace AtelierXNA
 
         private void CréerJoueur()
         {
-            Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f); //mettre choix?
+            Joueur = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f); //mettre choix?
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....

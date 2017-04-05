@@ -54,7 +54,7 @@ namespace AtelierXNA
             {
                 vitesse = value;
                 if (value < -20) { vitesse = -20; }
-                if (value > 130) { vitesse = 130; }
+                if (value > 100) { vitesse = 100; }
                
             }
         }
@@ -142,7 +142,7 @@ namespace AtelierXNA
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * IntervalleAccélération; }
-            if (accélération) { TempsAccélération += 2f * IntervalleAccélération;}
+            if (accélération) { TempsAccélération += 0.5f * IntervalleAccélération;}
             if (freinage) { TempsAccélération -= 3f * IntervalleAccélération; }
 
         }
@@ -206,7 +206,7 @@ namespace AtelierXNA
 
         void CalculerPositionCaméra()
         {
-            PositionCaméra = Position - (Monde.Forward - Monde.Backward) * 400 + new Vector3(0, 30, 0);
+            PositionCaméra = Position - (Monde.Forward - Monde.Backward) * 400 + new Vector3(0, 200*Échelle , 0);
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
