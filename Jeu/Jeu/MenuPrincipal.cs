@@ -27,6 +27,7 @@ namespace AtelierXNA
             Composantes.Add(new BoutonDeCommande(Game, "Quitter", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 5, 4 * Game.Window.ClientBounds.Height / 5), true, Quitter, 0.01f));
 
             Activer();
+            Enabled = true;
         }
         public void Jouer()
         {

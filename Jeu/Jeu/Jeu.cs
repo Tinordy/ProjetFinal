@@ -110,7 +110,7 @@ namespace AtelierXNA
             UsedIP = new List<string>();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             État = ÉtatsJeu.MENU_PRINCIPAL;
-            MenuPrincipal.Enabled = true;
+            //MenuPrincipal.Enabled = true;
         }
 
         public override void Update(GameTime gameTime)
