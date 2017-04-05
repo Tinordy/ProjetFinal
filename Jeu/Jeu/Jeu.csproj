@@ -127,6 +127,7 @@
     <Compile Include="TimerDiminue.cs" />
     <Compile Include="Titre.cs" />
     <Compile Include="Voiture.cs" />
+    <Compile Include="VoitureDummy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
