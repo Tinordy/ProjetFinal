@@ -124,7 +124,7 @@ namespace AtelierXNA
                 AjusterPosition();
                 EffectuerTransformations();
                 //RecréerMonde();
-                Game.Window.Title = Vitesse.ToString("0.000");
+                Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0");
                 SphèreDeCollision = new BoundingSphere(Monde.Translation, 12f);
                 TempsÉcouléDepuisMAJ = 0;
             }
