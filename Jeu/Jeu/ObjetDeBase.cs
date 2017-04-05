@@ -62,10 +62,6 @@ namespace AtelierXNA
                     effet.EnableDefaultLighting();
                     effet.Projection = CaméraJeu.Projection;
                     effet.View = CaméraJeu.Vue;
-                    if(maille.Name == "Tire")
-                    {
-                        effet.World *= Matrix.CreateFromYawPitchRoll((float)Math.PI / 180, 0, 0);
-                    }
                     {
                         effet.World = mondeLocal;
                     }                   
