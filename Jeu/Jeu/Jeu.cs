@@ -128,6 +128,8 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.MENU_PRINCIPAL;
                 MenuPrincipal.Enabled = true;
+                MenuDePause.Enabled = false;
+                //désactiver tous les menus!
             }
         }
 
@@ -249,6 +251,7 @@ namespace AtelierXNA
             {
                 État = ÉtatsJeu.JEU;
                 Pause = false;
+                MenuDePause.Enabled = false;
             }
         }
 
