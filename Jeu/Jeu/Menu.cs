@@ -15,6 +15,7 @@ namespace AtelierXNA
     public enum ChoixMenu { EN_ATTENTE, JOUER, OPTION, QUITTER, RETOUR, SOLO, REJOINDRE, SERVEUR, CONNECTION, VALIDATION}
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
+
         protected List<DrawableGameComponent> Composantes { get; private set; }
         public ChoixMenu Choix { get; protected set; }
         public Menu(Game game)
