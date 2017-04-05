@@ -21,6 +21,7 @@ namespace AtelierXNA
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         List<string> UsedIP { get; set; } //LEGIT?
+        bool ConnectéTest { get; set; }
         bool pause;
         bool Pause
         {
@@ -124,7 +125,7 @@ namespace AtelierXNA
         {
             //débuter seulement lorque c'est nécessaire (après menus...)
 
-            if (ÉtatJoueur != ÉtatsJoueur.SOLO && !NetworkManager.enemiConnecté)
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO && ConnectéTest && !NetworkManager.enemiConnecté)
             {
                 État = ÉtatsJeu.MENU_PRINCIPAL;
                 MenuPrincipal.Enabled = true;
@@ -377,6 +378,7 @@ namespace AtelierXNA
                 État = ÉtatsJeu.CHOIX_PROFILE;
                 MenuServeur.Enabled = false;
                 MenuChoixProfile.Enabled = true;
+                ConnectéTest = true;
             }
         }
 
