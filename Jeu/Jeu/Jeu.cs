@@ -546,11 +546,17 @@ namespace AtelierXNA
         private void InitialiserLeJeu()
         {
             Reset();
+            CréerVoitureDummy();
             CréerJoueur();
             if (ÉtatJoueur != ÉtatsJoueur.SOLO)
             {
                 CréerEnnemi();
             }
+        }
+
+        private void CréerVoitureDummy()
+        {
+            Game.Components.Add(new VoitureDummy(Game, "small car", 0.1f, Vector3.Zero, new Vector3(50, 5, 50), 0.01f));
         }
 
         private void Reset()
@@ -594,7 +600,7 @@ namespace AtelierXNA
 
         private void CréerJoueur()
         {
-            Joueur = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f); //mettre choix?
+            Joueur = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(100, 0, 50), 0.01f); //mettre choix?
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....

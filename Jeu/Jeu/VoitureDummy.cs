@@ -40,5 +40,10 @@ namespace AtelierXNA
         {
             
         }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
     }
 }

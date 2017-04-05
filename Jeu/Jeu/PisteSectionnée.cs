@@ -15,7 +15,8 @@ namespace AtelierXNA
     public class PisteSectionnée : PrimitiveDeBaseAnimée
     {
         DataPiste DonnéesPiste { get; set; }
-        int HAUTEUR_INITIALE = 1;
+        int HAUTEUR_INITIALE = 0;
+        const float LARGEUR_PISTE = 10;
 
         Vector3 Origine { get; set; }
         protected List<List<Vector2>> PointsBordureExt { get; set; }
@@ -43,7 +44,8 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
+            //Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
+            Origine = new Vector3(100, 25, 100);
             DonnéesPiste = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
             CouleurPiste = Color.Black;
             ObtenirPointsCentraux();
@@ -61,12 +63,11 @@ namespace AtelierXNA
         }
         protected override void InitialiserSommets()
         {
-
-            for (int j = 0; j < Math.Min(PointsBordureExt.Count, PointsBordureInt.Count); ++j)
+            for (int j = 0; j < PointsBordureExt.Count; ++j)
             {
-                NbSommets = PointsBordureExt[j].Count + PointsBordureInt[j].Count + 2;
+                NbSommets = PointsBordureExt[j].Count * 2 + 2;
                 VertexPositionColor[] sommets = new VertexPositionColor[NbSommets];
-                for (int i = 0; i < Math.Min(PointsBordureExt[j].Count, PointsBordureInt[j].Count) * 2 - 3; i += 2)
+                for (int i = 0; i < NbSommets - 3; i += 2)
                 {
                     float posXExt = Origine.X + PointsBordureExt[j][i / 2].X;
                     float posZExt = Origine.Z + PointsBordureExt[j][i / 2].Y;
@@ -79,8 +80,9 @@ namespace AtelierXNA
                 sommets[NbSommets - 2] = sommets[0];
                 sommets[NbSommets - 1] = sommets[1];
                 ListeSommets.Add(sommets);
-                //InitialiserSommetsPointillés();
             }
+            //InitialiserSommetsPointillés();
+
         }
 
         //protected void InitialiserSommetsPointillés()
@@ -102,10 +104,11 @@ namespace AtelierXNA
         }
         void ObtenirDonnéesPiste()
         {
-            PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
-            PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
+            //PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
+            //PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
+            GénérerBordureÀPartirDeMilieu();
 
-            PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
+            //PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
         }
 
         void ObtenirPointsCentraux()
@@ -115,7 +118,8 @@ namespace AtelierXNA
 
         List<List<Vector2>> GénérerListeRestreinte(List<Vector2> points)
         {
-            Vector2 pointMax = Coin + Étendue;
+            Vector2 margeDeManoeuvre = new Vector2(10, 10);
+            Vector2 pointMax = Coin + Étendue + margeDeManoeuvre;
             int ancienIndex = -1;
             List<List<Vector2>> temp = new List<List<Vector2>>();
             List<Vector2> listePointTemp = new List<Vector2>();
@@ -130,13 +134,37 @@ namespace AtelierXNA
                     {
                         temp.Add(listePointTemp);
                         listePointTemp = new List<Vector2>();
+
                     }
                     listePointTemp.Add(point);
-                    
+
                     ancienIndex = i;
                 }
+                
             }
+            temp.Add(listePointTemp);
             return temp;
+        }
+
+        void GénérerBordureÀPartirDeMilieu()
+        {
+            PointsBordureExt = new List<List<Vector2>>();
+            PointsBordureInt = new List<List<Vector2>>();
+            List<Vector2> tempInt = new List<Vector2>();
+            List<Vector2> tempExt = new List<Vector2>();
+            foreach (List<Vector2> listePointsCentraux in PointsCentraux)
+            {
+                for (int i = 0; i < listePointsCentraux.Count() - 1; ++i)
+                {
+                    Vector2 vecteurPourBordure = listePointsCentraux[i + 1] - listePointsCentraux[i];
+                    tempInt.Add(listePointsCentraux[i] + (LARGEUR_PISTE * (Vector2.Normalize(new Vector2(vecteurPourBordure.Y, -vecteurPourBordure.X)))));
+                    tempExt.Add(listePointsCentraux[i] + (LARGEUR_PISTE * (Vector2.Normalize(new Vector2(-vecteurPourBordure.Y, vecteurPourBordure.X)))));
+                }
+                PointsBordureInt.Add(tempInt);
+                tempInt = new List<Vector2>();
+                PointsBordureExt.Add(tempExt);
+                tempExt = new List<Vector2>();
+            }
         }
 
         void InitialiserParamètresEffetDeBase()
