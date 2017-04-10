@@ -131,6 +131,7 @@ namespace AtelierXNA
                 //désactiver tous les menus
                 MenuDePause.Enabled = false;
                 //MenuFinPartie.Enabled.false;
+                NetworkManager.DisconectedT = false;
             }
         }
 

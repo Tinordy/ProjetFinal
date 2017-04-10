@@ -11,7 +11,7 @@ namespace AtelierXNA
 {
     class Réseautique : IResettable
     {
-        public bool DisconectedT { get; private set; }
+        public bool DisconectedT { get; set; }
         const int BUFFER_SIZE = 2048;
         Server Serveur { get; set; }
         TcpClient Client { get; set; }
