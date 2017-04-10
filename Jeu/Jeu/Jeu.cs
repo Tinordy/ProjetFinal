@@ -33,7 +33,7 @@ namespace AtelierXNA
             {
                 pause = value;
                 Joueur.EstActif = !pause;
-                TempsDeCourse.EstActif = !pause;
+                NetworkManager.TempsDeCourseJ.EstActif = !pause;
                 NetworkManager.SendPrêtJeu(!pause);
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
@@ -49,18 +49,18 @@ namespace AtelierXNA
             set
             {
                 gagné = value;
-                NetworkManager.SendTerminé(gagné);
+                NetworkManager.SendTerminé(gagné, NetworkManager.TempsDeCourseJ.ValeurTimer, NetworkManager.PseudonymeJ);
                 if (gagné)
                 {
                     État = ÉtatsJeu.GAGNÉ;
-                    TempsDeCourse.EstActif = false;
+                    NetworkManager.TempsDeCourseJ.EstActif = false;
                 }
                 else
                 {
                     État = ÉtatsJeu.PERDU;
                 }
                 //différent, fin de partie
-                Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
+                //Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
             }
         }
         bool JoueurEstArrivé
@@ -80,6 +80,7 @@ namespace AtelierXNA
         MenuIPServeur MenuServeur { get; set; }
         MenuIPClient MenuClient { get; set; }
         MenuPause MenuDePause { get; set; }
+        MenuFinPartie MenuFinDePartie { get; set; }
         Menu MenuSélectionnéOption { get; set; }
         ÉtatsJeu ÉtatPrécédentOption { get; set; }
 
@@ -89,7 +90,7 @@ namespace AtelierXNA
         Voiture Ennemi { get; set; }
         List<Section> Sections { get; set; }
         TimerDiminue DécompteInitial { get; set; }
-        TimerAugmente TempsDeCourse { get; set; }
+        //TimerAugmente TempsDeCourse { get; set; }
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
         public Jeu(Game game)
@@ -215,8 +216,30 @@ namespace AtelierXNA
                 case ÉtatsJeu.PERDU:
                     GérerTransitionPerdu();
                     break;
+                case ÉtatsJeu.FIN_DE_PARTIE:
+                    GérerTransitionFinDePartie();
+                    break;
             }
 
+        }
+
+        private void GérerTransitionFinDePartie()
+        {
+            switch(MenuFinDePartie.Choix)
+            {
+                case ChoixMenu.JOUER:
+                    MenuFinDePartie.Enabled = false;
+                    MenuChoixProfile.Enabled = true;
+                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    //Envoyer client!!! REJOUER!!!
+                    break;
+                case ChoixMenu.QUITTER:
+                    État = ÉtatsJeu.MENU_PRINCIPAL;
+                    MenuFinDePartie.Enabled = false;
+                    MenuPrincipal.Enabled = true;
+                    NetworkManager.SendDisconnect();
+                    break;
+            }
         }
 
         private void GérerTransitionPerdu()
@@ -224,9 +247,10 @@ namespace AtelierXNA
             if (JoueurEstArrivé)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
-                TempsDeCourse.EstActif = false;
+                MenuFinDePartie.Enabled = true;
+                NetworkManager.TempsDeCourseJ.EstActif = false;
                 Joueur.EstActif = false;
-                NetworkManager.SendTerminé(true);
+                NetworkManager.SendTerminé(true, NetworkManager.TempsDeCourseJ.ValeurTimer, NetworkManager.PseudonymeJ);
             }
             else
             {
@@ -239,6 +263,7 @@ namespace AtelierXNA
             if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
+                MenuFinDePartie.Enabled = true;
                 Joueur.Enabled = false;
             }
             else
@@ -300,7 +325,7 @@ namespace AtelierXNA
                 {
                     if (ÉtatJoueur == ÉtatsJoueur.SOLO)
                     {
-                        Gagné = TempsDeCourse.ValeurTimer < new TimeSpan(0, 0, 10); //obtenir vraie valeur
+                        Gagné = NetworkManager.TempsDeCourseJ.ValeurTimer < new TimeSpan(0, 0, 10); //obtenir vraie valeur
                     }
                     else
                     {
@@ -343,8 +368,8 @@ namespace AtelierXNA
                 Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
-                TempsDeCourse = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, 0.01f);
-                Game.Components.Add(TempsDeCourse);
+                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, 0.01f);
+                Game.Components.Add(NetworkManager.TempsDeCourseJ);
             }
         }
 
@@ -407,6 +432,8 @@ namespace AtelierXNA
                         NetworkManager.SendPrêtJeu(true);
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
+                    NetworkManager.PseudonymeJ = MenuChoixProfile.Pseudonyme;
+                    //ENVOYER PSUDONYME A ENNEMI!!!!!!!
                     break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
@@ -623,6 +650,8 @@ namespace AtelierXNA
             //lol autre place
             MenuDePause = new MenuPause(Game);
             Game.Components.Add(MenuDePause);
+            MenuFinDePartie = new MenuFinPartie(Game);
+            Game.Components.Add(MenuFinDePartie);
         }
         void CréerMenuOption()
         {

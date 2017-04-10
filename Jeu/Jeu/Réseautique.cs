@@ -11,6 +11,11 @@ namespace AtelierXNA
 {
     class Réseautique : IResettable
     {
+        public TimerAugmente TempsDeCourseJ { get; set; }
+        public string PseudonymeJ { get; set; }
+        public string TempsDeCourseE { get; set; }
+        public string PseudonymeE { get; set; }
+
         public bool DisconectedT { get; set; }
         const int BUFFER_SIZE = 2048;
         Server Serveur { get; set; }
@@ -171,6 +176,8 @@ namespace AtelierXNA
             else if(p == Protocoles.HasArrivedToEnd)
             {
                 EnnemiEstArrivé = reader.ReadBoolean();
+                TempsDeCourseE = reader.ReadString(); //marche tu?
+                PseudonymeE = reader.ReadString();
             }
         }
         public void SendData(byte[] b)
@@ -197,11 +204,13 @@ namespace AtelierXNA
             writer.Write(position.Z);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
-        public void SendTerminé(bool val)
+        public void SendTerminé(bool val, TimeSpan tempsDeCourse, string pseudonyme)
         {
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.HasArrivedToEnd);
             writer.Write(val);
+            writer.Write(tempsDeCourse.ToString("mm':'ss','ff"));
+            writer.Write(pseudonyme);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
         public void SendPrêtJeu(bool val)
