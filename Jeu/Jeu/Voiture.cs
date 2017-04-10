@@ -129,7 +129,7 @@ namespace AtelierXNA
             Direction = new Vector3(0, 0, 75);
             Vitesse = 0;
             base.Initialize();
-            SphèreDeCollision = new BoundingSphere(Position, 0.1f);
+            SphèreDeCollision = new BoundingSphere(Position, Échelle);
             DirectionCaméra = Monde.Forward - Monde.Backward;
             DéplacerCaméra();
         }
