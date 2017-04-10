@@ -85,7 +85,7 @@ namespace AtelierXNA
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "1");
+                MessageBox.Show(ex.Message + "salut cest ici l'erreur");
             }
 
             if (bytesRead == 0)
