@@ -20,6 +20,7 @@ namespace AtelierXNA
     enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        const int ÉTENDUE = 50;
         List<string> UsedIP { get; set; } //LEGIT?
         bool pause;
         bool Pause
@@ -576,11 +577,11 @@ namespace AtelierXNA
             Sections = new List<Section>();
 
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 10; ++i)
             {
-                for (int j = 0; j < 4; ++j)
+                for (int j = 0; j < 10; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(200 * i, 200 * j), new Vector2(200, 200), 1f, Vector3.Zero, Vector3.Zero, new Vector3(200, 25, 200), new string[] { "Herbe", "Sable" }, 0.01f); //double??
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
                     newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e

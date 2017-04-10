@@ -37,9 +37,9 @@ namespace AtelierXNA
         {
             Components = new List<DrawableGameComponent>();
             Extrémité = Coin + Étendue;
-            Maison = new Maison(Game, 10f, Vector3.Zero, new Vector3(Coin.X/* + Étendue.X*/, 0, Coin.Y/* - Étendue.Y*/), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
-            Components.Add(Maison);
-            Game.Components.Add(Maison); //faire un fct..?
+            //Maison = new Maison(Game, 10f, Vector3.Zero, new Vector3(Coin.X/* + Étendue.X*/, 0, Coin.Y/* - Étendue.Y*/), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+            //Components.Add(Maison);
+            //Game.Components.Add(Maison); //faire un fct..?
             NormeÉtendue = Math.Sqrt(Math.Pow(Étendue.X, 2) + Math.Pow(Étendue.Y, 2));
             CréerPiste();
             base.Initialize();

@@ -59,7 +59,7 @@ namespace AtelierXNA
         {
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             base.Initialize();
-            SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + Étendue.X/2, 0, Origine.Z + Étendue.Z/2), 300);
+            SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + Étendue.X/2, 0, Origine.Z + Étendue.Z/2), Étendue.X/2*3);
         }
 
         //
