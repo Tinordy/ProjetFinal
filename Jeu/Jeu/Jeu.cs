@@ -620,7 +620,7 @@ namespace AtelierXNA
         private void CréerEnnemi()
         {
             //Vrai Posinitiale :(
-            Ennemi = new Voiture(Game, "GLX_400", 0.1f, Vector3.Zero, NetworkManager.PositionEnnemi, 0.01f); //Get choix de voiture??
+            Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, NetworkManager.PositionEnnemi, 0.01f); //Get choix de voiture??
             Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
