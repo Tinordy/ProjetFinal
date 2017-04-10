@@ -129,7 +129,7 @@ namespace AtelierXNA
             Direction = new Vector3(0, 0, 75);
             Vitesse = 0;
             base.Initialize();
-            SphèreDeCollision = new BoundingSphere(Position, Norme(Monde.Forward,Monde.Backward));
+            SphèreDeCollision = new BoundingSphere(Position, RAYON_VOITURE);
             DirectionCaméra = Monde.Forward - Monde.Backward;
             DéplacerCaméra();
         }
@@ -164,7 +164,7 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
-                SphèreDeCollision = new BoundingSphere(Monde.Translation, Norme(Monde.Forward, Monde.Backward));
+                SphèreDeCollision = new BoundingSphere(Monde.Translation, RAYON_VOITURE);
                 TempsÉcouléDepuisMAJ = 0;
             }
 
@@ -291,7 +291,7 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
-            SphèreDeCollision = new BoundingSphere(Position, Norme(Monde.Forward,Monde.Backward)); //po legit?
+            SphèreDeCollision = new BoundingSphere(Position, RAYON_VOITURE); //po legit?
         }
         public void RecréerMonde()
         {
