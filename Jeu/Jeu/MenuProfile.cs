@@ -79,5 +79,10 @@ namespace AtelierXNA
         {
             BtnDémarrer.EstActif = true;
         }
+        protected override void OnEnabledChanged(object sender, EventArgs args)
+        {
+            base.OnEnabledChanged(sender, args);
+            BtnDémarrer.EstActif = false;
+        }
     }
 }
