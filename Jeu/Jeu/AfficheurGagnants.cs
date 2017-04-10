@@ -36,6 +36,7 @@ namespace AtelierXNA
             Gagnant = new Titre(Game, NetworkManager.PseudonymeJ + '-' + NetworkManager.TempsDeCourseJ.ValeurTimer.ToString("mm':'ss','ff"), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc");
             Game.Components.Add(Gagnant);
             Gagnant.DrawOrder = 2;
+
             Perdant = new Titre(Game, NetworkManager.PseudonymeE + '-' + NetworkManager.TempsDeCourseE, "Arial", new Vector2(Game.Window.ClientBounds.Width/2, 3*Game.Window.ClientBounds.Height/5), "Blanc");
             Game.Components.Add(Perdant);
             Perdant.DrawOrder = 2;
