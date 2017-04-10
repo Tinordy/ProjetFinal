@@ -17,20 +17,47 @@ namespace AtelierXNA
     /// </summary>
     public class Voiture : ObjetDeBase, ICollisionable, IResettable
     {
-        const int VITESSE_MAX = 100;
-        const int TEMPS_ACCÉLÉRATION_MAX = 100;
+        //constantes
+
+        const int VITESSE_MAX = 200;
+        const int VITESSE_MIN = -5;
+        const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1440;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
         const float INTERVALLE_RALENTISSEMENT = 1f / 5f;
+        const int DISTANCE_CAMÉRA = 400;
+
+        // propriétés
         Vector2 ÉtendueTotale { get; set; }
-        const float FACTEUR_ACCÉLÉRATION = 3;
+        const float FACTEUR_ACCÉLÉRATION = 1f / 5f;
         const int INCRÉMENT_ANGLE = 10;
-        const int RAYON_VOITURE = 1;
+        const float RAYON_VOITURE = 0.1f;
         float IntervalleMAJ { get; set; }
         Vector3 PositionCaméra { get; set; }
         Vector3 DirectionCaméra { get; set; }
         float NormeDirection { get; set; }
-        float IntervalleAccélération { get; set; }
+        float intervalleAccélération;
+        float IntervalleAccélération
+        {
+            get
+            {
+                if (TempsAccélération < 10)
+                {
+                    return 6f;
+                }
+                else if (TempsAccélération < 20)
+                {
+                    return 5f;
+                }
+                else if (TempsAccélération >= 20)
+                {
+                    return 4f;
+                }
+                return intervalleAccélération;
+
+            }
+            set { intervalleAccélération = value; }
+        }
         float TempsÉcouléDepuisMAJ { get; set; }
         Réseautique GérerRéseau { get; set; }
         Vector3 DirectionDérapage { get; set; }
@@ -56,9 +83,9 @@ namespace AtelierXNA
             private set
             {
                 vitesse = value;
-                if (value < -20) { vitesse = -20; }
+                if (value < VITESSE_MIN) { vitesse = VITESSE_MIN; }
                 if (value > VITESSE_MAX) { vitesse = VITESSE_MAX; }
-               
+
             }
         }
         public float TempsAccélération
@@ -95,14 +122,22 @@ namespace AtelierXNA
         /// </summary>
         public override void Initialize()
         {
-            SphèreDeCollision = new BoundingSphere(Position, 12f);
+
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 10f;
             Direction = new Vector3(0, 0, 75);
-            Vitesse = 0;            
+            Vitesse = 0;
             base.Initialize();
+            SphèreDeCollision = new BoundingSphere(Position, Norme(Monde.Forward, Monde.Backward));
+            DirectionCaméra = Monde.Forward - Monde.Backward;
             DéplacerCaméra();
+        }
+
+        float Norme(Vector3 x, Vector3 y)
+        {
+            Vector3 z = x - y;
+            return (float)Math.Sqrt(Math.Pow(z.X, 2) + Math.Pow(z.Y, 2) + Math.Pow(z.Z, 2));
         }
 
         protected override void LoadContent()
@@ -128,7 +163,7 @@ namespace AtelierXNA
                 AjusterPosition();
                 EffectuerTransformations();
                 //RecréerMonde();
-                Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0");
+                Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
                 SphèreDeCollision = new BoundingSphere(Monde.Translation, 12f);
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -144,14 +179,14 @@ namespace AtelierXNA
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
 
 
-            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * IntervalleAccélération; if (Vitesse == 0){ TempsAccélération = 0; } }
-            if (accélération) { TempsAccélération += 0.5f * IntervalleAccélération* 5/Math.Abs(TempsAccélération);}
+            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * INTERVALLE_RALENTISSEMENT; }
+            if (accélération) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
             if (freinage) { TempsAccélération -= 3f * INTERVALLE_RALENTISSEMENT; }
 
         }
         void CalculerVitesse()
         {
-            Vitesse = FACTEUR_ACCÉLÉRATION * TempsAccélération;
+            Vitesse = IntervalleAccélération * TempsAccélération;
         }
         int GérerTouche(Keys touche)
         {
@@ -180,9 +215,14 @@ namespace AtelierXNA
                     DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
                     Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
                     Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                    if(TempsAccélération > 0)
+                    if (TempsAccélération <= 0)
                     {
-                        TempsAccélération -= INTERVALLE_RALENTISSEMENT;
+                        TempsAccélération = 0;
+                    }
+                    if (TempsAccélération > 0)
+                    {
+                        TempsAccélération -= IntervalleMAJ * TempsAccélération;
+
                     }
                     if (GestionInput.EstEnfoncée(Keys.Tab))
                     {
@@ -198,9 +238,19 @@ namespace AtelierXNA
             if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
             {
                 int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
-
+                if(!GestionInput.EstEnfoncée(Keys.LeftControl))
+                {
+                    if (TempsAccélération > 0)
+                    {
+                        TempsAccélération -= INTERVALLE_RALENTISSEMENT / 10;
+                    }
+                    if (TempsAccélération <= 0)
+                    {
+                        TempsAccélération = 0;
+                    }
+                }
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
-                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * Vitesse / 60f, Rotation.Z);
+                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * Vitesse / 100f * INCRÉMENT_ROTATION, Rotation.Z);
                 ChangementEffectué = true;
 
             }
@@ -209,12 +259,17 @@ namespace AtelierXNA
         private void DéplacerCaméra()
         {
             CalculerPositionCaméra();
+            DirectionCaméra = Monde.Forward - Monde.Backward;
             Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
         void CalculerPositionCaméra()
         {
-            PositionCaméra = Position - (Monde.Forward - Monde.Backward) * 400 + new Vector3(0, 200*Échelle , 0);
+            if (GestionInput.EstEnfoncée(Keys.LeftAlt)) 
+            {
+                DirectionCaméra = -DirectionCaméra;
+            }
+            PositionCaméra = Position - (DirectionCaméra) * DISTANCE_CAMÉRA + new Vector3(0, DISTANCE_CAMÉRA/2 * Échelle, 0);
         }
 
         float CalculerPosition(int déplacement, float posActuelle)

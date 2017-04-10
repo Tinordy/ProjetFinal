@@ -21,6 +21,7 @@ namespace AtelierXNA
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const int ÉTENDUE = 50;
+        const float INTERVALLE_MAJ = 1f / 60f;
         List<string> UsedIP { get; set; } //LEGIT?
         bool pause;
         bool Pause
