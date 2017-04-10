@@ -291,7 +291,7 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
-            SphèreDeCollision = new BoundingSphere(Monde.Translation, 12f); //po legit?
+            SphèreDeCollision = new BoundingSphere(Position, Norme(Monde.Forward,Monde.Backward)); //po legit?
         }
         public void RecréerMonde()
         {
