@@ -150,7 +150,7 @@ namespace AtelierXNA
             }
             catch (Exception e)
             {
-                Console.WriteLine("OUAIS C LA"+"Client {0}:  {1}", IP, e.ToString());
+                Console.WriteLine("OUAIS C LA"+"Client {0}:  {1}", IP,"ICI"+ e.ToString());
             }
         }
 
