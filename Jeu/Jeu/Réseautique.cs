@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AtelierXNA
 {
-    class Réseautique : IResettable
+    class Réseautique/* : IResettable*/
     {
         public TimerAugmente TempsDeCourseJ { get; set; }
         public string PseudonymeJ { get; set; }
