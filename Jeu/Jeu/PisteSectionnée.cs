@@ -16,7 +16,8 @@ namespace AtelierXNA
     {
         DataPiste DonnéesPiste { get; set; }
         int HAUTEUR_INITIALE = 0;
-        const float LARGEUR_PISTE = 10;
+        const float LARGEUR_PISTE = 5f;
+        const float ÉCHELLE = 0.3f;
 
         Vector3 Origine { get; set; }
         protected List<List<Vector2>> PointsBordureExt { get; set; }
@@ -34,6 +35,7 @@ namespace AtelierXNA
         public BoundingSphere SphereDeCollision { get; private set; }
         Vector2 Coin { get; set; }
         Vector2 Étendue { get; set; }
+        float TempsÉcouléDepuisMAJ { get; set; }
         public PisteSectionnée(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, int nbColonnes, int nbRangées, Vector2 coin, Vector2 étendue)
             : base(jeu, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
@@ -45,41 +47,41 @@ namespace AtelierXNA
         public override void Initialize()
         {
             //Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
-            Origine = new Vector3(100, 25, 100);
+            Origine = new Vector3(-25, 25, -25);
             DonnéesPiste = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
             CouleurPiste = Color.Black;
+            ListeSommets = new List<VertexPositionColor[]>();
             ObtenirPointsCentraux();
             ObtenirDonnéesPiste();
+            SphereDeCollision = new BoundingSphere(new Vector3(Origine.X + 25, 0, Origine.Z + 25), 75);
+
             //NbDeSommets = PointsBordureExt.Count + PointsBordureInt.Count + 2;
-            NbDeTriangles = NbDeSommets - 2;
-            CréerTableauSommets();
-            InitialiserSommets();
+
             base.Initialize();
-        }
-        void CréerTableauSommets()
-        {
-            ListeSommets = new List<VertexPositionColor[]>();
-            //SommetsPointillés = new VertexPositionColor[NbDeSommets];
         }
         protected override void InitialiserSommets()
         {
-            for (int j = 0; j < PointsBordureExt.Count; ++j)
+            if (PointsCentraux.Count > 0)
             {
-                NbSommets = PointsBordureExt[j].Count * 2 + 2;
-                VertexPositionColor[] sommets = new VertexPositionColor[NbSommets];
-                for (int i = 0; i < NbSommets - 3; i += 2)
-                {
-                    float posXExt = Origine.X + PointsBordureExt[j][i / 2].X;
-                    float posZExt = Origine.Z + PointsBordureExt[j][i / 2].Y;
-                    float posXInt = Origine.X + PointsBordureInt[j][i / 2].X;
-                    float posZInt = Origine.Z + PointsBordureInt[j][i / 2].Y;
 
-                    sommets[i + 1] = new VertexPositionColor(new Vector3(posXExt, HAUTEUR_INITIALE, posZExt), CouleurPiste);
-                    sommets[i] = new VertexPositionColor(new Vector3(posXInt, HAUTEUR_INITIALE, posZInt), CouleurPiste);
+                for (int j = 0; j < PointsBordureExt.Count; ++j)
+                {
+                    NbSommets = PointsBordureExt[j].Count * 2 + 2;
+                    VertexPositionColor[] sommets = new VertexPositionColor[NbSommets];
+                    for (int i = 0; i < NbSommets - 3; i += 2)
+                    {
+                        float posXExt = Origine.X + PointsBordureExt[j][i / 2].X;
+                        float posZExt = Origine.Z + PointsBordureExt[j][i / 2].Y;
+                        float posXInt = Origine.X + PointsBordureInt[j][i / 2].X;
+                        float posZInt = Origine.Z + PointsBordureInt[j][i / 2].Y;
+
+                        sommets[i + 1] = new VertexPositionColor(new Vector3(posXExt, HAUTEUR_INITIALE, posZExt), CouleurPiste);
+                        sommets[i] = new VertexPositionColor(new Vector3(posXInt, HAUTEUR_INITIALE, posZInt), CouleurPiste);
+                    }
+                    sommets[NbSommets - 2] = sommets[0];
+                    sommets[NbSommets - 1] = sommets[1];
+                    ListeSommets.Add(sommets);
                 }
-                sommets[NbSommets - 2] = sommets[0];
-                sommets[NbSommets - 1] = sommets[1];
-                ListeSommets.Add(sommets);
             }
             //InitialiserSommetsPointillés();
 
@@ -106,7 +108,11 @@ namespace AtelierXNA
         {
             //PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
             //PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
-            GénérerBordureÀPartirDeMilieu();
+            if (PointsCentraux.Count > 0)
+            {
+                GénérerBordureÀPartirDeMilieu();
+                //InitialiserSommets();
+            }
 
             //PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
         }
@@ -116,9 +122,23 @@ namespace AtelierXNA
             PointsCentraux = GénérerListeRestreinte(DonnéesPiste.GetPointsCentraux());
         }
 
+        void GérerVisibilité()
+        {
+            if (CaméraJeu.Frustum.Intersects(SphereDeCollision))
+            {
+                //EnableDraw = true;
+                Visible = true;
+            }
+            else
+            {
+                Visible = false;
+                //EnableDraw = false;
+            }
+        }
+
         List<List<Vector2>> GénérerListeRestreinte(List<Vector2> points)
         {
-            Vector2 margeDeManoeuvre = new Vector2(10, 10);
+            Vector2 margeDeManoeuvre = new Vector2(20, 20);
             Vector2 pointMax = Coin + Étendue + margeDeManoeuvre;
             int ancienIndex = -1;
             List<List<Vector2>> temp = new List<List<Vector2>>();
@@ -140,9 +160,16 @@ namespace AtelierXNA
 
                     ancienIndex = i;
                 }
-                
+
             }
             temp.Add(listePointTemp);
+            for (int i = 0; i < temp.Count; ++i)
+            {
+                if (temp[i].Count < 2)
+                {
+                    temp.RemoveAt(i);
+                }
+            }
             return temp;
         }
 
@@ -152,11 +179,17 @@ namespace AtelierXNA
             PointsBordureInt = new List<List<Vector2>>();
             List<Vector2> tempInt = new List<Vector2>();
             List<Vector2> tempExt = new List<Vector2>();
+            Vector2 vecteurPourBordure = new Vector2();
             foreach (List<Vector2> listePointsCentraux in PointsCentraux)
             {
-                for (int i = 0; i < listePointsCentraux.Count() - 1; ++i)
+                for (int i = 0; i < listePointsCentraux.Count; ++i)
                 {
-                    Vector2 vecteurPourBordure = listePointsCentraux[i + 1] - listePointsCentraux[i];
+                    if (i < listePointsCentraux.Count - 1)
+                    {
+                        vecteurPourBordure = listePointsCentraux[i + 1] - listePointsCentraux[i];
+                    }
+                    else { vecteurPourBordure = listePointsCentraux[i] - listePointsCentraux[i - 1]; }
+
                     tempInt.Add(listePointsCentraux[i] + (LARGEUR_PISTE * (Vector2.Normalize(new Vector2(vecteurPourBordure.Y, -vecteurPourBordure.X)))));
                     tempExt.Add(listePointsCentraux[i] + (LARGEUR_PISTE * (Vector2.Normalize(new Vector2(-vecteurPourBordure.Y, vecteurPourBordure.X)))));
                 }
@@ -165,6 +198,18 @@ namespace AtelierXNA
                 PointsBordureExt.Add(tempExt);
                 tempExt = new List<Vector2>();
             }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            TempsÉcouléDepuisMAJ += TempsÉcoulé;
+            if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
+            {
+                //GérerVisibilité();
+                TempsÉcouléDepuisMAJ = 0;
+            }
+            base.Update(gameTime);
         }
 
         void InitialiserParamètresEffetDeBase()
@@ -192,6 +237,7 @@ namespace AtelierXNA
                     {
                         GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
                         //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
+                        //Problème à 60 / 0 / 135 -> Manque un bout de piste
                     }
 
                 }
