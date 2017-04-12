@@ -294,6 +294,9 @@ namespace AtelierXNA
                     MenuPrincipal.Enabled = true;
 
                     NetworkManager.SendDisconnect();
+                    //tests!
+                    Serveur.Close();
+
                     break;
                 case ChoixMenu.OPTION:
                     ÉtatPrécédentOption = État;
@@ -496,7 +499,7 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
-                    ConnectionAuServeur("127.0.0.1", 5001);
+                    ConnectionAuServeur("172.17.106.120", 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
@@ -561,9 +564,12 @@ namespace AtelierXNA
 
             if (UsedIP.FindIndex(s => s == ip) == -1) //marche simple joueur, pt pas multijoueur?
             {
-                Serveur = new Server(port, ip);
-                Game.Services.AddService(typeof(Server), Serveur);
-                NetworkManager = new Réseautique(Serveur, ip, port);
+                if(ÉtatJoueur != ÉtatsJoueur.CLIENT)
+                {
+                    Serveur = new Server(port, ip);
+                    Game.Services.AddService(typeof(Server), Serveur);
+                }
+                NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
                 UsedIP.Add(ip);
             }

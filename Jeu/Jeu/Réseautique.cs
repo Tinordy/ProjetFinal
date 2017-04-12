@@ -18,24 +18,27 @@ namespace AtelierXNA
 
         public bool DisconectedT { get; set; }
         const int BUFFER_SIZE = 2048;
-        Server Serveur { get; set; }
+        //Server Serveur { get; set; }
         TcpClient Client { get; set; }
         byte[] ReadBuffer { get; set; }
         public bool enemiConnecté { get; private set; }
-        /*public */MemoryStream readStream, writeStream;
+        /*public */
+        MemoryStream readStream, writeStream;
         public Vector3 PositionEnnemi { get; private set; }
         public Matrix MatriceMondeEnnemi { get; private set; }
-        /*public */BinaryReader reader;
-        /*public */BinaryWriter writer;
+        /*public */
+        BinaryReader reader;
+        /*public */
+        BinaryWriter writer;
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiEstArrivé { get; private set; }
 
-        public Réseautique(Server serveur, string ip, int port)
+        public Réseautique(/*Server serveur,*/ string ip, int port)
         {
-           PseudonymeE = "ORDI";
-            TempsDeCourseE = new TimeSpan(0,0,10);
+            PseudonymeE = "ORDI";
+            TempsDeCourseE = new TimeSpan(0, 0, 10);
 
-            Serveur = serveur;
+            //Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
             Client = new TcpClient();
@@ -53,7 +56,7 @@ namespace AtelierXNA
 
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Connected);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
             Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
 
@@ -78,7 +81,7 @@ namespace AtelierXNA
             writer.Write(m.M43);
             writer.Write(m.M44);
 
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
         }
         void StreamReceived(IAsyncResult ar)
         {
@@ -134,7 +137,7 @@ namespace AtelierXNA
                     enemiConnecté = true;
                     writeStream.Position = 0;
                     writer.Write((byte)Protocoles.Connected);
-                    SendData(Serveur.GetDataFromMemoryStream(writeStream));
+                    SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
                 }
 
             }
@@ -176,7 +179,7 @@ namespace AtelierXNA
             {
                 EnnemiPrêtÀJouer = reader.ReadBoolean();
             }
-            else if(p == Protocoles.HasArrivedToEnd)
+            else if (p == Protocoles.HasArrivedToEnd)
             {
                 EnnemiEstArrivé = reader.ReadBoolean();
                 TempsDeCourseE = new TimeSpan(reader.ReadInt64());
@@ -206,7 +209,7 @@ namespace AtelierXNA
             writer.Write(position.X);
             writer.Write(position.Y);
             writer.Write(position.Z);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
         }
         public void SendTerminé(bool val, TimeSpan tempsDeCourse, string pseudonyme)
         {
@@ -215,22 +218,38 @@ namespace AtelierXNA
             writer.Write(val);
             writer.Write(tempsDeCourse.Ticks);
             writer.Write(pseudonyme);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
         }
         public void SendPrêtJeu(bool val)
         {
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.ReadyToPlayChanged);
             writer.Write(val);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
         }
         public void SendDisconnect()
         {
             //Client.Close(); //test
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Disconnected);
-            SendData(Serveur.GetDataFromMemoryStream(writeStream));
+            SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
         }
         #endregion
+        public byte[] GetDataFromMemoryStream(MemoryStream ms)
+        {
+            byte[] result;
+            float limite = 10f;
+
+            float X;
+            float Y;
+            float Z;
+            int bytesWritten = (int)ms.Position;
+            result = new byte[bytesWritten];
+            ms.Position = 0;
+
+            ms.Read(result, 0, bytesWritten);
+
+            return result;
+        }
     }
 }
