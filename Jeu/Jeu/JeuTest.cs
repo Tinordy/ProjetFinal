@@ -596,7 +596,7 @@ namespace AtelierXNA
             {
                 Serveur = new Server(port, ip);
                 Game.Services.AddService(typeof(Server), Serveur);
-                NetworkManager = new Réseautique(Serveur, ip, port);
+                NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
                 UsedIP.Add(ip);
             }
