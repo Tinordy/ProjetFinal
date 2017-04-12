@@ -351,7 +351,13 @@ namespace AtelierXNA
             //SendDataClient(GetDataFromMemoryStream(writeStream));
             //Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
         }
-
+        public void Close()
+        {
+            //singleton.Close();
+            //Client.Close();
+            //listener.Stop();
+            
+        }
         /// <summary>
         /// Method that is performed when a new user is added.
         /// </summary>

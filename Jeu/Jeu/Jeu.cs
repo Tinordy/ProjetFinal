@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Net.Sockets;
 //using System.Windows.Forms;
 using System.IO;
+using System.Net;
 
 namespace AtelierXNA
 {
@@ -99,6 +100,7 @@ namespace AtelierXNA
             : base(game)
         {
             CréerMenus();
+            test = false;
         }
         public override void Initialize()
         {
@@ -294,6 +296,9 @@ namespace AtelierXNA
                     MenuPrincipal.Enabled = true;
 
                     NetworkManager.SendDisconnect();
+                    //tests!
+                    Serveur.Close();
+
                     break;
                 case ChoixMenu.OPTION:
                     ÉtatPrécédentOption = État;
@@ -496,7 +501,9 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
-                    ConnectionAuServeur("127.0.0.1", 5001);
+                    //test
+                    string HostName = Dns.GetHostName();
+                    ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString(), 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
@@ -555,22 +562,25 @@ namespace AtelierXNA
             }
         }
         #endregion
+        bool test { get; set; }
         private void ConnectionAuServeur(string ip, int port)
         {
             //enlever ip!!!
 
-            if (UsedIP.FindIndex(s => s == ip) == -1) //marche simple joueur, pt pas multijoueur?
+            if (!test/*UsedIP.FindIndex(s => s == ip) == -1*/) //marche simple joueur, pt pas multijoueur?
             {
-                Serveur = new Server(port, ip);
-                Game.Services.AddService(typeof(Server), Serveur);
-                NetworkManager = new Réseautique(Serveur, ip, port);
-                Game.Services.AddService(typeof(Réseautique), NetworkManager);
-                UsedIP.Add(ip);
+                if(ÉtatJoueur != ÉtatsJoueur.CLIENT)
+                {
+                    Serveur = new Server(port, ip);
+                    Game.Services.AddService(typeof(Server), Serveur);
+                }
+                //NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
+                //Game.Services.AddService(typeof(Réseautique), NetworkManager);
+                //UsedIP.Add(ip);
+                test = true;
             }
-            else
-            {
-
-            }
+            NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
+            Game.Services.AddService(typeof(Réseautique), NetworkManager);
         }
         #region initialisation du jeu
         private void InitialiserLeJeu()
