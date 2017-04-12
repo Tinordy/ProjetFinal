@@ -9,14 +9,14 @@ using System.Windows.Forms;
 
 namespace AtelierXNA
 {
-    class Réseautique/* : IResettable*/
+    public class Réseautique : Microsoft.Xna.Framework.GameComponent
     {
         public TimerAugmente TempsDeCourseJ { get; set; }
         public string PseudonymeJ { get; set; }
         public TimeSpan TempsDeCourseE { get; set; }
         public string PseudonymeE { get; set; }
 
-        public bool DisconectedT { get; set; }
+        public bool DisconnectedT { get; set; }
         const int BUFFER_SIZE = 2048;
         //Server Serveur { get; set; }
         TcpClient Client { get; set; }
@@ -33,7 +33,8 @@ namespace AtelierXNA
         public bool EnnemiPrêtÀJouer { get; private set; }
         public bool EnnemiEstArrivé { get; private set; }
 
-        public Réseautique(/*Server serveur,*/ string ip, int port)
+        public Réseautique(Game game,/*Server serveur,*/ string ip, int port)
+            :base(game)
         {
             PseudonymeE = "ORDI";
             TempsDeCourseE = new TimeSpan(0, 0, 10);
@@ -97,7 +98,7 @@ namespace AtelierXNA
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message + "salut cest ici l'erreur");
-                DisconectedT = true;
+                DisconnectedT = true;
             }
 
             if (bytesRead == 0)
@@ -144,7 +145,7 @@ namespace AtelierXNA
             else if (p == Protocoles.Disconnected)
             {
                 enemiConnecté = false;
-                DisconectedT = true;
+                DisconnectedT = true;
             }
             else if (p == Protocoles.PlayerMoved)
             {
@@ -250,6 +251,40 @@ namespace AtelierXNA
             ms.Read(result, 0, bytesWritten);
 
             return result;
+        }
+        public void Close()
+        {
+            Client.Close();
+        }
+        public void Reset(string ip, int port)
+        {
+            PseudonymeE = "ORDI";
+            TempsDeCourseE = new TimeSpan(0, 0, 10);
+
+            //Serveur = serveur;
+            EnnemiPrêtÀJouer = false;
+
+            //Client = new TcpClient();
+            //readStream = new MemoryStream();
+           // writeStream = new MemoryStream();
+
+            enemiConnecté = false;
+
+          //  reader = new BinaryReader(readStream);
+         //   writer = new BinaryWriter(writeStream);
+         //   Client.NoDelay = true;
+        //    Client.Connect(ip, port);
+
+        //    ReadBuffer = new byte[BUFFER_SIZE];
+
+       //     writeStream.Position = 0;
+       //     writer.Write((byte)Protocoles.Connected);
+            //SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
+            //Client.GetStream().BeginRead(ReadBuffer, 0, BUFFER_SIZE, StreamReceived, null);
+
+            DisconnectedT = false;
+            EnnemiPrêtÀJouer = false;
+            EnnemiEstArrivé = false;
         }
     }
 }

@@ -78,6 +78,7 @@ namespace AtelierXNA
         public void ActiverBtnDémarrer()
         {
             BtnDémarrer.EstActif = true;
+            Choix = ChoixMenu.EN_ATTENTE;
         }
         protected override void OnEnabledChanged(object sender, EventArgs args)
         {

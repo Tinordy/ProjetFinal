@@ -22,6 +22,7 @@ namespace AtelierXNA
     enum …tatsMenu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, CHOIX_PROFILE, ENTR…E_PORT_SERVEUR, ENTR…E_PORT_CLIENT, ATTENTE_JOUEURS, CONNECTION }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        bool Connection…tablie { get; set; }
         const int …TENDUE = 50;
         const float INTERVALLE_MAJ = 1f / 60f;
         List<string> UsedIP { get; set; } //LEGIT?
@@ -124,14 +125,17 @@ namespace AtelierXNA
 
         private void GÈrerDÈconnection()
         {
-            if (NetworkManager != null && NetworkManager.DisconectedT)
+            if (Connection…tablie && NetworkManager.DisconnectedT)
             {
                 …tat = …tatsJeu.MENU_PRINCIPAL;
                 MenuPrincipal.Enabled = true;
                 //dÈsactiver tous les menus
                 MenuDePause.Enabled = false;
                 MenuFinDePartie.Enabled = false;
-                NetworkManager.DisconectedT = false;
+                NetworkManager.DisconnectedT = false;
+                Connection…tablie = false;
+                NetworkManager.Close();
+
             }
         }
 
@@ -237,6 +241,8 @@ namespace AtelierXNA
                     MenuFinDePartie.Enabled = false;
                     MenuPrincipal.Enabled = true;
                     NetworkManager.SendDisconnect();
+                    Connection…tablie = false;
+                    NetworkManager.Close();
                     break;
             }
         }
@@ -296,8 +302,10 @@ namespace AtelierXNA
                     MenuPrincipal.Enabled = true;
 
                     NetworkManager.SendDisconnect();
+                    NetworkManager.Close();
+                    //s'arranger pour que ce soit automatique?
+                    Connection…tablie = false;
                     //tests!
-                    Serveur.Close();
 
                     break;
                 case ChoixMenu.OPTION:
@@ -439,7 +447,6 @@ namespace AtelierXNA
                     //ENVOYER PSUDONYME A ENNEMI!!!!!!!
                     break;
                 case ChoixMenu.JOUER:
-                    //retirer tous les menus des components?
                     …tat = …tatsJeu.D…COMPTE;
                     MenuChoixProfile.Enabled = false;
                     InitialiserLeJeu();
@@ -563,10 +570,10 @@ namespace AtelierXNA
         }
         #endregion
         bool test { get; set; }
+
         private void ConnectionAuServeur(string ip, int port)
         {
             //enlever ip!!!
-
             if (!test/*UsedIP.FindIndex(s => s == ip) == -1*/) //marche simple joueur, pt pas multijoueur?
             {
                 if(…tatJoueur != …tatsJoueur.CLIENT)
@@ -574,13 +581,19 @@ namespace AtelierXNA
                     Serveur = new Server(port, ip);
                     Game.Services.AddService(typeof(Server), Serveur);
                 }
-                //NetworkManager = new RÈseautique(/*Serveur,*/ ip, port);
-                //Game.Services.AddService(typeof(RÈseautique), NetworkManager);
+                NetworkManager = new RÈseautique(Game,/*Serveur,*/ ip, port);
+                Game.Services.AddService(typeof(RÈseautique), NetworkManager);
                 //UsedIP.Add(ip);
                 test = true;
             }
-            NetworkManager = new RÈseautique(/*Serveur,*/ ip, port);
-            Game.Services.AddService(typeof(RÈseautique), NetworkManager);
+            else
+            {
+                NetworkManager.Reset(ip, port);
+            }
+            Connection…tablie = true;
+            //NetworkManager = new RÈseautique(/*Serveur,*/ ip, port);
+            //Game.Services.AddService(typeof(RÈseautique), NetworkManager);
+
         }
         #region initialisation du jeu
         private void InitialiserLeJeu()

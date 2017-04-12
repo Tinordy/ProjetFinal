@@ -119,7 +119,7 @@ namespace AtelierXNA
 
         private void GérerDéconnection()
         {
-            if (NetworkManager != null && NetworkManager.DisconectedT)
+            if (NetworkManager != null && NetworkManager.DisconnectedT)
             {
                 État = ÉtatsJeuT.MENU;
                 ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
@@ -127,7 +127,7 @@ namespace AtelierXNA
                 //désactiver tous les menus
                 MenuDePause.Enabled = false;
                 MenuFinDePartie.Enabled = false;
-                NetworkManager.DisconectedT = false;
+                NetworkManager.DisconnectedT = false;
             }
         }
 
@@ -596,7 +596,7 @@ namespace AtelierXNA
             {
                 Serveur = new Server(port, ip);
                 Game.Services.AddService(typeof(Server), Serveur);
-                NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
+                NetworkManager = new Réseautique(Game,/*Serveur,*/ ip, port);
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
                 UsedIP.Add(ip);
             }
