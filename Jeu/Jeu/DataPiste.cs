@@ -16,7 +16,7 @@ namespace AtelierXNA
         const string CHEMIN = "../../../";
         const char ESPACE = ' ';
         const char TAB = '\t';
-        const float ÉCHELLE = 2;
+
 
 
         List<float[]> CoefficientsX { get; set; }
@@ -76,7 +76,7 @@ namespace AtelierXNA
             PointsCube = new List<Vector2>();
             for (int i = 0; i < CoefficientsX.Count; ++i)
             {
-                PointsCube.Add(ÉCHELLE * new Vector2(Spline(CoefficientsX[i], i), Spline(CoefficientsY[i], i)));
+                PointsCube.Add( new Vector2(Spline(CoefficientsX[i], i), Spline(CoefficientsY[i], i)));
             }
         }
         void CalculerPointsCentraux()
@@ -86,7 +86,7 @@ namespace AtelierXNA
             {
                 for (int cpt = 0; cpt < NB_PTS_INTERMÉDIAIRES; ++cpt)
                 {
-                    PointsCentraux.Add(ÉCHELLE * new Vector2(Spline(CoefficientsX[i], i + (float)cpt / NB_PTS_INTERMÉDIAIRES), Spline(CoefficientsY[i], i + (float)cpt / NB_PTS_INTERMÉDIAIRES)));
+                    PointsCentraux.Add(new Vector2(Spline(CoefficientsX[i], i + (float)cpt / NB_PTS_INTERMÉDIAIRES), Spline(CoefficientsY[i], i + (float)cpt / NB_PTS_INTERMÉDIAIRES)));
                 }
             }
 
