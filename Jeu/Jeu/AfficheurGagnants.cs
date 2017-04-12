@@ -53,7 +53,7 @@ namespace AtelierXNA
             Game.Components.Add(Perdant);
             Perdant.DrawOrder = 2;
 
-            Félicitation = new Titre(Game, "Félicitation " + Pseudonymes[IndexGagnant] + '!', "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 5 * Game.Window.ClientBounds.Height / 6), "Blanc");
+            Félicitation = new Titre(Game, "Félicitations " + Pseudonymes[IndexGagnant] + '!', "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 5 * Game.Window.ClientBounds.Height / 6), "Blanc");
             Game.Components.Add(Félicitation);
             Félicitation.DrawOrder = 2;
 
