@@ -501,7 +501,9 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
-                    ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString();, 5001);
+                    //test
+                    string HostName = Dns.GetHostName();
+                    ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString(), 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
