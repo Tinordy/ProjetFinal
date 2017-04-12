@@ -101,6 +101,7 @@
     <Compile Include="IResettable.cs" />
     <Compile Include="ISélectionnable.cs" />
     <Compile Include="Jeu.cs" />
+    <Compile Include="JeuTest.cs" />
     <Compile Include="Maison.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="MenuFinPartie.cs" />
@@ -112,7 +113,6 @@
     <Compile Include="MenuPause.cs" />
     <Compile Include="MenuPrincipal.cs" />
     <Compile Include="MenuProfile.cs" />
-    <Compile Include="MenusDeJeu.cs" />
     <Compile Include="ObjetDeBase.cs" />
     <Compile Include="PisteSectionnée.cs" />
     <Compile Include="PrimitiveDeBase.cs" />

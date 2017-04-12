@@ -16,8 +16,12 @@ namespace AtelierXNA
     public class AfficheurGagnants : Microsoft.Xna.Framework.DrawableGameComponent
     {
         Réseautique NetworkManager { get; set; }
+        string[] Pseudonymes { get; set; }
+        TimeSpan[] Temps { get; set; }
+        int IndexGagnant { get; set; }
         Titre Gagnant { get; set; }
         Titre Perdant { get; set; }
+        Titre Félicitation { get; set; }
         public AfficheurGagnants(Game game)
             : base(game)
         {
@@ -25,6 +29,8 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            Pseudonymes = new string[2];
+            Temps = new TimeSpan[2];
             base.Initialize();
         }
         void Activer()
@@ -32,14 +38,24 @@ namespace AtelierXNA
             NetworkManager = Game.Services.GetService(typeof(Réseautique)) as Réseautique; //on le fait plusieurs fois... PAS GRAVE?
             //Game.Components.Remove(Gagnant);
             //Game.Components.Remove(Perdant);
-     
-            Gagnant = new Titre(Game, NetworkManager.PseudonymeJ + '-' + NetworkManager.TempsDeCourseJ.ValeurTimer.ToString("mm':'ss','ff"), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc");
+
+            Pseudonymes[0] = NetworkManager.PseudonymeJ;
+            Pseudonymes[1] = NetworkManager.PseudonymeE;
+            Temps[0] = NetworkManager.TempsDeCourseJ.ValeurTimer;
+            Temps[1] = NetworkManager.TempsDeCourseE;
+            IndexGagnant = Convert.ToInt32(Temps[0] > Temps[1]);
+
+            Gagnant = new Titre(Game, Pseudonymes[IndexGagnant] + '-' + Temps[IndexGagnant].ToString("mm':'ss','ff"), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc");
             Game.Components.Add(Gagnant);
             Gagnant.DrawOrder = 2;
 
-            Perdant = new Titre(Game, NetworkManager.PseudonymeE + '-' + NetworkManager.TempsDeCourseE, "Arial", new Vector2(Game.Window.ClientBounds.Width/2, 3*Game.Window.ClientBounds.Height/5), "Blanc");
+            Perdant = new Titre(Game, Pseudonymes[(IndexGagnant + 1) % 2] + '-' + Temps[(IndexGagnant + 1) % 2].ToString("mm':'ss','ff"), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 3 * Game.Window.ClientBounds.Height / 5), "Blanc");
             Game.Components.Add(Perdant);
             Perdant.DrawOrder = 2;
+
+            Félicitation = new Titre(Game, "Félicitation " + Pseudonymes[IndexGagnant] + '!', "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 5 * Game.Window.ClientBounds.Height / 6), "Blanc");
+            Game.Components.Add(Félicitation);
+            Félicitation.DrawOrder = 2;
 
         }
         protected override void OnEnabledChanged(object sender, EventArgs args)
@@ -50,10 +66,11 @@ namespace AtelierXNA
             }
             else
             {
-                if(Gagnant != null)
+                if(Gagnant != null) //ouin...
                 {
                     Game.Components.Remove(Gagnant);
                     Game.Components.Remove(Perdant);
+                    Game.Components.Remove(Félicitation);
                 }
             }
             base.OnEnabledChanged(sender, args);

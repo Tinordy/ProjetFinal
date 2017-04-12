@@ -13,7 +13,7 @@ namespace AtelierXNA
     {
         public TimerAugmente TempsDeCourseJ { get; set; }
         public string PseudonymeJ { get; set; }
-        public string TempsDeCourseE { get; set; }
+        public TimeSpan TempsDeCourseE { get; set; }
         public string PseudonymeE { get; set; }
 
         public bool DisconectedT { get; set; }
@@ -32,6 +32,9 @@ namespace AtelierXNA
 
         public Réseautique(Server serveur, string ip, int port)
         {
+           PseudonymeE = "ORDI";
+            TempsDeCourseE = new TimeSpan(0,0,10);
+
             Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
@@ -176,7 +179,7 @@ namespace AtelierXNA
             else if(p == Protocoles.HasArrivedToEnd)
             {
                 EnnemiEstArrivé = reader.ReadBoolean();
-                TempsDeCourseE = reader.ReadString(); //marche tu?
+                TempsDeCourseE = new TimeSpan(reader.ReadInt64());
                 PseudonymeE = reader.ReadString();
             }
         }
@@ -195,6 +198,7 @@ namespace AtelierXNA
             }
         }
         #region méthodes publiques
+
         public void SendPosIni(Vector3 position)
         {
             writeStream.Position = 0;
@@ -209,7 +213,7 @@ namespace AtelierXNA
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.HasArrivedToEnd);
             writer.Write(val);
-            writer.Write(tempsDeCourse.ToString("mm':'ss','ff"));
+            writer.Write(tempsDeCourse.Ticks);
             writer.Write(pseudonyme);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));
         }
@@ -222,6 +226,7 @@ namespace AtelierXNA
         }
         public void SendDisconnect()
         {
+            //Client.Close(); //test
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Disconnected);
             SendData(Serveur.GetDataFromMemoryStream(writeStream));

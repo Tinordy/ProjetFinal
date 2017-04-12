@@ -8,18 +8,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System.Net.Sockets;
-//using System.Windows.Forms;
-using System.IO;
+
 
 namespace AtelierXNA
 {
-    //GROSSE CLASSE MENUSDEJEU???
-    //
-    enum ÉtatsJeu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, JEU, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, MENU_PAUSE, CONNECTION, ATTENTE_JOUEURS, DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE, MENU }
-    enum ÉtatsJoueur { SOLO, SERVEUR, CLIENT }
-    enum ÉtatsMenu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, ATTENTE_JOUEURS, CONNECTION }
-    public class Jeu : Microsoft.Xna.Framework.GameComponent
+    enum ÉtatsJeuT { /*MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, */JEU, /*CHOIX_PROFILE, *//*ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, */MENU_PAUSE, /*CONNECTION, *//*ATTENTE_JOUEURS, */DÉCOMPTE, PAUSE, STAND_BY, GAGNÉ, PERDU, FIN_DE_PARTIE, MENU }
+
+    public class JeuTest : Microsoft.Xna.Framework.GameComponent
     {
         const int ÉTENDUE = 50;
         const float INTERVALLE_MAJ = 1f / 60f;
@@ -54,12 +49,12 @@ namespace AtelierXNA
                 NetworkManager.SendTerminé(gagné, NetworkManager.TempsDeCourseJ.ValeurTimer, NetworkManager.PseudonymeJ);
                 if (gagné)
                 {
-                    État = ÉtatsJeu.GAGNÉ;
+                    État = ÉtatsJeuT.GAGNÉ;
                     NetworkManager.TempsDeCourseJ.EstActif = false;
                 }
                 else
                 {
-                    État = ÉtatsJeu.PERDU;
+                    État = ÉtatsJeuT.PERDU;
                 }
                 //différent, fin de partie
                 //Game.Components.Add(new Titre(Game, État.ToString(), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc"));
@@ -73,8 +68,9 @@ namespace AtelierXNA
                 return 492 < Joueur.Position.X && 508 > Joueur.Position.X && 392 < Joueur.Position.Z && 408 > Joueur.Position.Z;
             }
         }
-        ÉtatsJeu État { get; set; }
+        ÉtatsJeuT État { get; set; }
         ÉtatsJoueur ÉtatJoueur { get; set; }
+        ÉtatsMenu ÉtatMenu { get; set; }
         MenuPrincipal MenuPrincipal { get; set; }
         MenuOption MenuDesOptions { get; set; }
         MenuLan MenuNetwork { get; set; }
@@ -84,7 +80,7 @@ namespace AtelierXNA
         MenuPause MenuDePause { get; set; }
         MenuFinPartie MenuFinDePartie { get; set; }
         Menu MenuSélectionnéOption { get; set; }
-        ÉtatsJeu ÉtatPrécédentOption { get; set; }
+        ÉtatsMenu ÉtatPrécédentOption { get; set; }
 
         Server Serveur { get; set; }
         Réseautique NetworkManager { get; set; }
@@ -95,7 +91,7 @@ namespace AtelierXNA
         //TimerAugmente TempsDeCourse { get; set; }
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
-        public Jeu(Game game)
+        public JeuTest(Game game)
             : base(game)
         {
             CréerMenus();
@@ -109,7 +105,8 @@ namespace AtelierXNA
 
             UsedIP = new List<string>();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            État = ÉtatsJeu.MENU_PRINCIPAL;
+            État = ÉtatsJeuT.MENU;
+            ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
             //MenuPrincipal.Enabled = true;
         }
 
@@ -124,7 +121,8 @@ namespace AtelierXNA
         {
             if (NetworkManager != null && NetworkManager.DisconectedT)
             {
-                État = ÉtatsJeu.MENU_PRINCIPAL;
+                État = ÉtatsJeuT.MENU;
+                ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
                 MenuPrincipal.Enabled = true;
                 //désactiver tous les menus
                 MenuDePause.Enabled = false;
@@ -137,7 +135,7 @@ namespace AtelierXNA
         {
             switch (État)
             {
-                case ÉtatsJeu.JEU:
+                case ÉtatsJeuT.JEU:
                     GérerÉtatJeu();
                     break;
             }
@@ -171,53 +169,87 @@ namespace AtelierXNA
         {
             switch (État)
             {
-                case ÉtatsJeu.MENU_PRINCIPAL:
-                    GérerTransitionMenuPrincipal();
+                case ÉtatsJeuT.MENU:
+                    GérerTransitionMenus();
                     break;
-                case ÉtatsJeu.MENU_OPTION:
-                    GérerTransitionMenuOption();
-                    break;
-                case ÉtatsJeu.CHOIX_LAN:
-                    GérerTransitionMenuChoixLan();
-                    break;
-                case ÉtatsJeu.CHOIX_PROFILE:
-                    GérerTransitionMenuProfile();
-                    break;
-                case ÉtatsJeu.ENTRÉE_PORT_SERVEUR:
-                    GérerTransitionMenuServeur();
-                    break;
-                case ÉtatsJeu.ENTRÉE_PORT_CLIENT:
-                    GérerTransitionMenuClient();
-                    break;
-                case ÉtatsJeu.CONNECTION:
-                    GérerTransitionConnection();
-                    break;
-                case ÉtatsJeu.ATTENTE_JOUEURS:
-                    GérerTransitionAttenteJoueurs();
-                    break;
-                case ÉtatsJeu.DÉCOMPTE:
+                //case ÉtatsJeu.MENU_PRINCIPAL:
+                //    GérerTransitionMenuPrincipal();
+                //    break;
+                //case ÉtatsJeu.MENU_OPTION:
+                //    GérerTransitionMenuOption();
+                //    break;
+                //case ÉtatsJeu.CHOIX_LAN:
+                //    GérerTransitionMenuChoixLan();
+                //    break;
+                //case ÉtatsJeu.CHOIX_PROFILE:
+                //    GérerTransitionMenuProfile();
+                //    break;
+                //case ÉtatsJeu.ENTRÉE_PORT_SERVEUR:
+                //    GérerTransitionMenuServeur();
+                //    break;
+                //case ÉtatsJeu.ENTRÉE_PORT_CLIENT:
+                //    GérerTransitionMenuClient();
+                //    break;
+                //case ÉtatsJeu.CONNECTION:
+                //    GérerTransitionConnection();
+                //    break;
+                //case ÉtatsJeu.ATTENTE_JOUEURS:
+                //    GérerTransitionAttenteJoueurs();
+                //    break;
+                case ÉtatsJeuT.DÉCOMPTE:
                     GérerTransitionDécompte();
                     break;
-                case ÉtatsJeu.JEU:
+                case ÉtatsJeuT.JEU:
                     GérerTransitionJeu();
                     break;
-                case ÉtatsJeu.PAUSE:
+                case ÉtatsJeuT.PAUSE:
                     GérerTransitionPause();
                     break;
-                case ÉtatsJeu.STAND_BY:
+                case ÉtatsJeuT.STAND_BY:
                     GérerTransitionStandBy();
                     break;
-                case ÉtatsJeu.GAGNÉ:
+                case ÉtatsJeuT.GAGNÉ:
                     GérerTransitionGagné();
                     break;
-                case ÉtatsJeu.PERDU:
+                case ÉtatsJeuT.PERDU:
                     GérerTransitionPerdu();
                     break;
-                case ÉtatsJeu.FIN_DE_PARTIE:
+                case ÉtatsJeuT.FIN_DE_PARTIE:
                     GérerTransitionFinDePartie();
                     break;
             }
 
+        }
+
+        private void GérerTransitionMenus()
+        {
+            switch(ÉtatMenu)
+            {
+                case ÉtatsMenu.MENU_PRINCIPAL:
+                    GérerTransitionMenuPrincipal();
+                    break;
+                case ÉtatsMenu.MENU_OPTION:
+                    GérerTransitionMenuOption();
+                    break;
+                case ÉtatsMenu.CHOIX_LAN:
+                    GérerTransitionMenuChoixLan();
+                    break;
+                case ÉtatsMenu.CHOIX_PROFILE:
+                    GérerTransitionMenuProfile();
+                    break;
+                case ÉtatsMenu.ENTRÉE_PORT_SERVEUR:
+                    GérerTransitionMenuServeur();
+                    break;
+                case ÉtatsMenu.ENTRÉE_PORT_CLIENT:
+                    GérerTransitionMenuClient();
+                    break;
+                case ÉtatsMenu.ATTENTE_JOUEURS:
+                    GérerTransitionAttenteJoueurs();
+                    break;
+                case ÉtatsMenu.CONNECTION:
+                    GérerTransitionConnection();
+                    break;
+            }
         }
 
         private void GérerTransitionFinDePartie()
@@ -227,11 +259,13 @@ namespace AtelierXNA
                 case ChoixMenu.JOUER:
                     MenuFinDePartie.Enabled = false;
                     MenuChoixProfile.Enabled = true;
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    État = ÉtatsJeuT.MENU;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                     //Envoyer client!!! REJOUER!!!
                     break;
                 case ChoixMenu.QUITTER:
-                    État = ÉtatsJeu.MENU_PRINCIPAL;
+                    État = ÉtatsJeuT.MENU;
+                    ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
                     MenuFinDePartie.Enabled = false;
                     MenuPrincipal.Enabled = true;
                     NetworkManager.SendDisconnect();
@@ -243,7 +277,7 @@ namespace AtelierXNA
         {
             if (JoueurEstArrivé)
             {
-                État = ÉtatsJeu.FIN_DE_PARTIE;
+                État = ÉtatsJeuT.FIN_DE_PARTIE;
                 MenuFinDePartie.Enabled = true;
                 NetworkManager.TempsDeCourseJ.EstActif = false;
                 Joueur.EstActif = false;
@@ -259,7 +293,7 @@ namespace AtelierXNA
         {
             if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO)
             {
-                État = ÉtatsJeu.FIN_DE_PARTIE;
+                État = ÉtatsJeuT.FIN_DE_PARTIE;
                 MenuFinDePartie.Enabled = true;
                 Joueur.Enabled = false;
             }
@@ -273,7 +307,7 @@ namespace AtelierXNA
         {
             if (NetworkManager.EnnemiPrêtÀJouer)
             {
-                État = ÉtatsJeu.JEU;
+                État = ÉtatsJeuT.JEU;
                 Pause = false;
                 MenuDePause.Enabled = false;
             }
@@ -285,19 +319,20 @@ namespace AtelierXNA
             {
                 case ChoixMenu.JOUER:
                     MenuDePause.Enabled = false;
-                    État = ÉtatsJeu.JEU;
+                    État = ÉtatsJeuT.JEU;
                     Pause = false; //AJOUTER DÉCOMPTE :(
                     break;
                 case ChoixMenu.QUITTER:
                     MenuDePause.Enabled = false;
-                    État = ÉtatsJeu.MENU_PRINCIPAL;
+                    État = ÉtatsJeuT.MENU;
+                    ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
                     MenuPrincipal.Enabled = true;
-
                     NetworkManager.SendDisconnect();
                     break;
                 case ChoixMenu.OPTION:
-                    ÉtatPrécédentOption = État;
-                    État = ÉtatsJeu.MENU_OPTION;
+                    ÉtatPrécédentOption = ÉtatMenu; //NOT WORKING... PAUSE != menu! yet
+                    État = ÉtatsJeuT.MENU;
+                    ÉtatMenu = ÉtatsMenu.MENU_OPTION;
                     MenuDesOptions.Enabled = true;
                     MenuDePause.ChangerActivationMenu(false);
                     MenuSélectionnéOption = MenuDePause;
@@ -340,7 +375,7 @@ namespace AtelierXNA
             {
                 if (GestionInput.EstNouvelleTouche(Keys.Space))
                 {
-                    État = ÉtatsJeu.PAUSE;
+                    État = ÉtatsJeuT.PAUSE;
                     Pause = true;
                     MenuDePause.Enabled = true;
                     MenuDePause.ChangerActivationMenu(true);
@@ -350,7 +385,7 @@ namespace AtelierXNA
             {
                 if (!NetworkManager.EnnemiPrêtÀJouer)
                 {
-                    État = ÉtatsJeu.STAND_BY;
+                    État = ÉtatsJeuT.STAND_BY;
                     MenuDePause.Enabled = true;
                     MenuDePause.ChangerActivationMenu(false);
                     Pause = true;
@@ -362,7 +397,7 @@ namespace AtelierXNA
         {
             if (!DécompteInitial.EstActif)
             {
-                État = ÉtatsJeu.JEU;
+                État = ÉtatsJeuT.JEU;
                 Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
@@ -377,21 +412,21 @@ namespace AtelierXNA
             {
                 case ÉtatsJoueur.SOLO:
                     MenuChoixProfile.ActiverBtnDémarrer();
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                     break;
                 case ÉtatsJoueur.CLIENT:
                     if (NetworkManager.EnnemiPrêtÀJouer)
                     {
                         MenuChoixProfile.Enabled = false;
                         InitialiserLeJeu();
-                        État = ÉtatsJeu.DÉCOMPTE;
+                        État = ÉtatsJeuT.DÉCOMPTE;
                         InitialiserDécompte();
                     }
                     break;
                 case ÉtatsJoueur.SERVEUR:
                     if (NetworkManager.EnnemiPrêtÀJouer)
                     {
-                        État = ÉtatsJeu.CHOIX_PROFILE;
+                        ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                         MenuChoixProfile.ActiverBtnDémarrer();
                     }
                     break;
@@ -410,7 +445,7 @@ namespace AtelierXNA
             {
                 //t = true;
                 //bool test = NetworkManager.enemiConnecté;
-                État = ÉtatsJeu.CHOIX_PROFILE;
+                ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                 MenuServeur.Enabled = false;
                 MenuChoixProfile.Enabled = true;
             }
@@ -429,13 +464,13 @@ namespace AtelierXNA
                     {
                         NetworkManager.SendPrêtJeu(true);
                     }
-                    État = ÉtatsJeu.ATTENTE_JOUEURS;
+                    ÉtatMenu = ÉtatsMenu.ATTENTE_JOUEURS;
                     NetworkManager.PseudonymeJ = MenuChoixProfile.Pseudonyme;
                     //ENVOYER PSUDONYME A ENNEMI!!!!!!!
                     break;
                 case ChoixMenu.JOUER:
                     //retirer tous les menus des components?
-                    État = ÉtatsJeu.DÉCOMPTE;
+                    État = ÉtatsJeuT.DÉCOMPTE;
                     MenuChoixProfile.Enabled = false;
                     InitialiserLeJeu();
                     InitialiserDécompte();
@@ -456,13 +491,13 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.JOUER:
-                    État = ÉtatsJeu.CHOIX_LAN;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_LAN;
                     MenuPrincipal.Enabled = false;
                     MenuNetwork.Enabled = true;
                     break;
                 case ChoixMenu.OPTION:
-                    ÉtatPrécédentOption = État;
-                    État = ÉtatsJeu.MENU_OPTION;
+                    ÉtatPrécédentOption = ÉtatMenu;
+                    ÉtatMenu = ÉtatsMenu.MENU_OPTION;
                     MenuPrincipal.ChangerActivationMenu(false);
                     MenuDesOptions.Enabled = true;
                     MenuSélectionnéOption = MenuPrincipal;
@@ -479,7 +514,7 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.RETOUR:
-                    État = ÉtatPrécédentOption;
+                    ÉtatMenu = ÉtatPrécédentOption;
                     MenuDesOptions.Enabled = false;
                     MenuSélectionnéOption.ChangerActivationMenu(true);
                     break;
@@ -492,26 +527,26 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.SOLO:
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
                     ConnectionAuServeur("127.0.0.1", 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
-                    État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
+                    ÉtatMenu = ÉtatsMenu.ENTRÉE_PORT_CLIENT;
                     MenuNetwork.Enabled = false;
                     MenuClient.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.CLIENT;
                     break;
                 case ChoixMenu.SERVEUR:
-                    État = ÉtatsJeu.ENTRÉE_PORT_SERVEUR;
+                    ÉtatMenu = ÉtatsMenu.ENTRÉE_PORT_SERVEUR;
                     MenuNetwork.Enabled = false;
                     MenuServeur.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SERVEUR;
                     break;
                 case ChoixMenu.RETOUR:
-                    État = ÉtatsJeu.MENU_PRINCIPAL;
+                    ÉtatMenu = ÉtatsMenu.MENU_PRINCIPAL;
                     MenuNetwork.Enabled = false;
                     MenuPrincipal.Enabled = true;
                     break;
@@ -524,11 +559,11 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.CONNECTION:
-                    État = ÉtatsJeu.CONNECTION;
+                    ÉtatMenu = ÉtatsMenu.CONNECTION;
                     ConnectionAuServeur(MenuServeur.IP, MenuServeur.Port);
                     break;
                 case ChoixMenu.QUITTER:
-                    État = ÉtatsJeu.CHOIX_LAN;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_LAN;
                     MenuServeur.Enabled = false;
                     MenuNetwork.Enabled = true;
                     break;
@@ -542,13 +577,13 @@ namespace AtelierXNA
                 case ChoixMenu.EN_ATTENTE:
                     break;
                 case ChoixMenu.CONNECTION:
-                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_PROFILE;
                     MenuClient.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ConnectionAuServeur(MenuClient.IP, MenuClient.Port);
                     break;
                 case ChoixMenu.QUITTER:
-                    État = ÉtatsJeu.CHOIX_LAN;
+                    ÉtatMenu = ÉtatsMenu.CHOIX_LAN;
                     MenuClient.Enabled = false;
                     MenuNetwork.Enabled = true;
                     break;
@@ -557,8 +592,6 @@ namespace AtelierXNA
         #endregion
         private void ConnectionAuServeur(string ip, int port)
         {
-            //enlever ip!!!
-
             if (UsedIP.FindIndex(s => s == ip) == -1) //marche simple joueur, pt pas multijoueur?
             {
                 Serveur = new Server(port, ip);
@@ -566,10 +599,6 @@ namespace AtelierXNA
                 NetworkManager = new Réseautique(Serveur, ip, port);
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
                 UsedIP.Add(ip);
-            }
-            else
-            {
-
             }
         }
         #region initialisation du jeu
@@ -668,6 +697,5 @@ namespace AtelierXNA
             Game.Components.Add(MenuClient);
         }
         #endregion
-
     }
 }
