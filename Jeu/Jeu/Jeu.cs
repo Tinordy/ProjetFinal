@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Net.Sockets;
 //using System.Windows.Forms;
 using System.IO;
+using System.Net;
 
 namespace AtelierXNA
 {
@@ -99,6 +100,7 @@ namespace AtelierXNA
             : base(game)
         {
             CréerMenus();
+            test = false;
         }
         public override void Initialize()
         {
@@ -499,7 +501,7 @@ namespace AtelierXNA
                     MenuNetwork.Enabled = false;
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
-                    ConnectionAuServeur("172.17.106.120", 5001);
+                    ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString();, 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
@@ -558,11 +560,12 @@ namespace AtelierXNA
             }
         }
         #endregion
+        bool test { get; set; }
         private void ConnectionAuServeur(string ip, int port)
         {
             //enlever ip!!!
 
-            if (UsedIP.FindIndex(s => s == ip) == -1) //marche simple joueur, pt pas multijoueur?
+            if (!test/*UsedIP.FindIndex(s => s == ip) == -1*/) //marche simple joueur, pt pas multijoueur?
             {
                 if(ÉtatJoueur != ÉtatsJoueur.CLIENT)
                 {
@@ -571,7 +574,8 @@ namespace AtelierXNA
                 }
                 NetworkManager = new Réseautique(/*Serveur,*/ ip, port);
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
-                UsedIP.Add(ip);
+                //UsedIP.Add(ip);
+                test = true;
             }
             else
             {
