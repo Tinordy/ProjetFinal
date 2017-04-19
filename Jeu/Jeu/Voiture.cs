@@ -24,7 +24,7 @@ namespace AtelierXNA
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
-        const float INTERVALLE_RALENTISSEMENT = 1f / 5f;
+        const float INTERVALLE_RALENTISSEMENT = 1f / 6f;
         const int DISTANCE_CAMÉRA = 400;
 
         // propriétés
@@ -108,6 +108,30 @@ namespace AtelierXNA
         Caméra Caméra { get; set; }
 
         InputManager GestionInput { get; set; }
+        float IntervalleRotation
+        {
+            get
+            {
+                if (Vitesse <= 2)
+                {
+                    return 0;
+                }
+                if (Vitesse < 25)
+                {
+                    return 5f/6f;
+                }
+                if (Vitesse < 50)
+                {
+                    return 6f/6f;
+                }
+                if (Vitesse < 100)
+                {
+                    return 7f/6f;
+                }
+                return 8f/6f;
+            }
+        }
+
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
@@ -179,7 +203,7 @@ namespace AtelierXNA
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
 
 
-            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * INTERVALLE_RALENTISSEMENT; }
+            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT; }
             if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
             if (freinage) { TempsAccélération -= 3f * INTERVALLE_RALENTISSEMENT; }
 
@@ -250,7 +274,7 @@ namespace AtelierXNA
                     }
                 }
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
-                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * Vitesse / 100f * INCRÉMENT_ROTATION, Rotation.Z);
+                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
                 ChangementEffectué = true;
 
             }
