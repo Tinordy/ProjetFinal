@@ -19,9 +19,6 @@ namespace AtelierXNA
     /// </summary>
     public class Volant : Microsoft.Xna.Framework.GameComponent
     {
-        string Message { get; set; }
-        SpriteBatch GestionSprites { get; set; }
-        SpriteFont ArialFont { get; set; }
         Vector2 Position { get; set; }
         string ValeurVolant { get; set; }
         float IntervalleMAJ { get; set; }
@@ -35,12 +32,12 @@ namespace AtelierXNA
         public int AxeX
         {
             get { return ElVolant.CurrentJoystickState.X; }
-}
-/// <summary>
-/// 32 767 veut dire aucune accélération (aucun mouvement de la pédale)
-/// 0 veut dire que la pédale (Dave) est dans le fond
-/// </summary>
-public int AxeY 
+        }
+        /// <summary>
+        /// 32 767 veut dire aucune accélération (aucun mouvement de la pédale)
+        /// 0 veut dire que la pédale (Dave) est dans le fond
+        /// </summary>
+        public int AxeY
         {
             get { return ElVolant.CurrentJoystickState.Y; }
         }
@@ -50,13 +47,12 @@ public int AxeY
         /// </summary>
         public int AxeZ
         {
-            get { return ElVolant.CurrentJoystickState.Z; }
+            get { return ElVolant.CurrentJoystickState.Rz; }
         }
 
-        public Volant(Game game, string message, float intervalleMAJ)
+        public Volant(Game game, float intervalleMAJ)
             : base(game)
         {
-            Message = message;
             IntervalleMAJ = intervalleMAJ;
         }
         public override void Initialize()
@@ -75,6 +71,8 @@ public int AxeY
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
                 TempsÉcouléDepuisMAJ = 0;
+                Game.Window.Title = AxeX.ToString() + " / " + AxeY.ToString() + " / " + AxeZ.ToString();
+
             }
             base.Update(gameTime);
         }
