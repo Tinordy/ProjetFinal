@@ -16,7 +16,7 @@ namespace AtelierXNA
     {
         DataPiste DonnéesPiste { get; set; }
         int HAUTEUR_INITIALE = 0;
-        const float LARGEUR_PISTE = 5f;
+        const float LARGEUR_PISTE = 7f;
         const float ÉCHELLE = 0.3f;
 
         Vector3 Origine { get; set; }
@@ -24,6 +24,13 @@ namespace AtelierXNA
         protected List<List<Vector2>> PointsBordureInt { get; set; }
         protected List<List<Vector2>> PointsCentraux { get; set; }
         protected List<List<Vector2>> PointsPointillés { get; set; }
+        public int NbPtsCentraux
+        {
+            get
+            {
+                return PointsCentraux.Count;
+            }
+        }
         Color CouleurPiste { get; set; }
         int NbDeTriangles { get; set; }
         int NbDeSommets { get; set; }
@@ -47,7 +54,8 @@ namespace AtelierXNA
         public override void Initialize()
         {
             //Origine = new Vector3(-NbColonnes / 2, 25, -NbRangées / 2);
-            Origine = new Vector3(-25, 25, -25);
+            //Origine = new Vector3(-25, 25, -25);
+            Origine = Vector3.Zero;
             DonnéesPiste = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
             CouleurPiste = Color.Black;
             ListeSommets = new List<VertexPositionColor[]>();
@@ -61,7 +69,7 @@ namespace AtelierXNA
         }
         protected override void InitialiserSommets()
         {
-            if (PointsCentraux.Count > 0)
+            if (NbPtsCentraux > 0)
             {
 
                 for (int j = 0; j < PointsBordureExt.Count; ++j)
@@ -108,7 +116,7 @@ namespace AtelierXNA
         {
             //PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
             //PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
-            if (PointsCentraux.Count > 0)
+            if (NbPtsCentraux > 0)
             {
                 GénérerBordureÀPartirDeMilieu();
                 //InitialiserSommets();
@@ -245,6 +253,13 @@ namespace AtelierXNA
 
             GraphicsDevice.DepthStencilState = ancienDepthStencilState;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+        }
+        public List<Vector2> ObtenirVecteurPerp()
+        {
+            List<Vector2> vecteurs = new List<Vector2>();
+            vecteurs.Add(PointsBordureExt[0][0] - PointsCentraux[0][0]);
+            vecteurs.Add(PointsCentraux[0][0]);
+            return vecteurs;
         }
     }
 }
