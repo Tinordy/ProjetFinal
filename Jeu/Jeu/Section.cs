@@ -49,11 +49,11 @@ namespace AtelierXNA
 
         private void CréerMaisons()
         {
-            Piste.
+           // Piste.
         }
         private void CréerPiste()
         {
-            Piste = new PisteSectionnée(Game, 1, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue);
+            Piste = new PisteSectionnée(Game,1 , Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue);
             Components.Add(Piste);
             Game.Components.Add(Piste);
         }
