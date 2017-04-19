@@ -22,6 +22,7 @@ namespace AtelierXNA
         Vector2 Extrémité { get; set; }
         double NormeÉtendue { get; set; }
         public Maison Maison { get; private set; }
+        PisteSectionnée Piste { get; set; }
 
         List<DrawableGameComponent> Components { get; set; }
         public Section(Game game, Vector2 origine, Vector2 étendue2, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector3 étendue,
@@ -37,17 +38,24 @@ namespace AtelierXNA
         {
             Components = new List<DrawableGameComponent>();
             Extrémité = Coin + Étendue;
-            //Maison = new Maison(Game, 10f, Vector3.Zero, new Vector3(Coin.X/* + Étendue.X*/, 0, Coin.Y/* - Étendue.Y*/), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+            //Maison = new Maison(Game, 5f, Vector3.Zero, new Vector3(Coin.X/* + Étendue.X*/, 0, Coin.Y/* - Étendue.Y*/), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
             //Components.Add(Maison);
             //Game.Components.Add(Maison); //faire un fct..?
             NormeÉtendue = Math.Sqrt(Math.Pow(Étendue.X, 2) + Math.Pow(Étendue.Y, 2));
             CréerPiste();
+            CréerMaisons();
             base.Initialize();
         }
-        //lol
+
+        private void CréerMaisons()
+        {
+           // Piste.
+        }
         private void CréerPiste()
         {
-            Game.Components.Add(new PisteSectionnée(Game, 3f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000,Coin, Étendue));
+            Piste = new PisteSectionnée(Game,1 , Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue);
+            Components.Add(Piste);
+            Game.Components.Add(Piste);
         }
         protected override void OnVisibleChanged(object sender, EventArgs args)
         {

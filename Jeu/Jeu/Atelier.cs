@@ -83,6 +83,8 @@ namespace AtelierXNA
             //Sections = new List<Section>();
             Components.Add(new Afficheur3D(this));
 
+            Components.Add(new Volant(this, 0.01f));
+
             Components.Add(new Jeu(this));
             //Components.Add(new JeuTest(this));
 
