@@ -95,6 +95,7 @@ namespace AtelierXNA
                     ElVolant = new Device(deviceInstance.InstanceGuid);
                     //Volant.SetCooperativeLevel(CooperativeLevelFlags.Background | CooperativeLevelFlags.NonExclusive);
                 }
+                //else { this.Enabled = !this.Enabled; }
 
                 // Tell DirectX that this is a Joystick.
                 ElVolant.SetDataFormat(DeviceDataFormat.Joystick);
