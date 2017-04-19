@@ -19,10 +19,10 @@ namespace AtelierXNA
     {
         //constantes
 
-        const int VITESSE_MAX = 200;
+        const int VITESSE_MAX = 150;
         const int VITESSE_MIN = -5;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
-        const float INCRÉMENT_ROTATION = (float)Math.PI / 1440;
+        const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
         const float INTERVALLE_RALENTISSEMENT = 1f / 5f;
         const int DISTANCE_CAMÉRA = 400;
@@ -32,7 +32,7 @@ namespace AtelierXNA
         const float FACTEUR_ACCÉLÉRATION = 1f / 5f;
         const int INCRÉMENT_ANGLE = 10;
         const float RAYON_VOITURE = 0.1f;
-        float IntervalleMAJ { get; set; }
+        protected float IntervalleMAJ { get; private set; }
         Vector3 PositionCaméra { get; set; }
         Vector3 DirectionCaméra { get; set; }
         float NormeDirection { get; set; }
@@ -180,7 +180,7 @@ namespace AtelierXNA
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe / 2.0f * INTERVALLE_RALENTISSEMENT; }
-            if (accélération) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
+            if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
             if (freinage) { TempsAccélération -= 3f * INTERVALLE_RALENTISSEMENT; }
 
         }

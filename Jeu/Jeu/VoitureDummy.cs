@@ -15,6 +15,9 @@ namespace AtelierXNA
 
     public class VoitureDummy : Voiture
     {
+        DataPiste Data { get; set; }
+        List<Vector2> PointsCentraux { get; set; }
+        float TempsÉcouléDepuisMAJ { get; set; }
         public VoitureDummy(Game game, string nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
@@ -28,7 +31,8 @@ namespace AtelierXNA
         public override void Initialize()
         {
             // TODO: Add your initialization code here
-
+            Data = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
+            PointsCentraux = Data.GetPointsCentraux();
             base.Initialize();
         }
 
@@ -38,7 +42,18 @@ namespace AtelierXNA
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            
+            TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(TempsÉcouléDepuisMAJ >= IntervalleMAJ)
+            {
+                DéplacerVoiture();
+                RecréerMonde();
+            }
+        }
+
+        private void DéplacerVoiture()
+        {
+            Vector2 tamp = Vector2.Normalize(PointsCentraux[1] - PointsCentraux[2]);
+            Position += new Vector3(tamp.X, 0, tamp.Y)/100f;
         }
 
         public override void Draw(GameTime gameTime)
