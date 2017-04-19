@@ -19,10 +19,10 @@ namespace AtelierXNA
     {
         //constantes
 
-        const int VITESSE_MAX = 100;
+        const int VITESSE_MAX = 150;
         const int VITESSE_MIN = -5;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
-        const float INCRÉMENT_ROTATION = (float)Math.PI / 720;
+        const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
         const float INTERVALLE_RALENTISSEMENT = 1f / 5f;
         const int DISTANCE_CAMÉRA = 400;
