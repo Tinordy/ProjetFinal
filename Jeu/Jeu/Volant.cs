@@ -81,11 +81,12 @@ namespace AtelierXNA
         public void ChargerVolant()
         {
             //Find all the GameControl devices that are attached.
-            try
+
+            DeviceList gameControllerList = Manager.GetDevices(DeviceType.Joystick, EnumDevicesFlags.AttachedOnly);
+            // check that we have at least one device.
+            if (gameControllerList.Count > 0)
             {
-                DeviceList gameControllerList = Manager.GetDevices(DeviceType.Joystick, EnumDevicesFlags.AttachedOnly);
-                // check that we have at least one device.
-                if (gameControllerList.Count > 0)
+                try
                 {
                     // Move to the first device
                     gameControllerList.MoveNext();
@@ -94,15 +95,20 @@ namespace AtelierXNA
                     // create a device from this controller.
                     ElVolant = new Device(deviceInstance.InstanceGuid);
                     //Volant.SetCooperativeLevel(CooperativeLevelFlags.Background | CooperativeLevelFlags.NonExclusive);
-                }
-                else { this.Enabled = !this.Enabled; }
 
-                // Tell DirectX that this is a Joystick.
-                ElVolant.SetDataFormat(DeviceDataFormat.Joystick);
-                // Finally, acquire the device.
-                ElVolant.Acquire();
+                    // Tell DirectX that this is a Joystick.
+                    ElVolant.SetDataFormat(DeviceDataFormat.Joystick);
+                    // Finally, acquire the device.
+                    ElVolant.Acquire();
+                }
+                catch (System.Exception e) { }
             }
-            catch (System.Exception e) { }
+
+            else { this.Enabled = !this.Enabled; }
+
+
         }
+
     }
 }
+
