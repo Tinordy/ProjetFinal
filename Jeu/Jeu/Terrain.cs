@@ -147,16 +147,16 @@ namespace AtelierXNA
         }
         void GérerVisibilité()
         {
-            if (CaméraJeu.Frustum.Intersects(SphereDeCollision))
-            {
-                //EnableDraw = true;
-                Visible = true;
-            }
-            else
-            {
-                Visible = false;
-                //EnableDraw = false;
-            }
+            //if (CaméraJeu.Frustum.Intersects(SphereDeCollision))
+            //{
+            //    //EnableDraw = true;
+            //    Visible = true;
+            //}
+            //else
+            //{
+            //    Visible = false;
+            //    //EnableDraw = false;
+            //}
         }
 
         protected override void InitialiserSommets()

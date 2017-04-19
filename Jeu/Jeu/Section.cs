@@ -49,11 +49,21 @@ namespace AtelierXNA
 
         private void CréerMaisons()
         {
-           // Piste.
+            if (Piste.NbPtsCentraux > 0)
+            {
+                Vector2 temp = 2*Piste.ObtenirVecteurPerp()[0] + Piste.ObtenirVecteurPerp()[1];
+                Maison = new Maison(Game, 5f, Vector3.Zero, new Vector3(temp.X,0,temp.Y), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+                Components.Add(Maison);
+                Game.Components.Add(Maison);
+            }
+
         }
         private void CréerPiste()
         {
+
             Piste = new PisteSectionnée(Game,1 , Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000, Coin, Étendue);
+            Piste.Initialize();
+        
             Components.Add(Piste);
             Game.Components.Add(Piste);
         }
