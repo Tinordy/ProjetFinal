@@ -97,6 +97,7 @@ namespace AtelierXNA
         //TimerAugmente TempsDeCourse { get; set; }
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
+        BannièreArrivée MaBannière { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -651,6 +652,9 @@ namespace AtelierXNA
                 }
             }
             Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
+            MaBannière = new BannièreArrivée(Game, 1f, Vector3.Zero, Vector3.Zero, 0.01f);
+            //MaBannière.Visible = false;
+            Game.Components.Add(MaBannière);
 
         }
 

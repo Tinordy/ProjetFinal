@@ -97,6 +97,7 @@
     <Compile Include="Afficheur3D.cs" />
     <Compile Include="AfficheurGagnants.cs" />
     <Compile Include="Atelier.cs" />
+    <Compile Include="BannièreArrivée.cs" />
     <Compile Include="BoutonDeCommande.cs" />
     <Compile Include="DataPiste.cs" />
     <Compile Include="DéfileurSprite.cs" />
