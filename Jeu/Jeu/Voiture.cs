@@ -18,7 +18,7 @@ namespace AtelierXNA
     public class Voiture : ObjetDeBase, ICollisionable, IResettable
     {
         //constantes
-
+        const int TEMPS_ACCÉLÉRATION_MIN = -20;
         const int VITESSE_MAX = 150;
         const int VITESSE_MIN = -5;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
@@ -31,7 +31,8 @@ namespace AtelierXNA
         Vector2 ÉtendueTotale { get; set; }
         const float FACTEUR_ACCÉLÉRATION = 1f / 5f;
         const int INCRÉMENT_ANGLE = 10;
-        const float RAYON_VOITURE = 0.1f;
+        const float RAYON_VOITURE = 1f;
+        bool EstEnCollisionAvecOBJ { get; set; }
         protected float IntervalleMAJ { get; private set; }
         Vector3 PositionCaméra { get; set; }
         Vector3 DirectionCaméra { get; set; }
@@ -94,7 +95,7 @@ namespace AtelierXNA
             private set
             {
                 tempsAccélération = value;
-                if (value < -20) { tempsAccélération = -20; }
+                if (value < TEMPS_ACCÉLÉRATION_MIN) { tempsAccélération =TEMPS_ACCÉLÉRATION_MIN; }
                 if (value > TEMPS_ACCÉLÉRATION_MAX) { tempsAccélération = TEMPS_ACCÉLÉRATION_MAX; }
             }
         }
@@ -112,6 +113,14 @@ namespace AtelierXNA
         {
             get
             {
+                if(Vitesse < 10)
+                {
+                    return 1f;
+                }
+                if(Vitesse <= -2)
+                {
+                    return 5f / 6f;
+                }
                 if (Vitesse <= 2)
                 {
                     return 0;
@@ -188,7 +197,7 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
-                SphèreDeCollision = new BoundingSphere(Monde.Translation, RAYON_VOITURE);
+                SphèreDeCollision = new BoundingSphere(Position + Vector3.Normalize(DirectionCaméra), RAYON_VOITURE);
                 TempsÉcouléDepuisMAJ = 0;
             }
 
@@ -224,7 +233,11 @@ namespace AtelierXNA
             //pédales + ajouter accélération??
             if (!GestionInput.EstEnfoncée(Keys.LeftControl))
             {
-                Position += Direction;
+                if(!EstEnCollisionAvecOBJ)
+                {
+                    Position += Direction;
+                }
+                
                 PremièreBoucleDérapage = true;
             }
             else
@@ -238,7 +251,11 @@ namespace AtelierXNA
                 {
                     DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
                     Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
-                    Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                    if(!EstEnCollisionAvecOBJ)
+                    {
+                        Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                    }
+                    
                     if (TempsAccélération <= 0)
                     {
                         TempsAccélération = 0;
@@ -282,9 +299,9 @@ namespace AtelierXNA
 
         private void DéplacerCaméra()
         {
-            //CalculerPositionCaméra();
-            //DirectionCaméra = Monde.Forward - Monde.Backward;
-            //Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+            CalculerPositionCaméra();
+            DirectionCaméra = Monde.Forward - Monde.Backward;
+            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
         void CalculerPositionCaméra()
@@ -315,7 +332,6 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
-            SphèreDeCollision = new BoundingSphere(Position, RAYON_VOITURE); //po legit?
         }
         public void RecréerMonde()
         {
@@ -332,13 +348,13 @@ namespace AtelierXNA
             {
                 valeurRetour = SphèreDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
             }
+            EstEnCollisionAvecOBJ = valeurRetour;
             return valeurRetour;
         }
         public void Rebondir(Vector2 vitesseEnnemi)
         {
-            TempsAccélération = vitesseEnnemi.Length() * -1;
-            Vitesse = vitesseEnnemi.Length() * -1;
-            //Je sais ca marche po lolo
+            Position -= Direction/100f;
+            TempsAccélération = -TempsAccélération;
         }
     }
 }
