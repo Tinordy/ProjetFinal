@@ -334,9 +334,10 @@ namespace AtelierXNA
             }
             return valeurRetour;
         }
-        public void Rebondir()
+        public void Rebondir(Vector2 vitesseEnnemi)
         {
-            TempsAccélération = -TempsAccélération;
+            TempsAccélération = vitesseEnnemi.Length() * -1;
+            Vitesse = vitesseEnnemi.Length() * -1;
             //Je sais ca marche po lolo
         }
     }

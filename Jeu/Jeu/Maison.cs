@@ -7,12 +7,14 @@ using System.Text;
 
 namespace AtelierXNA
 {
-    public class Maison : PrimitiveDeBaseAnimée
+    public class Maison : PrimitiveDeBaseAnimée, ICollisionable
     {
         const int NB_TRIANGLES_MURS = 8;
         const int NB_SOMMETS_PAR_TRIANGLE = 3;
         const int NB_TRIANGLES_TOIT = 4;
 
+
+        Afficheur3D test { get; set; }
         int NbSommetsMurs { get; set; }
         int NbSommetsToit { get; set; }
         Vector3 Origine { get; set; }
@@ -29,7 +31,8 @@ namespace AtelierXNA
         RessourcesManager<Texture2D> gestionnaireDeTextures;
         protected BasicEffect EffetDeBase { get; private set; }
         public bool nullité { get; set; }
-        InputManager GestionInput { get; set; }
+        //InputManager GestionInput { get; set; }
+        public BoundingSphere SphèreDeCollision { get; set; }
 
         //constructeur vide pour créer un objet "inexistant"
         public Maison(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
@@ -45,10 +48,13 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            test = new Afficheur3D(Game);
+            test.Initialize();
             NbSommets = NB_TRIANGLES_MURS + 2;
             NbSommetsMurs = NB_TRIANGLES_MURS + 2;
             NbSommetsToit = NB_TRIANGLES_TOIT * NB_SOMMETS_PAR_TRIANGLE;
             CréerTableauSommets();
+            SphèreDeCollision = new BoundingSphere(PositionInitiale, HomothétieInitiale*Étendue.X / 2);
             base.Initialize();
         }
 
@@ -59,12 +65,13 @@ namespace AtelierXNA
             TextureMurs = gestionnaireDeTextures.Find(NomTextureMurs);
             TextureToit = gestionnaireDeTextures.Find(NomTextureToit);
             InitialiserParamètresEffetDeBase();
-            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            //GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
+            test.Draw(gameTime);
             EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
@@ -139,6 +146,16 @@ namespace AtelierXNA
         {
             CalculerMatriceMonde();
             base.Update(gameTime);
+        }
+
+        public bool EstEnCollision(object autreObjet)
+        {
+            bool valeurRetour = false;
+            if (autreObjet is ICollisionable)
+            {
+                valeurRetour = SphèreDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
+            }
+            return valeurRetour;
         }
     }
 

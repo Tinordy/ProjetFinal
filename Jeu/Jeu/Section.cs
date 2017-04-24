@@ -21,7 +21,6 @@ namespace AtelierXNA
         Vector2 Étendue { get; set; }
         Vector2 Extrémité { get; set; }
         double NormeÉtendue { get; set; }
-        public Maison Maison { get; private set; }
         PisteSectionnée Piste { get; set; }
 
         List<DrawableGameComponent> Components { get; set; }
@@ -48,10 +47,14 @@ namespace AtelierXNA
         {
             if (Piste.NbPtsCentraux > 0)
             {
-                Vector2 temp = 4*Piste.ObtenirVecteurPerp()[0] + Piste.ObtenirVecteurPerp()[1];
-                Maison = new Maison(Game, 5f, Vector3.Zero, new Vector3(temp.X,0,temp.Y), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
-                Components.Add(Maison);
-                Game.Components.Add(Maison);
+                List<Vector2> vecteursPerpendiculaires = Piste.ObtenirVecteurPerp();
+                for(int i = 0; i < vecteursPerpendiculaires.Count; i += 2)
+                {
+                    Vector2 temp = 4 * vecteursPerpendiculaires[i] + vecteursPerpendiculaires[i+1];
+                    Maison maison = new Maison(Game, 5f, Vector3.Zero, new Vector3(temp.X, 0, temp.Y), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+                    Components.Add(maison);
+                    Game.Components.Add(maison);
+                }
             }
 
         }
@@ -71,7 +74,21 @@ namespace AtelierXNA
                 c.Visible = Visible;
             }
         }
+        public bool EstEnCollisionAvecUnObjet(ICollisionable objet)
+        {
+            bool valRetour = false;
+            int i = 0;
+            while(!valRetour && i < Components.Count)
+            {
+                if(objet.EstEnCollision(Components[i]))
+                {
 
+                }
+                valRetour = objet.EstEnCollision(Components[i]);
+                ++i;
+            }
+            return valRetour;
+        }
         //public void AddComponent(GameComponent x)
         //{
         //    Components.Add(x);

@@ -155,18 +155,29 @@ namespace AtelierXNA
             if (ÉtatJoueur != ÉtatsJoueur.SOLO /*&& NetworkManager.EnnemiPrêtÀJouer*/) //TEST
             {
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
-                GérerCollisions();
             }
+            GérerCollisions();
             //Collision, nb tours?
         }
 
         private void GérerCollisions()
         {
             //collision entre joueurs
-            if (Joueur.EstEnCollision(Ennemi))
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO && Joueur.EstEnCollision(Ennemi))
             {
-                Joueur.Rebondir();
-                Ennemi.Rebondir();
+                Joueur.Rebondir(Vector2.Zero); //SWITCH
+            }
+            //collision avec objets
+            bool estEnColAvecObj = false;
+            int i = 0;
+            while(!estEnColAvecObj && i < Sections.Count)
+            {
+                estEnColAvecObj = Sections[i].EstEnCollisionAvecUnObjet(Joueur);
+                ++i;
+            }
+            if(estEnColAvecObj)
+            {
+                Joueur.Rebondir(Vector2.Zero);
             }
         }
 
@@ -633,7 +644,7 @@ namespace AtelierXNA
             {
                 for (int j = 0; j < 10; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, INTERVALLE_MAJ); //double??
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
                    // newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e

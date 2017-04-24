@@ -259,6 +259,8 @@ namespace AtelierXNA
             List<Vector2> vecteurs = new List<Vector2>();
             vecteurs.Add(PointsBordureExt[0][0] - PointsCentraux[0][0]);
             vecteurs.Add(PointsCentraux[0][0]);
+            vecteurs.Add(PointsBordureInt[0][0] - PointsCentraux[0][0]);
+            vecteurs.Add(PointsCentraux[0][0]);
             return vecteurs;
         }
     }

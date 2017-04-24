@@ -157,8 +157,8 @@ namespace AtelierXNA
             //collision entre joueurs
             if (Joueur.EstEnCollision(Ennemi))
             {
-                Joueur.Rebondir();
-                Ennemi.Rebondir();
+                //Joueur.Rebondir();
+                //Ennemi.Rebondir();
             }
         }
 
@@ -642,7 +642,7 @@ namespace AtelierXNA
                     Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, 0.01f); //double??
                     Sections.Add(newSection);
                     Game.Components.Add(newSection);
-                    newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e
+                    //newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e
                 }
             }
             Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
