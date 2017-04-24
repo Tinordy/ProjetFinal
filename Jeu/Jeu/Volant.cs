@@ -101,7 +101,7 @@ namespace AtelierXNA
                     // Finally, acquire the device.
                     ElVolant.Acquire();
                 }
-                catch (System.Exception e) { }
+                catch (Exception e) { }
             }
 
             else { this.Enabled = !this.Enabled; }

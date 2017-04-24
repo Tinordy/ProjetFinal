@@ -37,6 +37,10 @@ namespace AtelierXNA
         Vector3 DirectionCaméra { get; set; }
         float NormeDirection { get; set; }
         float intervalleAccélération;
+        Volant elVolant { get; set; }
+        int RotationVolant { get; set; }
+        int AccélérationVolant { get; set; }
+        int FreinageVolant { get; set; }
         float IntervalleAccélération
         {
             get
@@ -118,17 +122,17 @@ namespace AtelierXNA
                 }
                 if (Vitesse < 25)
                 {
-                    return 5f/6f;
+                    return 5f / 6f;
                 }
                 if (Vitesse < 50)
                 {
-                    return 6f/6f;
+                    return 6f / 6f;
                 }
                 if (Vitesse < 100)
                 {
-                    return 7f/6f;
+                    return 7f / 6f;
                 }
-                return 8f/6f;
+                return 8f / 6f;
             }
         }
 
@@ -152,6 +156,8 @@ namespace AtelierXNA
             IntervalleAccélération = 1f / 10f;
             Direction = new Vector3(0, 0, 75);
             Vitesse = 0;
+            elVolant = new Volant(Game, 0.01f);
+            Game.Components.Add(elVolant);
             base.Initialize();
             SphèreDeCollision = new BoundingSphere(Position, RAYON_VOITURE);
             DirectionCaméra = Monde.Forward - Monde.Backward;
@@ -182,9 +188,18 @@ namespace AtelierXNA
             TempsÉcouléDepuisMAJ += tempsÉcoulé;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ && EstActif)
             {
-                VarierVitesse();
-                CalculerVitesse();
-                AjusterPosition();
+                if (!elVolant.Enabled)
+                {
+                    VarierVitesseClavier();
+                    CalculerVitesse();
+                    AjusterPositionClavier();
+                }
+                else
+                {
+                    VarierVitesseVolant();
+                    CalculerVitesse();
+                    AjusterPositionVolant();
+                }
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
@@ -194,13 +209,36 @@ namespace AtelierXNA
 
             base.Update(gameTime);
         }
+        void VarierVitesseVolant()
+        {
+            int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
+            TempsAccélération += INTERVALLE_RALENTISSEMENT * -((float)elVolant.AxeY - 32767f) / 32767f;
+            //TempsAccélération -= INTERVALLE_RALENTISSEMENT * 3f * -(((float)elVolant.AxeZ - 65535f) / 65535f);
+            if (elVolant.AxeY == 32767 && elVolant.AxeZ == 65535)
+            {
+                TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT;
+            }
 
 
-        void VarierVitesse()
+        }
+
+        void AjusterPositionVolant()
+        {
+            Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
+            float sens = ((float)elVolant.AxeX - 32767f) / 32767f;
+            if (Vitesse > 0)
+            {
+                Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
+            }
+            ChangementEffectué = true;
+        }
+
+        void VarierVitesseClavier()
         {
             bool accélération = GestionInput.EstEnfoncée(Keys.W);
             bool freinage = GestionInput.EstEnfoncée(Keys.S);
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
+
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT; }
@@ -208,6 +246,7 @@ namespace AtelierXNA
             if (freinage) { TempsAccélération -= 3f * INTERVALLE_RALENTISSEMENT; }
 
         }
+
         void CalculerVitesse()
         {
             Vitesse = IntervalleAccélération * TempsAccélération;
@@ -218,7 +257,7 @@ namespace AtelierXNA
         }
 
 
-        void AjusterPosition()
+        void AjusterPositionClavier()
         {
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
             //pédales + ajouter accélération??
@@ -253,6 +292,7 @@ namespace AtelierXNA
                         Position += Direction;
                     }
                 }
+
             }
 
 
@@ -262,7 +302,7 @@ namespace AtelierXNA
             if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
             {
                 int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
-                if(!GestionInput.EstEnfoncée(Keys.LeftControl))
+                if (!GestionInput.EstEnfoncée(Keys.LeftControl))
                 {
                     if (TempsAccélération > 0)
                     {
@@ -276,24 +316,23 @@ namespace AtelierXNA
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                 Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
                 ChangementEffectué = true;
-
             }
         }
 
         private void DéplacerCaméra()
         {
-            //CalculerPositionCaméra();
-            //DirectionCaméra = Monde.Forward - Monde.Backward;
-            //Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+            CalculerPositionCaméra();
+            DirectionCaméra = Monde.Forward - Monde.Backward;
+            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
         void CalculerPositionCaméra()
         {
-            if (GestionInput.EstEnfoncée(Keys.LeftAlt)) 
+            if (GestionInput.EstEnfoncée(Keys.LeftAlt))
             {
                 DirectionCaméra = -DirectionCaméra;
             }
-            PositionCaméra = Position - (DirectionCaméra) * DISTANCE_CAMÉRA + new Vector3(0, DISTANCE_CAMÉRA/2 * Échelle, 0);
+            PositionCaméra = Position - (DirectionCaméra) * DISTANCE_CAMÉRA + new Vector3(0, DISTANCE_CAMÉRA / 2 * Échelle, 0);
         }
 
         float CalculerPosition(int déplacement, float posActuelle)
