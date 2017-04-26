@@ -697,11 +697,13 @@ namespace AtelierXNA
             Sections = new List<Section>();
 
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
+            List<int> pasDeMaison = new List<int>() { /*16, 23, 25, 28, 29, 35, 36, 54, 61 , 17,30,32,37,39,56,57*/};
             for (int i = 0; i < 10; ++i)
             {
                 for (int j = 0; j < 7; ++j)
                 {
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, INTERVALLE_MAJ); //double??
+                    bool maison = !pasDeMaison.Contains(Sections.Count);
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, maison,INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
                     newSection.Initialize();
                     Game.Components.Add(newSection);

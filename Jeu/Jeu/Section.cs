@@ -24,13 +24,15 @@ namespace AtelierXNA
         PisteSectionnée Piste { get; set; }
         //public BannièreArrivée Bannière { get; private set; }
         List<DrawableGameComponent> Components { get; set; }
+
+        bool ContientMaison { get; set; }
         public Section(Game game, Vector2 origine, Vector2 étendue2, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector3 étendue,
-                       string[] nomsTexturesTerrain, float intervalleMAJ)
+                       string[] nomsTexturesTerrain,bool containsHouse, float intervalleMAJ)
             : base(game, origine, homothétieInitiale, rotationInitiale, positionInitiale, étendue, nomsTexturesTerrain, intervalleMAJ)
         {
             //Étendue = étendue2;
             Étendue = new Vector2(étendue.X, étendue.Z);
-
+            ContientMaison = containsHouse;
         }
 
         public override void Initialize()
@@ -45,7 +47,7 @@ namespace AtelierXNA
 
         private void CréerMaisons()
         {
-            if (Piste.NbPtsCentraux > 0)
+            if (ContientMaison && Piste.NbPtsCentraux > 0)
             {
                 List<Vector2> vecteursPerpendiculaires = Piste.ObtenirVecteurPerp();
                 for(int i = 0; i < vecteursPerpendiculaires.Count; i += 2)
