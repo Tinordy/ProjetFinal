@@ -15,10 +15,11 @@ namespace AtelierXNA
     public class BannièreArrivée : PrimitiveDeBaseAnimée
     {
         VertexPositionColor[] Sommets { get; set; }
+        Vector3[] Points { get; set; }
         DataPiste Données { get; set; }
         BasicEffect EffetDeBase { get; set; }
         Afficheur3D Afficheur { get; set; }
-        public BannièreArrivée(Game game, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
+        public BannièreArrivée(Game game, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale,float intervalleMAJ)
             : base(game, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
 
@@ -28,11 +29,15 @@ namespace AtelierXNA
             List<Vector2> ext = Données.GetBordureExtérieure();
             List<Vector2> inté = Données.GetBordureIntérieur();
             Sommets = new VertexPositionColor[4];
-            Sommets[0] = new VertexPositionColor(new Vector3(inté[0].X, 0, inté[0].Y), Color.White);
+            Points = new Vector3[4];
+            Points[0] = new Vector3(inté[0].X, 0, inté[0].Y);
+            Points[1] = new Vector3(inté[inté.Count - 1].X, 0, inté[inté.Count - 1].Y);
+            Points[2] = new Vector3(ext[0].X, 0, ext[0].Y);
+            Points[3] = new Vector3(ext[ext.Count - 1].X, 0, ext[ext.Count - 1].Y);
+            Sommets[0] = new VertexPositionColor(Points[0], Color.White);
             Sommets[1] = new VertexPositionColor(new Vector3(inté[inté.Count - 1].X, 0, inté[inté.Count - 1].Y), Color.White);
             Sommets[2] = new VertexPositionColor(new Vector3(ext[0].X, 0, ext[0].Y), Color.White);
             Sommets[3] = new VertexPositionColor(new Vector3(ext[ext.Count - 1].X, 0, ext[ext.Count - 1].Y), Color.White);
-
 
 
         }
@@ -68,10 +73,45 @@ namespace AtelierXNA
             foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
             {
                 //const
-                //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, 2);
+                passeEffet.Apply();
+                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, 2);
             }
             //GraphicsDevice.DepthStencilState = ancienDepthStencilState;
             //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
         }
+        public bool EstÀArrivée(Vector3 position)
+        {
+            float minX = Points[0].X;
+            float minZ = Points[0].Z;
+            float maxX = Points[0].X;
+            float maxZ = Points[0].Z;
+            for (int i = 1; i < 4; ++i)
+            {
+                if (Points[i].X < minX)
+                {
+                    minX = Points[i].X;
+                }
+                else
+                {
+                    if(Points[i].X > maxX)
+                    {
+                        maxX = Points[i].X;
+                    }
+                }
+                if(Points[i].Z < minZ)
+                {
+                    minZ = Points[i].Z;
+                }
+                else
+                {
+                    if(Points[i].Z > maxZ)
+                    {
+                        maxZ = Points[i].Z;
+                    }
+                }
+            }
+            return position.X < maxX && position.X > minX && position.Z > minZ && position.Z < maxZ ;
+        }
     }
 }
+

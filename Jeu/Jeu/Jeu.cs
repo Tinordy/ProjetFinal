@@ -72,7 +72,7 @@ namespace AtelierXNA
             get
             {
                 //modifier
-                return 492 < Joueur.Position.X && 508 > Joueur.Position.X && 392 < Joueur.Position.Z && 408 > Joueur.Position.Z;
+                return MaBannière.EstÀArrivée(Joueur.Position);
             }
         }
         ÉtatsJeu État { get; set; }
@@ -521,8 +521,9 @@ namespace AtelierXNA
                     MenuChoixProfile.Enabled = true;
                     ÉtatJoueur = ÉtatsJoueur.SOLO;
                     //test
-                    string HostName = Dns.GetHostName();
-                    ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString(), 5001);
+                    //string HostName = Dns.GetHostName();
+                    //ConnectionAuServeur(Dns.GetHostAddresses(HostName)[1].ToString(), 5001);
+                    ConnectionAuServeur("127.0.0.1", 5001);
                     break;
                 case ChoixMenu.REJOINDRE:
                     État = ÉtatsJeu.ENTRÉE_PORT_CLIENT;
@@ -643,7 +644,7 @@ namespace AtelierXNA
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
             for (int i = 0; i < 10; ++i)
             {
-                for (int j = 0; j < 10; ++j)
+                for (int j = 0; j < 7; ++j)
                 {
                     Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
@@ -651,11 +652,10 @@ namespace AtelierXNA
                    // newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e
                 }
             }
-            Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
-            MaBannière = new BannièreArrivée(Game, 1f, Vector3.Zero, Vector3.Zero, 0.01f);
-            //MaBannière.Visible = false;
-            Game.Components.Add(MaBannière);
+            //Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
 
+            MaBannière = new BannièreArrivée(Game, 1f, Vector3.Zero, Vector3.Zero, 0.01f);
+            Game.Components.Add(MaBannière);
         }
 
         private void CréerEnnemi()
