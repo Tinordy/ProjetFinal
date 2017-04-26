@@ -75,7 +75,8 @@ namespace AtelierXNA
             //enemy = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD);
             //player = new Maison(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(5f, 5f, 5f), "PlayerPaper", "EnemyPaper", INTERVALLE_MAJ_STANDARD);
             //Vector3 positionCaméra = new Vector3(100, 100, -100);
-            //Vector3 cibleCaméra = new Vector3(10, 0, 10);
+            Vector3 positionCaméra = new Vector3(10, 0, 20);
+            Vector3 cibleCaméra = new Vector3(10, 0, 10);
             //ListeSections = new List<Section>();
 
             Components.Add(GestionInput);
@@ -86,6 +87,8 @@ namespace AtelierXNA
             //Components.Add(new Volant(this, 0.01f));
 
             Components.Add(new Jeu(this));
+            //Components.Add(new BannièreArrivée(this, 1f, Vector3.Zero, Vector3.Zero, 0.01f));
+            //Components.Add(new BannièreDarrivée(this, 1f, Vector3.Zero, new Vector3(10,0,10), Color.Red));
             //Components.Add(new JeuTest(this));
 
             //Components.Add(new ArrièrePlanDéroulant(this, "CielÉtoilé", INTERVALLE_MAJ_STANDARD));
@@ -113,7 +116,7 @@ namespace AtelierXNA
             Services.AddService(typeof(RessourcesManager<Texture2D>), new RessourcesManager<Texture2D>(this, "Textures"));
             Services.AddService(typeof(RessourcesManager<Model>), new RessourcesManager<Model>(this, "Modèles"));
             //Caméra et piste
-            //CaméraJeu = new CaméraSubjective(this, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ_STANDARD);
+            CaméraJeu = new CaméraSubjective(this, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ_STANDARD);
             //Components.Add(CaméraJeu);
             //Services.AddService(typeof(Caméra), CaméraJeu);
             //Components.Add(new PisteSectionnée(this, 1f, Vector3.Zero, Vector3.Zero, INTERVALLE_MAJ_STANDARD, 20000, 20000));

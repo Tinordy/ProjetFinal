@@ -99,6 +99,7 @@
     <Compile Include="Atelier.cs" />
     <Compile Include="BannièreArrivée.cs" />
     <Compile Include="BoutonDeCommande.cs" />
+    <Compile Include="CubeColoré.cs" />
     <Compile Include="DataPiste.cs" />
     <Compile Include="DéfileurSprite.cs" />
     <Compile Include="EntréeDeTexte.cs" />

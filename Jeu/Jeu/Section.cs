@@ -89,6 +89,10 @@ namespace AtelierXNA
             }
             return valRetour;
         }
+        public PisteSectionnée ObtenirSectionPiste()
+        {
+            return Piste;
+        }
         //public void AddComponent(GameComponent x)
         //{
         //    Components.Add(x);
