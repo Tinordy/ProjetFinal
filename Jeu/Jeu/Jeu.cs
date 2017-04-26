@@ -22,7 +22,7 @@ namespace AtelierXNA
     enum …tatsMenu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, CHOIX_PROFILE, ENTR…E_PORT_SERVEUR, ENTR…E_PORT_CLIENT, ATTENTE_JOUEURS, CONNECTION }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        const int NB_TOURS = 2;
+        const int NB_TOURS = 1;
         const int LARGEUR_D…PART = 3;
         Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
         bool Connection…tablie { get; set; }

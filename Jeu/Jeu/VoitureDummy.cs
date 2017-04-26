@@ -18,28 +18,34 @@ namespace AtelierXNA
         DataPiste Data { get; set; }
         List<Vector2> PointsCentraux { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
+
+        int IndexIntermédiaire { get; set; }
+        int index;
+        int Index
+        {
+            get
+            {
+                return index;
+            }
+            set
+            {
+                index = value % PointsCentraux.Count;
+            }
+        }
         public VoitureDummy(Game game, string nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
             
         }
-
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
+        
+            IndexIntermédiaire = 0;
             Data = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
             PointsCentraux = Data.GetPointsCentraux();
+            Position = new Vector3(PointsCentraux[0].X, 0, PointsCentraux[0].Y);
             base.Initialize();
         }
-
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -52,10 +58,17 @@ namespace AtelierXNA
 
         private void DéplacerVoiture()
         {
-            Vector2 tamp = Vector2.Normalize(PointsCentraux[1] - PointsCentraux[2]);
-            Position += new Vector3(tamp.X, 0, tamp.Y)/100f;
-        }
+            Vector2 temp = PointsCentraux[Index] - PointsCentraux[(Index + 1)%PointsCentraux.Count];
+            Position = new Vector3(PointsCentraux[Index].X, 0,PointsCentraux[Index].Y);
+            //Position += new Vector3(temp.X, 0, temp.Y)/10f;
+            ++IndexIntermédiaire;
+            if (IndexIntermédiaire == 10)
+            {
+                ++Index;
+                IndexIntermédiaire = 0;
+            }
 
+        }
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
