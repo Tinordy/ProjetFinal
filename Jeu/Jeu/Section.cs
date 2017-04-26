@@ -66,6 +66,23 @@ namespace AtelierXNA
         
             Components.Add(Piste);
             Game.Components.Add(Piste);
+            CreateLimits();
+        }
+        void CreateLimits()
+        {
+            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp();
+            if (VecteursPerp != null)
+            {
+
+
+                for (int i = 0; i < VecteursPerp.Count / 4; i += 4)
+                {
+                    Vector2 vUp = VecteursPerp[i] + VecteursPerp[i + 1];
+                    Vector2 vDown = VecteursPerp[i + 2] + VecteursPerp[i + 3];
+                    Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X, 0, vUp.Y), Color.Red, new Vector3(20, 20, 20), INTERVALLE_MAJ_STANDARD));
+                }
+            }
+            
         }
         protected override void OnVisibleChanged(object sender, EventArgs args)
         {

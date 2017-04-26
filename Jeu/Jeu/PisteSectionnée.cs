@@ -112,7 +112,7 @@ namespace AtelierXNA
             InitialiserParamètresEffetDeBase();
             base.LoadContent();
         }
-        void ObtenirDonnéesPiste()
+        public void ObtenirDonnéesPiste()
         {
             //PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
             //PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
@@ -262,6 +262,23 @@ namespace AtelierXNA
             vecteurs.Add(PointsBordureInt[0][0] - PointsCentraux[0][0]);
             vecteurs.Add(PointsCentraux[0][0]);
             return vecteurs;
+        }
+        public List<Vector2> ObtenirVecteursPerp()
+        {
+            if (PointsCentraux.Count > 0)
+            {
+
+                List<Vector2> vecteurs = new List<Vector2>();
+                for (int i = 0; i < PointsBordureExt.Count; ++i)
+                {
+                    vecteurs.Add(PointsBordureExt[0][i] - PointsCentraux[0][i]);
+                    vecteurs.Add(PointsCentraux[0][i]);
+                    vecteurs.Add(PointsBordureInt[0][i] - PointsCentraux[0][i]);
+                    vecteurs.Add(PointsCentraux[0][i]);
+                }
+                return vecteurs;
+            }
+            return null;
         }
         public Vector2 ObtenirBordureExt(int i)
         {

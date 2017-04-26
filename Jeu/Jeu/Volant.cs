@@ -71,7 +71,7 @@ namespace AtelierXNA
             if (Temps…coulÈDepuisMAJ >= IntervalleMAJ)
             {
                 Temps…coulÈDepuisMAJ = 0;
-                Game.Window.Title = AxeX.ToString() + " / " + AxeY.ToString() + " / " + AxeZ.ToString();
+                //Game.Window.Title = AxeX.ToString() + " / " + AxeY.ToString() + " / " + AxeZ.ToString();
 
             }
             base.Update(gameTime);
