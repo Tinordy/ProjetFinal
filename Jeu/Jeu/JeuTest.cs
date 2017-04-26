@@ -615,7 +615,7 @@ namespace AtelierXNA
 
         private void CréerVoitureDummy()
         {
-            Game.Components.Add(new VoitureDummy(Game, "small car", 0.1f, Vector3.Zero, new Vector3(50, 5, 50), 0.01f));
+            //Game.Components.Add(new VoitureDummy(Game, "small car", 0.1f, Vector3.Zero, new Vector3(50, 5, 50), 0.01f));
         }
 
         private void Reset()

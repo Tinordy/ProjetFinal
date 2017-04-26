@@ -22,6 +22,8 @@ namespace AtelierXNA
     enum ÉtatsMenu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, ATTENTE_JOUEURS, CONNECTION }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        const int NB_VOITURES_DUMMIES = 10;
+        const int LARGEUR_ENTRE_VOITURE = 100;
         const int NB_TOURS = 1;
         const int LARGEUR_DÉPART = 3;
         Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
@@ -104,6 +106,8 @@ namespace AtelierXNA
         BoundingSphere CheckPoint { get; set; }
         int NbTours { get; set; }
         bool CheckPointAtteint { get; set; }
+        List<Voiture> VoituresDummies { get; set; }
+
         public Jeu(Game game)
             : base(game)
         {
@@ -197,6 +201,10 @@ namespace AtelierXNA
             {
                 estEnColAvecObj = Sections[i].EstEnCollisionAvecUnObjet(Joueur);
                 ++i;
+            }
+            while(!estEnColAvecObj && i < VoituresDummies.Count)
+            {
+                estEnColAvecObj = Joueur.EstEnCollision(VoituresDummies[i]);
             }
             if (estEnColAvecObj)
             {
@@ -660,7 +668,14 @@ namespace AtelierXNA
 
         private void CréerVoitureDummy()
         {
-            Game.Components.Add(new VoitureDummy(Game, "small car", 0.1f, Vector3.Zero, new Vector3(50, 5, 50), INTERVALLE_MAJ));
+            VoituresDummies = new List<Voiture>();
+            Voiture temp;
+            for(int i = 0; i < NB_VOITURES_DUMMIES; ++i)
+            {
+                temp = new VoitureDummy(Game, "small car", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
+                VoituresDummies.Add(temp);
+                Game.Components.Add(temp);
+            }
         }
 
         private void Reset()

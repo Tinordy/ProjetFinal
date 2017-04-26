@@ -32,40 +32,50 @@ namespace AtelierXNA
                 index = value % PointsCentraux.Count;
             }
         }
-        public VoitureDummy(Game game, string nomModËle, float ÈchelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
+        public VoitureDummy(Game game, string nomModËle, float ÈchelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, int index, float intervalleMAJ)
             : base(game, nomModËle, ÈchelleInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
-            
+            Data = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
+            PointsCentraux = Data.GetPointsCentraux();
+            Index = index;
         }
         public override void Initialize()
         {
-        
+            DistanceParcourue = 0;
             IndexIntermÈdiaire = 0;
-            Data = Game.Services.GetService(typeof(DataPiste)) as DataPiste;
-            PointsCentraux = Data.GetPointsCentraux();
-            Position = new Vector3(PointsCentraux[0].X, 0, PointsCentraux[0].Y);
+            Position = new Vector3(PointsCentraux[Index].X, 0, PointsCentraux[Index].Y);
             base.Initialize();
         }
         public override void Update(GameTime gameTime)
         {
             Temps…coulÈDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if(Temps…coulÈDepuisMAJ >= IntervalleMAJ)
+            if (Temps…coulÈDepuisMAJ >= IntervalleMAJ)
             {
                 DÈplacerVoiture();
                 RecrÈerMonde();
             }
         }
-
+        Vector2 DÈplacement { get; set; }
+        float DistanceParcourue { get; set; }
+        float Distance¿Parcourir { get; set;
+        }
         private void DÈplacerVoiture()
         {
-            Vector2 temp = PointsCentraux[Index] - PointsCentraux[(Index + 1)%PointsCentraux.Count];
-            Position = new Vector3(PointsCentraux[Index].X, 0,PointsCentraux[Index].Y);
-            //Position += new Vector3(temp.X, 0, temp.Y)/10f;
-            ++IndexIntermÈdiaire;
-            if (IndexIntermÈdiaire == 10)
+            if (DistanceParcourue >= Distance¿Parcourir)
             {
                 ++Index;
-                IndexIntermÈdiaire = 0;
+                DÈplacement = PointsCentraux[(Index + 1) % PointsCentraux.Count] - PointsCentraux[Index];
+                Distance¿Parcourir = DÈplacement.Length();
+                DistanceParcourue = 0;
+                DÈplacement = Vector2.Normalize(DÈplacement)/10;
+                Position = new Vector3(PointsCentraux[Index].X, 0, PointsCentraux[Index].Y);
+                int signe = DÈplacement.Y < 0 ? 0 : 1;
+                Rotation = new Vector3(0,(float)(Math.Atan(DÈplacement.X / DÈplacement.Y) + signe*Math.PI),0);
+            }
+            else
+            {
+                Position += new Vector3(DÈplacement.X, 0, DÈplacement.Y);
+                DistanceParcourue += DÈplacement.Length();
             }
 
         }
