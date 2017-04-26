@@ -22,6 +22,9 @@ namespace AtelierXNA
     enum ÉtatsMenu { MENU_PRINCIPAL, MENU_OPTION, CHOIX_LAN, CHOIX_PROFILE, ENTRÉE_PORT_SERVEUR, ENTRÉE_PORT_CLIENT, ATTENTE_JOUEURS, CONNECTION }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        const int NB_TOURS = 2;
+        const int LARGEUR_DÉPART = 3;
+        Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
         bool ConnectionÉtablie { get; set; }
         const int ÉTENDUE = 50;
         const float INTERVALLE_MAJ = 1f / 60f;
@@ -72,7 +75,7 @@ namespace AtelierXNA
             get
             {
                 //modifier
-                return MaBannière.EstÀArrivée(Joueur.Position);
+                return Bannière.EstÀArrivée(Joueur.Position);
             }
         }
         ÉtatsJeu État { get; set; }
@@ -97,7 +100,10 @@ namespace AtelierXNA
         //TimerAugmente TempsDeCourse { get; set; }
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
-        BannièreArrivée MaBannière { get; set; }
+        BannièreArrivée Bannière { get; set; }
+        BoundingSphere CheckPoint { get; set; }
+        int NbTours { get; set; }
+        bool CheckPointAtteint { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -106,6 +112,8 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            CheckPointAtteint = false;
+            NbTours = 0;
             ÉtatJoueur = ÉtatsJoueur.SOLO;
             CréerCaméra();
             CréerEnvironnement();
@@ -158,7 +166,21 @@ namespace AtelierXNA
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
             }
             GérerCollisions();
+            GérerCheckPoints();
             //Collision, nb tours?
+        }
+
+        private void GérerCheckPoints()
+        {
+            if (CheckPoint.Contains(Joueur.Position) == ContainmentType.Contains)
+            {
+                CheckPointAtteint = true;
+            }
+            if (CheckPointAtteint && JoueurEstArrivé)
+            {
+                ++NbTours;
+                CheckPointAtteint = false;
+            }
         }
 
         private void GérerCollisions()
@@ -171,12 +193,12 @@ namespace AtelierXNA
             //collision avec objets
             bool estEnColAvecObj = false;
             int i = 0;
-            while(!estEnColAvecObj && i < Sections.Count)
+            while (!estEnColAvecObj && i < Sections.Count)
             {
                 estEnColAvecObj = Sections[i].EstEnCollisionAvecUnObjet(Joueur);
                 ++i;
             }
-            if(estEnColAvecObj)
+            if (estEnColAvecObj)
             {
                 Joueur.Rebondir(Vector2.Zero);
             }
@@ -344,7 +366,7 @@ namespace AtelierXNA
             }
             else
             {
-                if (JoueurEstArrivé)
+                if (NbTours == NB_TOURS)
                 {
                     if (ÉtatJoueur == ÉtatsJoueur.SOLO)
                     {
@@ -391,7 +413,7 @@ namespace AtelierXNA
                 Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
-                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true,INTERVALLE_MAJ);
+                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, INTERVALLE_MAJ);
                 Game.Components.Add(NetworkManager.TempsDeCourseJ);
             }
         }
@@ -455,8 +477,7 @@ namespace AtelierXNA
                         NetworkManager.SendPrêtJeu(true);
                     }
                     État = ÉtatsJeu.ATTENTE_JOUEURS;
-                    NetworkManager.PseudonymeJ = MenuChoixProfile.Pseudonyme;
-                    //ENVOYER PSUDONYME A ENNEMI!!!!!!!
+                    ChercherPseudonyme();
                     break;
                 case ChoixMenu.JOUER:
                     État = ÉtatsJeu.DÉCOMPTE;
@@ -465,6 +486,22 @@ namespace AtelierXNA
                     InitialiserDécompte();
                     break;
             }
+        }
+
+        private void ChercherPseudonyme()
+        {
+            if (MenuChoixProfile.Pseudonyme == string.Empty)
+            {
+                if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
+                {
+                    MenuChoixProfile.Pseudonyme = "JOUEUR 1";
+                }
+                else
+                {
+                    MenuChoixProfile.Pseudonyme = "JOUEUR 2";
+                }
+            }
+            NetworkManager.PseudonymeJ = MenuChoixProfile.Pseudonyme;
         }
 
         private void InitialiserDécompte()
@@ -589,7 +626,7 @@ namespace AtelierXNA
             //enlever ip!!!
             if (!test/*UsedIP.FindIndex(s => s == ip) == -1*/) //marche simple joueur, pt pas multijoueur?
             {
-                if(ÉtatJoueur != ÉtatsJoueur.CLIENT)
+                if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
                 {
                     Serveur = new Server(port, ip);
                     Game.Services.AddService(typeof(Server), Serveur);
@@ -613,10 +650,11 @@ namespace AtelierXNA
         {
             Reset();
             CréerVoitureDummy();
-            CréerJoueur();
+            Vector2 v = Sections[10].ObtenirPointDépart();
+            CréerJoueur(v);
             if (ÉtatJoueur != ÉtatsJoueur.SOLO)
             {
-                CréerEnnemi();
+                CréerEnnemi(v);
             }
         }
 
@@ -634,6 +672,8 @@ namespace AtelierXNA
                     Game.Components.RemoveAt(i);
                 }
             }
+            CheckPointAtteint = false;
+            NbTours = 0;
         }
 
         private void CréerEnvironnement()
@@ -648,27 +688,39 @@ namespace AtelierXNA
                 {
                     Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
+                    newSection.Initialize();
                     Game.Components.Add(newSection);
-                   // newSection.DrawOrder = 0; //le terrain doit être dessiné en 2e
                 }
             }
-            //Game.Components.Add(new Maison(Game, 10f, Vector3.Zero, new Vector3(500, 0, 400), new Vector3(2, 2, 2), "Carte", "BoutonVert", 0.01f));
 
-            MaBannière = new BannièreArrivée(Game, 1f, Vector3.Zero, Vector3.Zero, 0.01f);
-            Game.Components.Add(MaBannière);
+            Bannière = Sections[10].CréerBannière();
+            CheckPoint = Sections[63].CréerCheckPoint();
         }
 
-        private void CréerEnnemi()
+        private void CréerEnnemi(Vector2 Départ)
         {
-            //Vrai Posinitiale :(
-            Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, NetworkManager.PositionEnnemi, INTERVALLE_MAJ); //Get choix de voiture??
+            if(ÉtatJoueur == ÉtatsJoueur.SERVEUR)
+            {
+                Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //Get choix de voiture??
+            }
+            else
+            {
+                Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(Départ.X + LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //Get choix de voiture??
+            }
             Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
 
-        private void CréerJoueur()
+        private void CréerJoueur(Vector2 Départ)
         {
-            Joueur = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(384, 0, 334), INTERVALLE_MAJ); //mettre choix?
+            if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
+            {
+                Joueur = new Voiture(Game, "GLX_400", 0.01f, RotationInitiale, new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y), INTERVALLE_MAJ); //mettre choix?
+            }
+            else
+            {
+                Joueur = new Voiture(Game, "GLX_400", 0.01f, RotationInitiale, new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //mettre choix?
+            }
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
@@ -678,7 +730,7 @@ namespace AtelierXNA
         {
             Vector3 positionCaméra = new Vector3(100, 50, 125);
             Vector3 cibleCaméra = new Vector3(100, 0, 50);
-            CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up,INTERVALLE_MAJ);
+            CaméraSubjective CaméraJeu = new CaméraSubjective(Game, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ);
             Game.Components.Add(CaméraJeu);
             Game.Services.AddService(typeof(Caméra), CaméraJeu);
         }

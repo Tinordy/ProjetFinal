@@ -22,7 +22,7 @@ namespace AtelierXNA
         Vector2 Extrémité { get; set; }
         double NormeÉtendue { get; set; }
         PisteSectionnée Piste { get; set; }
-
+        //public BannièreArrivée Bannière { get; private set; }
         List<DrawableGameComponent> Components { get; set; }
         public Section(Game game, Vector2 origine, Vector2 étendue2, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector3 étendue,
                        string[] nomsTexturesTerrain, float intervalleMAJ)
@@ -89,9 +89,39 @@ namespace AtelierXNA
             }
             return valRetour;
         }
-        public PisteSectionnée ObtenirSectionPiste()
+        //public PisteSectionnée ObtenirSectionPiste()
+        //{
+        //    return Piste;
+        //}
+        public BannièreArrivée CréerBannière()
         {
-            return Piste;
+            Vector2[] pointsA = new Vector2[4];
+
+            pointsA[2] = Piste.ObtenirBordureExt(0);
+            pointsA[0] = Piste.ObtenirBordureExt(1);
+            pointsA[3] = Piste.ObtenirBordureInt(0);
+            pointsA[1] = Piste.ObtenirBordureInt(1);
+
+            Vector3[] points = new Vector3[4];
+            for (int i = 0; i < 4; ++i)
+            {
+                points[i] = new Vector3(pointsA[i].X, 0, pointsA[i].Y);
+            }
+
+            BannièreArrivée Bannière = new BannièreArrivée(Game, 1f, Vector3.Zero, Vector3.Zero, points, 0.01f);
+            Components.Add(Bannière);
+            Game.Components.Add(Bannière);
+            return Bannière;
+        }
+        public Vector2 ObtenirPointDépart()
+        {
+            return Piste.ObtenirPremierPointCentral(1);
+        }
+
+        public BoundingSphere CréerCheckPoint()
+        {
+            Vector2 v = Piste.ObtenirPremierPointCentral(0);
+            return new BoundingSphere(new Vector3(v.X, 0, v.Y), 7);
         }
         //public void AddComponent(GameComponent x)
         //{

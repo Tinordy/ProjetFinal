@@ -17,7 +17,7 @@ namespace AtelierXNA
     public class MenuProfile : Menu
     {
         public int Voiture { get; private set; }
-        public string Pseudonyme { get; private set; }
+        public string Pseudonyme { get; set; }
         EntréeDeTexte LecteurPseudonyme { get; set; }
         DéfileurSprite ChoixVoiture { get; set; }
         BoutonDeCommande BtnValider { get; set; }
