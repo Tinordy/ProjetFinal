@@ -31,10 +31,12 @@ namespace AtelierXNA
         Vector2 ÉtendueTotale { get; set; }
         const float FACTEUR_ACCÉLÉRATION = 1f / 5f;
         const int INCRÉMENT_ANGLE = 10;
-        const float RAYON_VOITURE = 1f;
+        const float RAYON_VOITURE = 1.5f;
         bool EstEnCollisionAvecOBJ { get; set; }
         protected float IntervalleMAJ { get; private set; }
         Vector3 PositionCaméra { get; set; }
+        Vector3 PositionAvant { get; set; }
+        Vector3 PositionArrière { get; set; }
         Vector3 DirectionCaméra { get; set; }
         float NormeDirection { get; set; }
         float intervalleAccélération;
@@ -68,6 +70,8 @@ namespace AtelierXNA
         Vector3 DirectionDérapage { get; set; }
         bool PremièreBoucleDérapage { get; set; }
         public bool EstActif { get; set; }
+        public BoundingSphere SphèreDeCollisionAvant { get; set; }
+        public BoundingSphere SphèreDeCollisionArrière { get; set; }
         public BoundingSphere SphèreDeCollision { get; set; }
         public float AngleVolant
         {
@@ -168,7 +172,10 @@ namespace AtelierXNA
             elVolant = new Volant(Game, 0.01f);
             Game.Components.Add(elVolant);
             base.Initialize();
-            SphèreDeCollision = new BoundingSphere(Position, RAYON_VOITURE);
+            PositionAvant = Position + Vector3.Normalize(Direction);
+            PositionArrière = Position - Vector3.Normalize(Direction);
+            SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
+            SphèreDeCollisionArrière = new BoundingSphere(PositionArrière, RAYON_VOITURE);
             DirectionCaméra = Monde.Forward - Monde.Backward;
             DéplacerCaméra();
         }
@@ -212,7 +219,8 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
-                SphèreDeCollision = new BoundingSphere(Position + Vector3.Normalize(DirectionCaméra), RAYON_VOITURE);
+                SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
+                SphèreDeCollisionArrière = new BoundingSphere(PositionArrière, RAYON_VOITURE);
                 TempsÉcouléDepuisMAJ = 0;
             }
 
@@ -265,7 +273,18 @@ namespace AtelierXNA
             return GestionInput.EstEnfoncée(touche) ? INCRÉMENT_ANGLE : 0;
         }
 
-
+        void ModifierPosition1()
+        {
+            Position += Direction;
+            PositionAvant += Direction;
+            PositionArrière += Direction;
+        }
+        void ModifierPosition2()
+        {
+            Position -= Direction;
+            PositionAvant -= Direction;
+            PositionArrière -= Direction;
+        }
         void AjusterPositionClavier()
         {
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
@@ -274,7 +293,12 @@ namespace AtelierXNA
             {
                 if(!EstEnCollisionAvecOBJ)
                 {
-                    Position += Direction;
+                    ModifierPosition1();
+                }
+                else
+                {
+                    ModifierPosition2();
+                    Rebondir(Vector2.Zero);
                 }
                 
                 PremièreBoucleDérapage = true;
@@ -293,6 +317,14 @@ namespace AtelierXNA
                     if(!EstEnCollisionAvecOBJ)
                     {
                         Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                        PositionArrière += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                        PositionAvant += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                    }
+                    else
+                    {
+                        Position -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                        PositionArrière -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
+                        PositionAvant -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
                     }
                     
                     if (TempsAccélération <= 0)
@@ -306,7 +338,7 @@ namespace AtelierXNA
                     }
                     if (GestionInput.EstEnfoncée(Keys.Tab))
                     {
-                        Position += Direction;
+                        ModifierPosition1();
                     }
                 }
 
@@ -382,13 +414,15 @@ namespace AtelierXNA
 
         public bool EstEnCollision(object autreObjet)
         {
-            bool valeurRetour = false;
+            bool valeurRetour1 = false;
+            bool valeurRetour2 = false;
             if (autreObjet is ICollisionable)
             {
-                valeurRetour = SphèreDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
+                valeurRetour1 = SphèreDeCollisionAvant.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
+                valeurRetour2 = SphèreDeCollisionArrière.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
             }
-            EstEnCollisionAvecOBJ = valeurRetour;
-            return valeurRetour;
+            EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
+            return (valeurRetour1 || valeurRetour2);
         }
         public void Rebondir(Vector2 vitesseEnnemi)
         {
