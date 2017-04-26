@@ -263,5 +263,13 @@ namespace AtelierXNA
             vecteurs.Add(PointsCentraux[0][0]);
             return vecteurs;
         }
+        public Vector2 ObtenirBordureExt(int i)
+        {
+            return PointsBordureExt[i][0];
+        }
+        public Vector2 ObtenirBordureInt(int i)
+        {
+            return PointsBordureInt[i][0];
+        }
     }
 }
