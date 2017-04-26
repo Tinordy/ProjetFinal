@@ -26,6 +26,7 @@ namespace AtelierXNA
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
         const float INTERVALLE_RALENTISSEMENT = 1f / 6f;
         const int DISTANCE_CAMÉRA = 400;
+        const float FREINAGE = 1.5f;
 
         // propriétés
         Vector2 ÉtendueTotale { get; set; }
@@ -73,17 +74,6 @@ namespace AtelierXNA
         public BoundingSphere SphèreDeCollisionAvant { get; set; }
         public BoundingSphere SphèreDeCollisionArrière { get; set; }
         public BoundingSphere SphèreDeCollision { get; set; }
-        public float AngleVolant
-        {
-            get
-            { return angleVolant; }
-            private set
-            {
-                angleVolant = value;
-                if (value < -0.3f) { angleVolant = -0.3f; }
-                if (value > 0.3f) { angleVolant = 0.3f; }
-            }
-        }
 
         public float Vitesse
         {
@@ -169,7 +159,7 @@ namespace AtelierXNA
             IntervalleAccélération = 1f / 10f;
             Direction = new Vector3(0, 0, 75);
             Vitesse = 0;
-            elVolant = new Volant(Game, 0.01f);
+            elVolant = new Volant(Game, 1f/60f);
             Game.Components.Add(elVolant);
             base.Initialize();
             PositionAvant = Position + Vector3.Normalize(Direction);
@@ -219,6 +209,7 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
+                Game.Window.Title = "Vitesse : " + Vitesse.ToString();
                 SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
                 SphèreDeCollisionArrière = new BoundingSphere(PositionArrière, RAYON_VOITURE);
                 TempsÉcouléDepuisMAJ = 0;
@@ -230,7 +221,7 @@ namespace AtelierXNA
         {
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
             TempsAccélération += INTERVALLE_RALENTISSEMENT * -((float)elVolant.AxeY - 32767f) / 32767f;
-            //TempsAccélération -= INTERVALLE_RALENTISSEMENT * 3f * -(((float)elVolant.AxeZ - 65535f) / 65535f);
+            TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * -(((float)elVolant.AxeZ - 65535f) / 65535f);
             if (elVolant.AxeY == 32767 && elVolant.AxeZ == 65535)
             {
                 TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT;
@@ -241,12 +232,14 @@ namespace AtelierXNA
 
         void AjusterPositionVolant()
         {
-            Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
             float sens = ((float)elVolant.AxeX - 32767f) / 32767f;
             if (Vitesse > 0)
             {
-                Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
+                Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
             }
+            Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
+            Position += Direction;
+
             ChangementEffectué = true;
         }
 
@@ -260,7 +253,7 @@ namespace AtelierXNA
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT; }
             if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
-            if (freinage) { TempsAccélération -= 3f * INTERVALLE_RALENTISSEMENT; }
+            if (freinage) { TempsAccélération -= FREINAGE * INTERVALLE_RALENTISSEMENT; }
 
         }
 
