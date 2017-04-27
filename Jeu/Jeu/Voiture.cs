@@ -19,7 +19,7 @@ namespace AtelierXNA
     {
         //constantes
         const int TEMPS_ACCÉLÉRATION_MIN = -20;
-        const int VITESSE_MAX = 150;
+        const int VITESSE_MAX = 100;
         const int VITESSE_MIN = -5;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
