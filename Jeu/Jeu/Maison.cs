@@ -56,6 +56,7 @@ namespace AtelierXNA
             CréerTableauSommets();
             SphèreDeCollision = new BoundingSphere(PositionInitiale, HomothétieInitiale*Étendue.X / 2);
             base.Initialize();
+            Visible = false;
         }
 
         protected override void LoadContent()

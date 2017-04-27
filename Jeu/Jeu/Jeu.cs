@@ -712,6 +712,8 @@ namespace AtelierXNA
 
             Bannière = Sections[10].CréerBannière();
             CheckPoint = Sections[63].CréerCheckPoint();
+            Sections[10].Initialize();
+            Sections[10].Visible = true;
         }
 
         private void CréerEnnemi(Vector2 Départ)

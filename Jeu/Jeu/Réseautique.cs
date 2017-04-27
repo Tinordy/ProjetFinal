@@ -37,7 +37,7 @@ namespace AtelierXNA
             :base(game)
         {
             PseudonymeE = "ORDI";
-            TempsDeCourseE = new TimeSpan(0, 0, 10);
+            TempsDeCourseE = new TimeSpan(0, 0, 30);
 
             //Serveur = serveur;
             EnnemiPrêtÀJouer = false;

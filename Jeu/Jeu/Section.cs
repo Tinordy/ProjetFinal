@@ -44,6 +44,7 @@ namespace AtelierXNA
             CréerPiste();
             CréerMaisons();
             base.Initialize();
+            Visible = false;
         }
 
         private void CréerMaisons()

@@ -66,6 +66,7 @@ namespace AtelierXNA
             //NbDeSommets = PointsBordureExt.Count + PointsBordureInt.Count + 2;
 
             base.Initialize();
+            Visible = false;
         }
         protected override void InitialiserSommets()
         {
