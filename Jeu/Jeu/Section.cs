@@ -17,6 +17,7 @@ namespace AtelierXNA
     /// </summary>
     public class Section : Terrain
     {
+        const float HOMOTHÉTIE_MAISON = 10f;
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         Vector2 Étendue { get; set; }
         Vector2 Extrémité { get; set; }
@@ -53,7 +54,7 @@ namespace AtelierXNA
                 for(int i = 0; i < vecteursPerpendiculaires.Count; i += 2)
                 {
                     Vector2 temp = 4 * vecteursPerpendiculaires[i] + vecteursPerpendiculaires[i+1];
-                    Maison maison = new Maison(Game, 5f, Vector3.Zero, new Vector3(temp.X, 0, temp.Y), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
+                    Maison maison = new Maison(Game,HOMOTHÉTIE_MAISON, Vector3.Zero, new Vector3(temp.X, 0, temp.Y), new Vector3(2, 2, 2), "brique1", "roof", 0.01f);
                     Components.Add(maison);
                     Game.Components.Add(maison);
                 }

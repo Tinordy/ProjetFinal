@@ -697,7 +697,7 @@ namespace AtelierXNA
             Sections = new List<Section>();
 
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
-            List<int> pasDeMaison = new List<int>() { /*16, 23, 25, 28, 29, 35, 36, 54, 61 , 17,30,32,37,39,56,57*/};
+            List<int> pasDeMaison = new List<int>() { 17,25,32,33,24,47,61,53,60,63,64,51,49, 50, 43, 36,37,29,30,16,37,21,22,23};
             for (int i = 0; i < 10; ++i)
             {
                 for (int j = 0; j < 7; ++j)
