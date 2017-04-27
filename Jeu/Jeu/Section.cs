@@ -142,7 +142,7 @@ namespace AtelierXNA
         public BoundingSphere CréerCheckPoint()
         {
             Vector2 v = Piste.ObtenirPremierPointCentral(0);
-            return new BoundingSphere(new Vector3(v.X, 0, v.Y), 7);
+            return new BoundingSphere(new Vector3(v.X, 0, v.Y), 10);
         }
         //public void AddComponent(GameComponent x)
         //{
