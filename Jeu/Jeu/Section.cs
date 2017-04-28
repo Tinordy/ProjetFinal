@@ -106,10 +106,6 @@ namespace AtelierXNA
             int i = 0;
             while(!valRetour && i < Components.Count)
             {
-                if(objet.EstEnCollision(Components[i]))
-                {
-
-                }
                 valRetour = objet.EstEnCollision(Components[i]);
                 ++i;
             }

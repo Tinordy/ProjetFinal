@@ -12,6 +12,7 @@ namespace AtelierXNA
         PlayerMoved = 2,
         PositionInitiale = 3,
         ReadyToPlayChanged = 4,
-        HasArrivedToEnd = 5
+        HasArrivedToEnd = 5,
+        ChoseCar = 6
     }
 }

@@ -60,6 +60,7 @@ namespace AtelierXNA
             Choix = ChoixMenu.VALIDATION;
             Pseudonyme = LecteurPseudonyme.ObtenirEntrée();
             Voiture = ChoixVoiture.DonnerChoixVoiture();
+            NetworkManager.SetChoixVoiture(Voiture);
             BtnValider.EstActif = false;
             //désactiver le reste (pseudonyme et voiture)
         }

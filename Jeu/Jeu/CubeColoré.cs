@@ -33,6 +33,8 @@ namespace AtelierXNA
         {
             Sommets = new VertexPositionColor[NB_SOMMETS];
             base.Initialize();
+            Visible = false;
+            SphèreDeCollision = new BoundingSphere(Position, DeltaX / 2);
         }
 
         protected override void LoadContent()
@@ -91,7 +93,6 @@ namespace AtelierXNA
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if(TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                SphèreDeCollision = new BoundingSphere(Origine, DeltaX / 2);
                 TempsÉcouléDepuisMAJ = 0;
             }
             base.Update(gameTime);

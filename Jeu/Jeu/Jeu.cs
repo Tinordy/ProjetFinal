@@ -107,6 +107,7 @@ namespace AtelierXNA
         int NbTours { get; set; }
         bool CheckPointAtteint { get; set; }
         List<Voiture> VoituresDummies { get; set; }
+        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "GLZ_4oo" };//meilleures voitures plz
 
         public Jeu(Game game)
             : base(game)
@@ -718,28 +719,16 @@ namespace AtelierXNA
 
         private void CréerEnnemi(Vector2 Départ)
         {
-            if(ÉtatJoueur == ÉtatsJoueur.SERVEUR)
-            {
-                Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //Get choix de voiture??
-            }
-            else
-            {
-                Ennemi = new Voiture(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(Départ.X + LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //Get choix de voiture??
-            }
+            Vector3 pos = ÉtatJoueur == ÉtatsJoueur.SERVEUR ? new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y) : new Vector3(Départ.X + LARGEUR_DÉPART, 0, Départ.Y);
+            Ennemi = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureE], 0.01f, Vector3.Zero, pos, INTERVALLE_MAJ); //Get choix de voiture??
             Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
 
         private void CréerJoueur(Vector2 Départ)
         {
-            if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
-            {
-                Joueur = new Voiture(Game, "GLX_400", 0.01f, RotationInitiale, new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y), INTERVALLE_MAJ); //mettre choix?
-            }
-            else
-            {
-                Joueur = new Voiture(Game, "GLX_400", 0.01f, RotationInitiale, new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y), INTERVALLE_MAJ); //mettre choix?
-            }
+            Vector3 pos = ÉtatJoueur != ÉtatsJoueur.CLIENT ? new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y) : new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y);
+            Joueur = Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale,pos, INTERVALLE_MAJ);
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....

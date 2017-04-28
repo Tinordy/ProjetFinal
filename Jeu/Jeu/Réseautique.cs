@@ -15,6 +15,8 @@ namespace AtelierXNA
         public string PseudonymeJ { get; set; }
         public TimeSpan TempsDeCourseE { get; set; }
         public string PseudonymeE { get; set; }
+        public int ChoixVoitureJ { get; private set; }
+        public int ChoixVoitureE { get; private set; }
 
         public bool DisconnectedT { get; set; }
         const int BUFFER_SIZE = 2048;
@@ -186,6 +188,10 @@ namespace AtelierXNA
                 TempsDeCourseE = new TimeSpan(reader.ReadInt64());
                 PseudonymeE = reader.ReadString();
             }
+            else if(p == Protocoles.ChoseCar)
+            {
+                ChoixVoitureE = reader.ReadInt32();
+            }
         }
         public void SendData(byte[] b)
         {
@@ -234,6 +240,15 @@ namespace AtelierXNA
             writeStream.Position = 0;
             writer.Write((byte)Protocoles.Disconnected);
             SendData(/*Serveur.*/GetDataFromMemoryStream(writeStream));
+        }
+        public void SetChoixVoiture(int choix)
+        {
+            ChoixVoitureJ = choix;
+            writeStream.Position = 0;
+            writer.Write((byte)Protocoles.ChoseCar);
+            writer.Write(choix);
+            SendData(GetDataFromMemoryStream(writeStream));
+
         }
         #endregion
         public byte[] GetDataFromMemoryStream(MemoryStream ms)
