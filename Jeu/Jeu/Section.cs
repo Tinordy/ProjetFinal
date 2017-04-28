@@ -74,7 +74,7 @@ namespace AtelierXNA
         }
         void CreateLimits()
         {
-            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp();
+            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp((int)(Origine.X % Étendue.X));
             if (VecteursPerp != null)
             {
 
@@ -83,7 +83,8 @@ namespace AtelierXNA
                 {
                     Vector2 vUp = VecteursPerp[i] + VecteursPerp[i + 1];
                     Vector2 vDown = VecteursPerp[i + 2] + VecteursPerp[i + 3];
-                    //Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X, 0, vUp.Y), Color.Red, new Vector3(20, 20, 20), INTERVALLE_MAJ_STANDARD));
+                    Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X, 0, vUp.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD));
+                    Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vDown.X, 0, vDown.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD));
                 }
             }
             

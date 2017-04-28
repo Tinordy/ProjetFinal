@@ -264,18 +264,18 @@ namespace AtelierXNA
             vecteurs.Add(PointsCentraux[0][0]);
             return vecteurs;
         }
-        public List<Vector2> ObtenirVecteursPerp()
+        public List<Vector2> ObtenirVecteursPerp(int section)
         {
             if (PointsCentraux.Count > 0)
             {
 
                 List<Vector2> vecteurs = new List<Vector2>();
-                for (int i = 0; i < PointsBordureExt.Count; ++i)
+                for (int i = 0; i < PointsBordureExt.Count; i+=2)
                 {
-                    vecteurs.Add(PointsBordureExt[0][i] - PointsCentraux[0][i]);
-                    vecteurs.Add(PointsCentraux[0][i]);
-                    vecteurs.Add(PointsBordureInt[0][i] - PointsCentraux[0][i]);
-                    vecteurs.Add(PointsCentraux[0][i]);
+                    vecteurs.Add(PointsBordureExt[section][i] - PointsCentraux[section][i]);
+                    vecteurs.Add(PointsCentraux[section][i]);
+                    vecteurs.Add(PointsBordureInt[section][i] - PointsCentraux[section][i]);
+                    vecteurs.Add(PointsCentraux[section][i]);
                 }
                 return vecteurs;
             }

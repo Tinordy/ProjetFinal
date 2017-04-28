@@ -11,7 +11,7 @@ namespace AtelierXNA
         const int NB_SOMMETS_PAR_TRIANGLE = 3;
         const int NB_COLONNES_RANGÉES = 20; // jouer avec les fps 
 
-        Vector3 Étendue { get; set; }
+        protected Vector3 Étendue { get; set; }
 
         string NomCarteTerrain { get; set; }
         string[] NomsTexturesTerrain { get; set; }
@@ -21,7 +21,7 @@ namespace AtelierXNA
         Texture2D TextureSable { get; set; }
         Texture2D TextureFusion { get; set; }
         Texture2D TextureBase { get; set; }
-        Vector3 Origine { get; set; }
+        protected Vector3 Origine { get; set; }
         public int NbColonnes { get; private set; }
         public int NbRangées { get; private set; }
         float DeltaX { get; set; }
