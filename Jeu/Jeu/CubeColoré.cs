@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
 namespace AtelierXNA
 {
-    public class CubeColoré : PrimitiveDeBaseAnimée
+    public class CubeColoré : PrimitiveDeBaseAnimée, ICollisionable
     {
 
         const int NB_SOMMETS = 16;
@@ -94,6 +95,16 @@ namespace AtelierXNA
                 TempsÉcouléDepuisMAJ = 0;
             }
             base.Update(gameTime);
+        }
+
+        public bool EstEnCollision(object autreObjet)
+        {
+            bool valeurRetour = false;
+            if (autreObjet is ICollisionable)
+            {
+                valeurRetour = SphèreDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
+            }
+            return valeurRetour;
         }
     }
 }

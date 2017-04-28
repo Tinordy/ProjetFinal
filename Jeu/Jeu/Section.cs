@@ -79,12 +79,16 @@ namespace AtelierXNA
             {
 
 
-                for (int i = 0; i < VecteursPerp.Count / 4; i += 4)
+                for (int i = 0; i < VecteursPerp.Count / 2; i += 4)
                 {
-                    Vector2 vUp = VecteursPerp[i] + VecteursPerp[i + 1];
-                    Vector2 vDown = VecteursPerp[i + 2] + VecteursPerp[i + 3];
-                    Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X, 0, vUp.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD));
-                    Game.Components.Add(new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vDown.X, 0, vDown.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD));
+                    Vector2 vUp = 1.5f * VecteursPerp[i] + VecteursPerp[i + 1];
+                    Vector2 vDown = 1.5f * VecteursPerp[i + 2] + VecteursPerp[i + 3];
+                    CubeColoré cubeUp = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X, 0, vUp.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD);
+                    CubeColoré cubeDown = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vDown.X, 0, vDown.Y), Color.Black, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD);
+                    Components.Add(cubeUp);
+                    Components.Add(cubeDown);
+                    Game.Components.Add(cubeUp);
+                    Game.Components.Add(cubeDown);
                 }
             }
             
