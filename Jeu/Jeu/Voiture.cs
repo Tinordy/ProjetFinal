@@ -111,10 +111,6 @@ namespace AtelierXNA
         {
             get
             {
-                if(Vitesse < 10)
-                {
-                    return 1f;
-                }
                 if(Vitesse <= -2)
                 {
                     return 5f / 6f;

@@ -74,7 +74,7 @@ namespace AtelierXNA
         }
         void CreateLimits()
         {
-            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp((int)(Origine.X % Étendue.X));
+            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp((int)(Origine.X % Étendue.X) + 7 * (int)(Origine.Y % Étendue.Y));
             if (VecteursPerp != null)
             {
 
