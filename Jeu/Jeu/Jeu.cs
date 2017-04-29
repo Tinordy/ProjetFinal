@@ -107,7 +107,7 @@ namespace AtelierXNA
         int NbTours { get; set; }
         bool CheckPointAtteint { get; set; }
         List<Voiture> VoituresDummies { get; set; }
-        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "GLZ_4oo" };//meilleures voitures plz
+        List<string> ChoixVoiture = new List<string>() { "", "small car", "GLZ_4oo" };//meilleures voitures plz
 
         public Jeu(Game game)
             : base(game)
