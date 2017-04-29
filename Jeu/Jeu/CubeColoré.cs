@@ -52,7 +52,7 @@ namespace AtelierXNA
             int cpt = 0;
             while (cpt < NB_POINTS)
             {
-                Sommets[cpt] = new VertexPositionColor(tabPts[cpt], Color.Orchid);
+                Sommets[cpt] = new VertexPositionColor(tabPts[cpt], Couleur);
                 ++cpt;
             }
             Sommets[cpt++] = new VertexPositionColor(tabPts[2], Couleur);
