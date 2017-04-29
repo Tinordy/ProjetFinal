@@ -33,7 +33,7 @@ namespace AtelierXNA
         public override void Initialize()
         {
             List<string> noms = new List<string>();
-            noms.Add("CielÉtoilé");
+            noms.Add("choix1");
             noms.Add("Neige");
             noms.Add("brique1");
             LecteurPseudonyme = new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20", 10);
