@@ -438,7 +438,7 @@ namespace AtelierXNA
             {
                 Vector3 collision = centre - Position;
                 double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
-                if (angleRad <= Math.PI/5 || angleRad >= Math.PI * 4 / 5
+                if (angleRad <= Math.PI/5 || angleRad >= Math.PI * 4 / 5)
                 {
                     TempsAccélération = -TempsAccélération;
                     Direction = -Direction;
