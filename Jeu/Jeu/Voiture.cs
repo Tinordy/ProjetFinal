@@ -20,7 +20,7 @@ namespace AtelierXNA
         //constantes
         const int TEMPS_ACCÉLÉRATION_MIN = -20;
         const int VITESSE_MAX = 100;
-        const int VITESSE_MIN = -5;
+        const int VITESSE_MIN = -50;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
@@ -111,6 +111,10 @@ namespace AtelierXNA
         {
             get
             {
+                if(Vitesse <= -10)
+                {
+                    return 7f / 6f;
+                }
                 if(Vitesse <= -2)
                 {
                     return 5f / 6f;
@@ -410,9 +414,19 @@ namespace AtelierXNA
             if(directionEnnemi == Vector3.Zero)
             {
                 Vector3 collision = centre - Position;
-
+                Vector3.
                 double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
-                Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
+                if (angleRad <= Math.PI/3 || angleRad >= Math.PI * 2 / 3)
+                {
+                    TempsAccélération = -TempsAccélération;
+                    Direction = -Direction;
+                    CalculerVitesse();
+                    ModifierPosition1();
+                }
+                else
+                {
+                    Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
+                }
                 ChangementEffectué = true;
 
             }
