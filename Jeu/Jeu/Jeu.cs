@@ -103,11 +103,11 @@ namespace AtelierXNA
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
         BannièreArrivée Bannière { get; set; }
-        BoundingSphere CheckPoint { get; set; }
+        BoundingSphere[] CheckPoints { get; set; }
         int NbTours { get; set; }
-        bool CheckPointAtteint { get; set; }
+        bool[] CheckPointsAtteints { get; set; }
         List<Voiture> VoituresDummies { get; set; }
-        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "GLZ_4oo" };//meilleures voitures plz
+        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "volks" };//meilleures voitures plz
 
         public Jeu(Game game)
             : base(game)
@@ -117,7 +117,7 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            CheckPointAtteint = false;
+            CheckPointsAtteints = new bool[2] { false, false };
             NbTours = 0;
             ÉtatJoueur = ÉtatsJoueur.SOLO;
             CréerCaméra();
@@ -177,15 +177,15 @@ namespace AtelierXNA
 
         private void GérerCheckPoints()
         {
-            if (CheckPoint.Contains(Joueur.Position) == ContainmentType.Contains)
-            {
-                CheckPointAtteint = true;
-            }
-            if (CheckPointAtteint && JoueurEstArrivé)
-            {
-                ++NbTours;
-                CheckPointAtteint = false;
-            }
+            //if (CheckPoints.Contains(Joueur.Position) == ContainmentType.Contains)
+            //{
+            //    CheckPointsAtteints = true;
+            //}
+            //if (CheckPointsAtteints && JoueurEstArrivé)
+            //{
+            //    ++NbTours;
+            //    CheckPointsAtteints = false;
+            //}
         }
 
         private void GérerCollisions()
@@ -693,7 +693,7 @@ namespace AtelierXNA
                     Game.Components.RemoveAt(i);
                 }
             }
-            CheckPointAtteint = false;
+            CheckPointsAtteints = new bool[2] { false, false };
             NbTours = 0;
         }
 
@@ -717,7 +717,8 @@ namespace AtelierXNA
             }
 
             Bannière = Sections[10].CréerBannière();
-            CheckPoint = Sections[63].CréerCheckPoint();
+            CheckPoints[0] = Sections[61].CréerCheckPoint();
+            CheckPoints[1] = Sections[63].CréerCheckPoint();
             Sections[10].Initialize();
             Sections[10].Visible = true;
         }
