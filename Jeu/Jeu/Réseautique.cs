@@ -274,8 +274,7 @@ namespace AtelierXNA
         public void Reset(string ip, int port)
         {
             PseudonymeE = "ORDI";
-            TempsDeCourseE = new TimeSpan(0, 0, 10);
-
+            TempsDeCourseE = new TimeSpan(0, 1, 0);
             //Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
