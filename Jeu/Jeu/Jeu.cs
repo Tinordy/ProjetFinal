@@ -24,7 +24,7 @@ namespace AtelierXNA
     {
         const int NB_VOITURES_DUMMIES = 10;
         const int LARGEUR_ENTRE_VOITURE = 100;
-        const int NB_TOURS = 1;
+        const int NB_TOURS = 3;
         const int LARGEUR_DÉPART = 3;
         Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
         bool ConnectionÉtablie { get; set; }
@@ -103,11 +103,11 @@ namespace AtelierXNA
         Vector2 ÉtendueTotale { get; set; }
         InputManager GestionInput { get; set; }
         BannièreArrivée Bannière { get; set; }
-        BoundingSphere CheckPoint { get; set; }
+        BoundingSphere[] CheckPoints { get; set; }
         int NbTours { get; set; }
-        bool CheckPointAtteint { get; set; }
+        bool[] CheckPointsAtteints { get; set; }
         List<Voiture> VoituresDummies { get; set; }
-        List<string> ChoixVoiture = new List<string>() { "", "small car", "GLZ_4oo" };//meilleures voitures plz
+        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "volks" };//meilleures voitures plz
 
         public Jeu(Game game)
             : base(game)
@@ -117,7 +117,7 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            CheckPointAtteint = false;
+            CheckPointsAtteints = new bool[2] { false, false };
             NbTours = 0;
             ÉtatJoueur = ÉtatsJoueur.SOLO;
             CréerCaméra();
@@ -177,14 +177,18 @@ namespace AtelierXNA
 
         private void GérerCheckPoints()
         {
-            if (CheckPoint.Contains(Joueur.Position) == ContainmentType.Contains)
+            if (CheckPoints[0].Contains(Joueur.Position) == ContainmentType.Contains)
             {
-                CheckPointAtteint = true;
+                CheckPointsAtteints[0] = true;
             }
-            if (CheckPointAtteint && JoueurEstArrivé)
+            if(CheckPointsAtteints[0] && CheckPoints[1].Contains(Joueur.Position) == ContainmentType.Contains)
+            {
+                CheckPointsAtteints[1] = true;
+            }
+            if (CheckPointsAtteints[1] && JoueurEstArrivé)
             {
                 ++NbTours;
-                CheckPointAtteint = false;
+                CheckPointsAtteints = new bool[2] { false, false };
             }
         }
 
@@ -193,23 +197,28 @@ namespace AtelierXNA
             //collision entre joueurs
             if (ÉtatJoueur != ÉtatsJoueur.SOLO && Joueur.EstEnCollision(Ennemi))
             {
-                Joueur.Rebondir(Vector2.Zero); //SWITCH
+                Joueur.Rebondir(Ennemi.Direction, Ennemi.SphèreDeCollision.Center); //SWITCH
             }
             //collision avec objets
             bool estEnColAvecObj = false;
             int i = 0;
+            Vector3 centre = Vector3.Zero;
             while (!estEnColAvecObj && i < Sections.Count)
             {
                 estEnColAvecObj = Sections[i].EstEnCollisionAvecUnObjet(Joueur);
+                if (Sections[i].EstEnCollisionAvecUnObjet(Joueur))
+                {
+                    centre = Sections[i].SphereDeCollision.Center;
+                }
                 ++i;
             }
-            while(!estEnColAvecObj && i < VoituresDummies.Count)
+            while (!estEnColAvecObj && i < VoituresDummies.Count)
             {
                 estEnColAvecObj = Joueur.EstEnCollision(VoituresDummies[i]);
             }
             if (estEnColAvecObj)
             {
-                Joueur.Rebondir(Vector2.Zero);
+                Joueur.Rebondir(Vector3.Zero, centre);              
             }
         }
 
@@ -671,7 +680,7 @@ namespace AtelierXNA
         {
             VoituresDummies = new List<Voiture>();
             Voiture temp;
-            for(int i = 0; i < NB_VOITURES_DUMMIES; ++i)
+            for (int i = 0; i < NB_VOITURES_DUMMIES; ++i)
             {
                 temp = new VoitureDummy(Game, "small car", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
                 VoituresDummies.Add(temp);
@@ -688,7 +697,7 @@ namespace AtelierXNA
                     Game.Components.RemoveAt(i);
                 }
             }
-            CheckPointAtteint = false;
+            CheckPointsAtteints = new bool[2] { false, false };
             NbTours = 0;
         }
 
@@ -698,13 +707,13 @@ namespace AtelierXNA
             Sections = new List<Section>();
 
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
-            List<int> pasDeMaison = new List<int>() { 17,25,32,33,24,47,61,53,60,63,64,51,49, 50, 43, 36,37,29,30,16,37,21,22,23};
+            List<int> pasDeMaison = new List<int>() { 17, 25, 32, 33, 24, 47, 61, 53, 60, 63, 64, 51, 49, 50, 43, 36, 37, 29, 30, 16, 37, 21, 22, 23 };
             for (int i = 0; i < 10; ++i)
             {
                 for (int j = 0; j < 7; ++j)
                 {
                     bool maison = !pasDeMaison.Contains(Sections.Count);
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, maison,INTERVALLE_MAJ); //double??
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, maison, INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
                     newSection.Initialize();
                     Game.Components.Add(newSection);
@@ -712,7 +721,9 @@ namespace AtelierXNA
             }
 
             Bannière = Sections[10].CréerBannière();
-            CheckPoint = Sections[63].CréerCheckPoint();
+            CheckPoints = new BoundingSphere[2];
+            CheckPoints[0] = Sections[54].CréerCheckPoint();
+            CheckPoints[1] = Sections[63].CréerCheckPoint();
             Sections[10].Initialize();
             Sections[10].Visible = true;
         }
@@ -728,7 +739,7 @@ namespace AtelierXNA
         private void CréerJoueur(Vector2 Départ)
         {
             Vector3 pos = ÉtatJoueur != ÉtatsJoueur.CLIENT ? new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y) : new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y);
-            Joueur = Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale,pos, INTERVALLE_MAJ);
+            Joueur = Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale, pos, INTERVALLE_MAJ);
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....

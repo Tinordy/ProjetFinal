@@ -20,7 +20,7 @@ namespace AtelierXNA
         //constantes
         const int TEMPS_ACCÉLÉRATION_MIN = -5;
         const int VITESSE_MAX = 100;
-        const int VITESSE_MIN = -5;
+        const int VITESSE_MIN = -50;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE = 0.8f;
@@ -104,7 +104,7 @@ namespace AtelierXNA
         float vitesse;
         float tempsAccélération;
 
-        Vector3 Direction { get; set; }
+        public Vector3 Direction { get; private set; }
         bool ChangementEffectué { get; set; }
         Caméra Caméra { get; set; }
 
@@ -113,6 +113,10 @@ namespace AtelierXNA
         {
             get
             {
+                if(Vitesse <= -10)
+                {
+                    return 7f / 6f;
+                }
                 if(Vitesse <= -2)
                 {
                     return 5f / 6f;
@@ -303,15 +307,7 @@ namespace AtelierXNA
             //pédales + ajouter accélération??
             if (!GestionInput.EstEnfoncée(Keys.LeftControl))
             {
-                if(!EstEnCollisionAvecOBJ)
-                {
-                    ModifierPosition1();
-                }
-                else
-                {
-                    ModifierPosition2();
-                    Rebondir(Vector2.Zero);
-                }
+                ModifierPosition1();
                 
                 PremièreBoucleDérapage = true;
             }
@@ -436,10 +432,34 @@ namespace AtelierXNA
             EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
             return (valeurRetour1 || valeurRetour2);
         }
-        public void Rebondir(Vector2 vitesseEnnemi)
+        public void Rebondir(Vector3 directionEnnemi, Vector3 centre)
         {
-            Position -= Direction/100f;
-            TempsAccélération = -TempsAccélération;
+            if(directionEnnemi == Vector3.Zero)
+            {
+                Vector3 collision = centre - Position;
+                double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
+                if (angleRad <= Math.PI/3 || angleRad >= Math.PI * 2 / 3)
+                {
+                    TempsAccélération = -TempsAccélération;
+                    Direction = -Direction;
+                    CalculerVitesse();
+                    ModifierPosition1();
+                }
+                else
+                {
+                    Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
+                }
+                ChangementEffectué = true;
+
+            }
+            else
+            {
+                Vector3 newDirection = (Direction + directionEnnemi) / 2f;
+                Direction = newDirection;
+                Position += Direction / 100f;
+                ChangementEffectué = true;
+            }
+
         }
     }
 }

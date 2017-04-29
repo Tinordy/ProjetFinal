@@ -298,10 +298,31 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modèles\LaFerrari.fbx">
-      <Name>LaFerrari</Name>
+    <Compile Include="Modèles\Back Headlight.jpg">
+      <Name>Back Headlight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Modèles\volks.blend.png">
+      <Name>volks.blend</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Modèles\volks.fbx">
+      <Name>volks</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\choix1.png">
+      <Name>choix1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
