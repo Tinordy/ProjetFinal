@@ -18,7 +18,7 @@ namespace AtelierXNA
     public class Voiture : ObjetDeBase, ICollisionable, IResettable
     {
         //constantes
-        const int TEMPS_ACCÉLÉRATION_MIN = -20;
+        const int TEMPS_ACCÉLÉRATION_MIN = -5;
         const int VITESSE_MAX = 100;
         const int VITESSE_MIN = -50;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
@@ -27,6 +27,8 @@ namespace AtelierXNA
         const float INTERVALLE_RALENTISSEMENT = 1f / 6f;
         const int DISTANCE_CAMÉRA = 400;
         const float FREINAGE = 1.5f;
+        const float MAX_AXE = 65535f;
+        const float MOITIÉ_AXE = 32767f;
 
         // propriétés
         Vector2 ÉtendueTotale { get; set; }
@@ -82,6 +84,7 @@ namespace AtelierXNA
             private set
             {
                 vitesse = value;
+                
                 if (value < VITESSE_MIN) { vitesse = VITESSE_MIN; }
                 if (value > VITESSE_MAX) { vitesse = VITESSE_MAX; }
 
@@ -100,7 +103,6 @@ namespace AtelierXNA
 
         float vitesse;
         float tempsAccélération;
-        float angleVolant;
 
         public Vector3 Direction { get; private set; }
         bool ChangementEffectué { get; set; }
@@ -209,7 +211,7 @@ namespace AtelierXNA
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
-                Game.Window.Title = "Vitesse : " + Vitesse.ToString();
+                Game.Window.Title = "Vitesse : " + Vitesse.ToString() + " TempsAccélération : " + TempsAccélération.ToString() + " Axes : " + elVolant.AxeX.ToString() + " / " + elVolant.AxeY.ToString() + " / " + elVolant.AxeZ.ToString(); ;
                 SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
                 SphèreDeCollisionArrière = new BoundingSphere(PositionArrière, RAYON_VOITURE);
                 TempsÉcouléDepuisMAJ = 0;
@@ -220,11 +222,19 @@ namespace AtelierXNA
         void VarierVitesseVolant()
         {
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
-            TempsAccélération += INTERVALLE_RALENTISSEMENT * -((float)elVolant.AxeY - 32767f) / 32767f;
-            TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * -(((float)elVolant.AxeZ - 65535f) / 65535f);
-            if (elVolant.AxeY == 32767 && elVolant.AxeZ == 65535)
+            TempsAccélération += INTERVALLE_RALENTISSEMENT * -(elVolant.AxeY - MOITIÉ_AXE) / MOITIÉ_AXE;
+            TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * -((elVolant.AxeZ - MAX_AXE) * 2 / MAX_AXE);
+            if (elVolant.AxeY == MOITIÉ_AXE && elVolant.AxeZ == MAX_AXE)
             {
-                TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT;
+                if (Vitesse >= - 1f/2f && Vitesse <= 1f/2f)
+                {
+                    Vitesse = 0;
+                    TempsAccélération = 0;
+                }
+                else
+                {      
+                    TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT;
+                }
             }
 
 
@@ -232,13 +242,26 @@ namespace AtelierXNA
 
         void AjusterPositionVolant()
         {
-            float sens = ((float)elVolant.AxeX - 32767f) / 32767f;
+            float sens = ((float)elVolant.AxeX - MOITIÉ_AXE) / MOITIÉ_AXE;
             if (Vitesse > 0)
             {
                 Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
+                
             }
+            else
+            {
+                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
+            }
+
+            //if (Vitesse > 0)
+            //{
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
             Position += Direction;
+            //}
+            //else
+            //{
+                //Position -= Direction;
+            //}
 
             ChangementEffectué = true;
         }

@@ -39,7 +39,7 @@ namespace AtelierXNA
         /// </summary>
         public int AxeY
         {
-            get { return ElVolant.CurrentJoystickState.Y; }
+            get { return ElVolant.CurrentJoystickState.Y == 65535 ? 32767 : ElVolant.CurrentJoystickState.Y; }
         }
         /// <summary>
         /// 65 535 veut dire aucun freinage (aucun mouvement de la pédale)
