@@ -102,7 +102,7 @@ namespace AtelierXNA
         float tempsAccélération;
         float angleVolant;
 
-        Vector3 Direction { get; set; }
+        public Vector3 Direction { get; private set; }
         bool ChangementEffectué { get; set; }
         Caméra Caméra { get; set; }
 
@@ -280,15 +280,7 @@ namespace AtelierXNA
             //pédales + ajouter accélération??
             if (!GestionInput.EstEnfoncée(Keys.LeftControl))
             {
-                if(!EstEnCollisionAvecOBJ)
-                {
-                    ModifierPosition1();
-                }
-                else
-                {
-                    ModifierPosition2();
-                    Rebondir(Vector2.Zero);
-                }
+                ModifierPosition1();
                 
                 PremièreBoucleDérapage = true;
             }
@@ -413,10 +405,25 @@ namespace AtelierXNA
             EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
             return (valeurRetour1 || valeurRetour2);
         }
-        public void Rebondir(Vector2 vitesseEnnemi)
+        public void Rebondir(Vector3 directionEnnemi, Vector3 centre)
         {
-            Position -= Direction/100f;
-            TempsAccélération = -TempsAccélération;
+            if(directionEnnemi == Vector3.Zero)
+            {
+                Vector3 collision = centre - Position;
+
+                double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
+                Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
+                ChangementEffectué = true;
+
+            }
+            else
+            {
+                Vector3 newDirection = (Direction + directionEnnemi) / 2f;
+                Direction = newDirection;
+                Position += Direction / 100f;
+                ChangementEffectué = true;
+            }
+
         }
     }
 }
