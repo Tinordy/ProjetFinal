@@ -414,7 +414,6 @@ namespace AtelierXNA
             if(directionEnnemi == Vector3.Zero)
             {
                 Vector3 collision = centre - Position;
-                Vector3.
                 double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
                 if (angleRad <= Math.PI/3 || angleRad >= Math.PI * 2 / 3)
                 {
