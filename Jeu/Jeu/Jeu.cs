@@ -24,7 +24,7 @@ namespace AtelierXNA
     {
         const int NB_VOITURES_DUMMIES = 10;
         const int LARGEUR_ENTRE_VOITURE = 100;
-        const int NB_TOURS = 1;
+        const int NB_TOURS = 3;
         const int LARGEUR_DÉPART = 3;
         Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
         bool ConnectionÉtablie { get; set; }
@@ -177,15 +177,19 @@ namespace AtelierXNA
 
         private void GérerCheckPoints()
         {
-            //if (CheckPoints.Contains(Joueur.Position) == ContainmentType.Contains)
-            //{
-            //    CheckPointsAtteints = true;
-            //}
-            //if (CheckPointsAtteints && JoueurEstArrivé)
-            //{
-            //    ++NbTours;
-            //    CheckPointsAtteints = false;
-            //}
+            if (CheckPoints[0].Contains(Joueur.Position) == ContainmentType.Contains)
+            {
+                CheckPointsAtteints[0] = true;
+            }
+            if(CheckPointsAtteints[0] && CheckPoints[1].Contains(Joueur.Position) == ContainmentType.Contains)
+            {
+                CheckPointsAtteints[1] = true;
+            }
+            if (CheckPointsAtteints[1] && JoueurEstArrivé)
+            {
+                ++NbTours;
+                CheckPointsAtteints = new bool[2] { false, false };
+            }
         }
 
         private void GérerCollisions()
@@ -717,7 +721,8 @@ namespace AtelierXNA
             }
 
             Bannière = Sections[10].CréerBannière();
-            CheckPoints[0] = Sections[61].CréerCheckPoint();
+            CheckPoints = new BoundingSphere[2];
+            CheckPoints[0] = Sections[54].CréerCheckPoint();
             CheckPoints[1] = Sections[63].CréerCheckPoint();
             Sections[10].Initialize();
             Sections[10].Visible = true;

@@ -355,9 +355,9 @@ namespace AtelierXNA
 
         private void DéplacerCaméra()
         {
-            //CalculerPositionCaméra();
-            //DirectionCaméra = Monde.Forward - Monde.Backward;
-            //Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
+            CalculerPositionCaméra();
+            DirectionCaméra = Monde.Forward - Monde.Backward;
+            Caméra.Déplacer(PositionCaméra, Position, Vector3.Up);
         }
 
         void CalculerPositionCaméra()
