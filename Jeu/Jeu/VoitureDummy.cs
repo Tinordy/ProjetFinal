@@ -15,6 +15,7 @@ namespace AtelierXNA
 
     public class VoitureDummy : Voiture
     {
+        const float RAYON_VOITURE_DUMMY = 0.5f;
         DataPiste Data { get; set; }
         List<Vector2> PointsCentraux { get; set; }
         float Temps…coulÈDepuisMAJ { get; set; }
@@ -71,10 +72,12 @@ namespace AtelierXNA
                 Position = new Vector3(PointsCentraux[Index].X, 0, PointsCentraux[Index].Y);
                 int signe = DÈplacement.Y < 0 ? 0 : 1;
                 Rotation = new Vector3(0,(float)(Math.Atan(DÈplacement.X / DÈplacement.Y) + signe*Math.PI),0);
+                SphËreDeCollision = new BoundingSphere(Position, RAYON_VOITURE_DUMMY);
             }
             else
             {
                 Position += new Vector3(DÈplacement.X, 0, DÈplacement.Y);
+                SphËreDeCollision = new BoundingSphere(Position, RAYON_VOITURE_DUMMY);
                 DistanceParcourue += DÈplacement.Length();
             }
 
