@@ -326,17 +326,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modèles\choix3.png">
-      <Name>choix3</Name>
+    <Compile Include="Modèles\Volt_diffuse_gold.png">
+      <Name>Volt_diffuse_gold</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\choix3.png">
-      <Name>choix3</Name>
+    <Compile Include="Textures\Volt_diffuse_gold.png">
+      <Name>Volt_diffuse_gold</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Modèles\FBX_2010_chevy_volt_deepRed.fbx">
+      <Name>FBX_2010_chevy_volt_deepRed</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

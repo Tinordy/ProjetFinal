@@ -212,9 +212,11 @@ namespace AtelierXNA
                 }
                 ++i;
             }
+            i = 0;
             while (!estEnColAvecObj && i < VoituresDummies.Count)
             {
                 estEnColAvecObj = Joueur.EstEnCollision(VoituresDummies[i]);
+                ++i;
             }
             if (estEnColAvecObj)
             {

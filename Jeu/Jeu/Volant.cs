@@ -19,11 +19,13 @@ namespace AtelierXNA
     /// </summary>
     public class Volant : Microsoft.Xna.Framework.GameComponent
     {
+        const int BOUTON_PRESSED = 128;
         Vector2 Position { get; set; }
         string ValeurVolant { get; set; }
         float IntervalleMAJ { get; set; }
         float Temps…coulÈDepuisMAJ { get; set; }
         Device ElVolant { get; set; }
+        Device ElButtons { get; set; }
         /// <summary>
         /// 0 volant vers la gauche
         /// 65 535 volant vers la droite
@@ -49,6 +51,16 @@ namespace AtelierXNA
         {
             get { return ElVolant.CurrentJoystickState.Rz; }
         }
+        public bool BoutonDÈrapageActivÈ
+        {
+            get
+            {
+                return Buttons[6] == BOUTON_PRESSED || Buttons[7] == BOUTON_PRESSED;
+            }
+        }
+
+        public List<int> Buttons { get; set; }
+        
 
         public Volant(Game game, float intervalleMAJ)
             : base(game)
@@ -57,7 +69,9 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            Buttons = new List<int>(8);
             ChargerVolant();
+            //ChargerButtons();
             base.Initialize();
         }
 
@@ -70,6 +84,7 @@ namespace AtelierXNA
 
             if (Temps…coulÈDepuisMAJ >= IntervalleMAJ)
             {
+                UpdateButtons();
                 Temps…coulÈDepuisMAJ = 0;
                 //Game.Window.Title = AxeX.ToString() + " / " + AxeY.ToString() + " / " + AxeZ.ToString();
 
@@ -77,7 +92,21 @@ namespace AtelierXNA
             base.Update(gameTime);
         }
 
-
+        void UpdateButtons()
+        {
+            int NumButton = 0;
+            Buttons.Clear();
+            byte[] tableauByte = ElVolant.CurrentJoystickState.GetButtons();
+            
+            foreach (byte bouton in tableauByte)
+            {
+                if (NumButton < 8)
+                {
+                    Buttons.Add(bouton);
+                    ++NumButton;
+                }
+            }
+        }
         public void ChargerVolant()
         {
             //Find all the GameControl devices that are attached.
@@ -100,6 +129,7 @@ namespace AtelierXNA
                     ElVolant.SetDataFormat(DeviceDataFormat.Joystick);
                     // Finally, acquire the device.
                     ElVolant.Acquire();
+                    //ElButtons.Acquire();
                 }
                 catch (Exception e) { }
             }
