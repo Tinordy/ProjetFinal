@@ -20,7 +20,7 @@ namespace AtelierXNA
         //constantes
         const float COEFFICIENT_FROTTEMENT_GOMME_PNEU_GAZON = 0.5f;
         const int TEMPS_ACCÉLÉRATION_MIN = -5;
-        const int VITESSE_MAX = 100;
+        const int VITESSE_MAX = 125;
         const int VITESSE_MIN = -50;
         const int TEMPS_ACCÉLÉRATION_MAX = 50;
         const float INCRÉMENT_ROTATION = (float)Math.PI / 1080;
@@ -248,20 +248,7 @@ namespace AtelierXNA
 
         void AjusterPositionVolant()
         {
-            //float sens = ((float)elVolant.AxeX - MOITIÉ_AXE) / MOITIÉ_AXE;
-            //if (Vitesse > 0)
-            //{
-            //    Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
-
-            //}
-            //else
-            //{
-            //    Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
-            //}
-            //Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
-
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
-            //pédales + ajouter accélération??
             if (!elVolant.BoutonDérapageActivé)
             {
                 ModifierPosition1();
@@ -270,49 +257,10 @@ namespace AtelierXNA
             }
             else
             {
-                if (PremièreBoucleDérapage && Vitesse > 5)
-                {
-                    DirectionDérapage = new Vector3(Direction.X, Direction.Y, Direction.Z);
-                    PremièreBoucleDérapage = false;
-                }
-                else if (Vitesse > 5)
-                {
-                    DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
-                    Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
-                    if (!EstEnCollisionAvecOBJ)
-                    {
-                        Position += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                        PositionArrière += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                        PositionAvant += COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                    }
-                    else
-                    {
-                        Position -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                        PositionArrière -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                        PositionAvant -= COEFFICIENT_FROTTEMENT_GOMME_PNEU_ASPHALTE * (Direction + DirectionDérapage) / 2;
-                    }
-
-                    if (TempsAccélération <= 0)
-                    {
-                        TempsAccélération = 0;
-                    }
-                    if (TempsAccélération > 0)
-                    {
-                        TempsAccélération -= IntervalleMAJ * TempsAccélération;
-
-                    }
-                    if (GestionInput.EstEnfoncée(Keys.Tab))
-                    {
-                        ModifierPosition1();
-                    }
-                }
-
+                GérerDérapage();
             }
 
-
             ChangementEffectué = true;
-
-
 
             if (!elVolant.BoutonDérapageActivé)
             {
@@ -383,51 +331,12 @@ namespace AtelierXNA
             if (!GestionInput.EstEnfoncée(Keys.LeftControl))
             {
                 ModifierPosition1();
-
                 PremièreBoucleDérapage = true;
             }
             else
             {
-                if (PremièreBoucleDérapage && Vitesse > 5)
-                {
-                    DirectionDérapage = new Vector3(Direction.X, Direction.Y, Direction.Z);
-                    PremièreBoucleDérapage = false;
-                }
-                else if (Vitesse > 5)
-                {
-                    DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
-                    Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
-                    float x = IsOnTrack();
-                    if (!EstEnCollisionAvecOBJ)
-                    {
-                        Position += x * (Direction + DirectionDérapage) / 2;
-                        PositionArrière += x * (Direction + DirectionDérapage) / 2;
-                        PositionAvant += x * (Direction + DirectionDérapage) / 2;
-                    }
-                    else
-                    {
-                        Position -= x * (Direction + DirectionDérapage) / 2;
-                        PositionArrière -= x * (Direction + DirectionDérapage) / 2;
-                        PositionAvant -= x * (Direction + DirectionDérapage) / 2;
-                    }
-
-                    if (TempsAccélération <= 0)
-                    {
-                        TempsAccélération = 0;
-                    }
-                    if (TempsAccélération > 0)
-                    {
-                        TempsAccélération -= IntervalleMAJ * TempsAccélération;
-
-                    }
-                    if (GestionInput.EstEnfoncée(Keys.Tab))
-                    {
-                        ModifierPosition1();
-                    }
-                }
-
+                GérerDérapage();
             }
-
 
             ChangementEffectué = true;
 
@@ -445,6 +354,46 @@ namespace AtelierXNA
                 //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
                 Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
                 ChangementEffectué = true;
+            }
+        }
+        void GérerDérapage()
+        {
+            if (PremièreBoucleDérapage && Vitesse > 5)
+            {
+                DirectionDérapage = new Vector3(Direction.X, Direction.Y, Direction.Z);
+                PremièreBoucleDérapage = false;
+            }
+            else if (Vitesse > 5)
+            {
+                DirectionDérapage = Vitesse * Vector3.Normalize(DirectionDérapage) / 100f;
+                Direction = Vitesse * Vector3.Normalize(Direction) / 100f;
+                float x = IsOnTrack();
+                if (!EstEnCollisionAvecOBJ)
+                {
+                    Position += x * (Direction + DirectionDérapage) / 2;
+                    PositionArrière += x * (Direction + DirectionDérapage) / 2;
+                    PositionAvant += x * (Direction + DirectionDérapage) / 2;
+                }
+                else
+                {
+                    Position -= x * (Direction + DirectionDérapage) / 2;
+                    PositionArrière -= x * (Direction + DirectionDérapage) / 2;
+                    PositionAvant -= x * (Direction + DirectionDérapage) / 2;
+                }
+
+                if (TempsAccélération <= 0)
+                {
+                    TempsAccélération = 0;
+                }
+                if (TempsAccélération > 0)
+                {
+                    TempsAccélération -= IntervalleMAJ * TempsAccélération;
+
+                }
+                if (GestionInput.EstEnfoncée(Keys.Tab))
+                {
+                    ModifierPosition1();
+                }
             }
         }
 
