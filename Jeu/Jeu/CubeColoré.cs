@@ -13,6 +13,8 @@ namespace AtelierXNA
         Color Couleur { get; set; }
         VertexPositionColor[] Sommets { get; set; }
         Vector3 Origine { get; set; }
+        Vector3 PositionInitiale1 { get; set; }
+        Vector3 PositionInitiale2 { get; set; }
         float DeltaX { get; set; }
         float DeltaY { get; set; }
         float DeltaZ { get; set; }
@@ -63,6 +65,11 @@ namespace AtelierXNA
             Sommets[cpt++] = new VertexPositionColor(tabPts[7], Couleur);
             Sommets[cpt++] = new VertexPositionColor(tabPts[3], Couleur);
             Sommets[cpt] = new VertexPositionColor(tabPts[5], Couleur);
+            //Sommets[cpt++] = new VertexPositionColor(tabPts[0], Couleur);
+            //Sommets[cpt++] = new VertexPositionColor(tabPts[1], Couleur);
+            //Sommets[cpt++] = new VertexPositionColor(tabPts[2], Couleur);
+            //Sommets[cpt++] = new VertexPositionColor(tabPts[3], Couleur);
+            //Sommets[cpt++] = new VertexPositionColor(tabPts[4], Couleur);
         }
         void InitialiserTabPoints(Vector3[] tab)
         {
@@ -75,6 +82,11 @@ namespace AtelierXNA
             tab[i++] = new Vector3(Origine.X + DeltaX, Origine.Y + DeltaY, Origine.Z - DeltaZ);
             tab[i++] = new Vector3(Origine.X, Origine.Y + DeltaY, Origine.Z);
             tab[i++] = new Vector3(Origine.X + DeltaX, Origine.Y + DeltaY, Origine.Z);
+            //tab[i++] = PositionInitiale1;
+            //tab[i++] = PositionInitiale1 + new Vector3(0,2,0);
+            //tab[i++] = PositionInitiale2;
+            //tab[i++] = PositionInitiale2 + new Vector3(0, 2, 0);
+            //tab[i] = PositionInitiale1 + new Vector3(0, 2, 0);
         }
         public override void Draw(GameTime gameTime)
         {
@@ -84,7 +96,7 @@ namespace AtelierXNA
             foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
             {
                 passeEffet.Apply();
-                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NB_TRIANGLES / 2);
+                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NB_SOMMETS/2);
                 GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, NB_SOMMETS / 2, NB_TRIANGLES / 2);
             }
         }
