@@ -44,6 +44,10 @@ namespace AtelierXNA
                 Joueur.EstActif = !pause;
                 NetworkManager.TempsDeCourseJ.EstActif = !pause;
                 NetworkManager.SendPrÍtJeu(!pause);
+                foreach(VoitureDummy v in VoituresDummies)
+                {
+                    v.Enabled = !pause;
+                }
                 //ARR ter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -157,7 +161,7 @@ namespace AtelierXNA
 
         private void GÈrer…tat()
         {
-            if(…tat == …tatsJeu.JEU||…tat == …tatsJeu.GAGN…||…tat == …tatsJeu.PERDU)
+            if(…tat == …tatsJeu.JEU||…tat == …tatsJeu.GAGN…||…tat == …tatsJeu.PERDU||…tat == …tatsJeu.D…COMPTE)
             {
                 GÈrer…tatJeu();
             }
