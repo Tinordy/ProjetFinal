@@ -107,7 +107,7 @@ namespace AtelierXNA
         int NbTours { get; set; }
         bool[] CheckPointsAtteints { get; set; }
         List<Voiture> VoituresDummies { get; set; }
-        List<string> ChoixVoiture = new List<string>() { "GLX_400", "small car", "volks" };//meilleures voitures plz
+        List<string> ChoixVoiture = new List<string>() { "GLX_400", "FBX_2010_chevy_volt_deepRed", "volks" };//meilleures voitures plz
 
         public Jeu(Game game)
             : base(game)
@@ -304,7 +304,7 @@ namespace AtelierXNA
 
         private void GérerTransitionPerdu()
         {
-            if (JoueurEstArrivé)
+            if (NbTours == NB_TOURS)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 MenuFinDePartie.Enabled = true;
