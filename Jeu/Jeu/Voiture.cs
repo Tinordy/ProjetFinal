@@ -33,7 +33,7 @@ namespace AtelierXNA
 
         // propriétés
         Vector2 ÉtendueTotale { get; set; }
-        const float FACTEUR_ACCÉLÉRATION = 1f / 5f;
+        const float FACTEUR_ACCÉLÉRATION = 1f / 3f;
         const int INCRÉMENT_ANGLE = 10;
         const float RAYON_VOITURE = 1.5f;
         bool EstEnCollisionAvecOBJ { get; set; }
@@ -162,7 +162,7 @@ namespace AtelierXNA
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 10f;
-            Direction = new Vector3(0, 0, 75);
+            Direction = Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 3.14f, -(float)Math.Cos(Rotation.Y))) / 100f;
             Vitesse = 0;
             elVolant = new Volant(Game, 1f / 60f);
             Game.Components.Add(elVolant);
@@ -230,7 +230,7 @@ namespace AtelierXNA
         void VarierVitesseVolant()
         {
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
-            TempsAccélération += INTERVALLE_RALENTISSEMENT * -(elVolant.AxeY - MOITIÉ_AXE) / MOITIÉ_AXE;
+            TempsAccélération += FACTEUR_ACCÉLÉRATION * -(elVolant.AxeY - MOITIÉ_AXE) / MOITIÉ_AXE;
             TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * 3 * -((elVolant.AxeZ - MAX_AXE) / MAX_AXE);
             if (elVolant.AxeY == MOITIÉ_AXE && elVolant.AxeZ == MAX_AXE)
             {
@@ -299,7 +299,7 @@ namespace AtelierXNA
 
 
             if ((!accélération && !freinage)) { TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT; }
-            if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += 0.5f * FACTEUR_ACCÉLÉRATION; }
+            if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += FACTEUR_ACCÉLÉRATION; }
             if (freinage) { TempsAccélération -= FREINAGE * INTERVALLE_RALENTISSEMENT; }
 
         }
@@ -420,7 +420,7 @@ namespace AtelierXNA
 
         void CalculerPositionCaméra()
         {
-            if (GestionInput.EstEnfoncée(Keys.LeftAlt))
+            if (GestionInput.EstEnfoncée(Keys.LeftAlt) || elVolant.Enabled && elVolant.BoutonCaméraArrièreActivé)
             {
                 DirectionCaméra = -DirectionCaméra;
             }

@@ -15,7 +15,7 @@ namespace AtelierXNA
 
     public class VoitureDummy : Voiture
     {
-        const float RAYON_VOITURE_DUMMY = 0.5f;
+        const float RAYON_VOITURE_DUMMY = 0.2f;
         DataPiste Data { get; set; }
         List<Vector2> PointsCentraux { get; set; }
         float Temps…coulÈDepuisMAJ { get; set; }
