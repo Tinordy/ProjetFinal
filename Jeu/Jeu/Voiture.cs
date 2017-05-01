@@ -420,7 +420,7 @@ namespace AtelierXNA
 
         void CalculerPositionCaméra()
         {
-            if (GestionInput.EstEnfoncée(Keys.LeftAlt))
+            if (GestionInput.EstEnfoncée(Keys.LeftAlt) || elVolant.Enabled && elVolant.BoutonCaméraArrièreActivé)
             {
                 DirectionCaméra = -DirectionCaméra;
             }
