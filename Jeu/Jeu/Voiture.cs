@@ -316,9 +316,13 @@ namespace AtelierXNA
         void ModifierPosition1()
         {
             float x = IsOnTrack();
-            Position += Direction * x;
-            PositionAvant += Direction * x;
-            PositionArrière += Direction * x;
+            Vector3 newPosition = Position + Direction * x;
+            if (newPosition.X < 500 && newPosition.X > 0 && newPosition.Z < 350 && newPosition.Z > 0)
+            {
+                Position += Direction * x;
+                PositionAvant += Direction * x;
+                PositionArrière += Direction * x;
+            }
         }
         void ModifierPosition2()
         {
@@ -372,15 +376,23 @@ namespace AtelierXNA
                 float x = IsOnTrack();
                 if (!EstEnCollisionAvecOBJ)
                 {
-                    Position += x * (Direction + DirectionDérapage) / 2;
-                    PositionArrière += x * (Direction + DirectionDérapage) / 2;
-                    PositionAvant += x * (Direction + DirectionDérapage) / 2;
+                    Vector3 newPosition = Position + x * (Direction + DirectionDérapage) / 2;
+                    if (newPosition.X < 500 && newPosition.X > 0 && newPosition.Z < 350 && newPosition.Z > 0)
+                    {
+                        Position += x * (Direction + DirectionDérapage) / 2;
+                        PositionArrière += x * (Direction + DirectionDérapage) / 2;
+                        PositionAvant += x * (Direction + DirectionDérapage) / 2;
+                    }
                 }
                 else
                 {
-                    Position -= x * (Direction + DirectionDérapage) / 2;
-                    PositionArrière -= x * (Direction + DirectionDérapage) / 2;
-                    PositionAvant -= x * (Direction + DirectionDérapage) / 2;
+                    Vector3 newPosition = Position - x * (Direction + DirectionDérapage) / 2;
+                    if (newPosition.X < 500 && newPosition.X > 0 && newPosition.Z < 350 && newPosition.Z > 0)
+                    {
+                        Position -= x * (Direction + DirectionDérapage) / 2;
+                        PositionArrière -= x * (Direction + DirectionDérapage) / 2;
+                        PositionAvant -= x * (Direction + DirectionDérapage) / 2;
+                    }
                 }
 
                 if (TempsAccélération <= 0)
@@ -449,7 +461,12 @@ namespace AtelierXNA
         {
             bool valeurRetour1 = false;
             bool valeurRetour2 = false;
-            if (autreObjet is ICollisionable)
+            if (autreObjet is Maison)
+            {
+                valeurRetour1 = SphèreDeCollisionAvant.Intersects((autreObjet as Maison).BoxDeCollision);
+                valeurRetour2 = SphèreDeCollisionArrière.Intersects((autreObjet as Maison).BoxDeCollision);
+            }
+            else if (autreObjet is ICollisionable)
             {
                 valeurRetour1 = SphèreDeCollisionAvant.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
                 valeurRetour2 = SphèreDeCollisionArrière.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
@@ -473,20 +490,21 @@ namespace AtelierXNA
             {
                 //if (directionEnnemi == Vector3.Zero)
                 //{
-                    Vector3 collision = centre - Position;
-                    double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
-                    if (angleRad <= Math.PI / 5 || angleRad >= Math.PI * 4 / 5)
-                    {
-                        TempsAccélération = -TempsAccélération;
-                        Direction = -Direction;
-                        CalculerVitesse();
-                        ModifierPosition1();
-                    }
-                    else
-                    {
-                        Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
-                    }
-                    ChangementEffectué = true;
+                Vector3 collision = centre - Position;
+                //double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
+                //if (angleRad <= Math.PI / 5 || angleRad >= Math.PI * 4 / 5)
+                //{
+                TempsAccélération = -TempsAccélération;
+                Direction = -Direction;
+                CalculerVitesse();
+                ModifierPosition1();
+                ModifierPosition1();
+                //}
+                //else
+                //{
+                //    Rotation = new Vector3(Rotation.X, Rotation.Y - (float)angleRad * INCRÉMENT_ROTATION * 2, Rotation.Z);
+                //}
+                ChangementEffectué = true;
 
                 //}
                 //else
