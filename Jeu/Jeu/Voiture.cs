@@ -110,7 +110,7 @@ namespace AtelierXNA
         public Vector3 Direction { get; private set; }
         bool ChangementEffectué { get; set; }
         Caméra Caméra { get; set; }
-
+        Vector3 Décalage { get; set; }
         InputManager GestionInput { get; set; }
         float IntervalleRotation
         {
@@ -167,6 +167,7 @@ namespace AtelierXNA
             elVolant = new Volant(Game, 1f / 60f);
             Game.Components.Add(elVolant);
             base.Initialize();
+            Décalage = Vector3.Normalize(Direction);
             PositionAvant = Position + Vector3.Normalize(Direction);
             PositionArrière = Position - Vector3.Normalize(Direction);
             SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
@@ -189,6 +190,7 @@ namespace AtelierXNA
             PointsCentraux = DataPiste.GetPointsCentraux();
             base.LoadContent();
         }
+
 
         /// <summary>
         /// Allows the game component to update itself.
@@ -432,6 +434,8 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
+            SphèreDeCollisionAvant = new BoundingSphere(Monde.Translation + Vector3.Normalize(Monde.Forward - Monde.Backward), RAYON_VOITURE);
+            SphèreDeCollisionArrière = new BoundingSphere(Monde.Translation - Vector3.Normalize(Monde.Forward - Monde.Backward), RAYON_VOITURE);
         }
         public void RecréerMonde()
         {
@@ -453,12 +457,22 @@ namespace AtelierXNA
             EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
             return (valeurRetour1 || valeurRetour2);
         }
+        public bool EstEnCollision2(Voiture ennemi)
+        {
+            bool valeurRetour1 = SphèreDeCollisionArrière.Intersects(ennemi.SphèreDeCollisionArrière);
+            bool valeurRetour2 = SphèreDeCollisionArrière.Intersects(ennemi.SphèreDeCollisionAvant);
+            bool valeurRetour3 = SphèreDeCollisionAvant.Intersects(ennemi.SphèreDeCollisionArrière);
+            bool valeurRetour4 = SphèreDeCollisionAvant.Intersects(ennemi.SphèreDeCollisionAvant);
+
+            EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2 || valeurRetour3 || valeurRetour4);
+            return (valeurRetour1 || valeurRetour2 || valeurRetour3 || valeurRetour4);
+        }
         public void Rebondir(Vector3 directionEnnemi, Vector3 centre)
         {
             if (Vitesse >= 1 || Vitesse <= -1)
             {
-                if (directionEnnemi == Vector3.Zero)
-                {
+                //if (directionEnnemi == Vector3.Zero)
+                //{
                     Vector3 collision = centre - Position;
                     double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
                     if (angleRad <= Math.PI / 5 || angleRad >= Math.PI * 4 / 5)
@@ -474,14 +488,14 @@ namespace AtelierXNA
                     }
                     ChangementEffectué = true;
 
-                }
-                else
-                {
-                    Vector3 newDirection = (Direction + directionEnnemi) / 2f;
-                    Direction = newDirection;
-                    Position += Direction / 100f;
-                    ChangementEffectué = true;
-                }
+                //}
+                //else
+                //{
+                //    Vector3 newDirection = (Direction + directionEnnemi) / 2f;
+                //    Direction = newDirection;
+                //    Position += Direction / 100f;
+                //    ChangementEffectué = true;
+                //}
             }
         }
 

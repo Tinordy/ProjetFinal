@@ -135,6 +135,7 @@ namespace AtelierXNA
             GérerTransition();
             GérerÉtat();
             GérerDéconnection();
+            
         }
 
         private void GérerDéconnection()
@@ -195,9 +196,9 @@ namespace AtelierXNA
         private void GérerCollisions()
         {
             //collision entre joueurs
-            if (ÉtatJoueur != ÉtatsJoueur.SOLO && Joueur.EstEnCollision(Ennemi))
+            if (ÉtatJoueur != ÉtatsJoueur.SOLO && Joueur.EstEnCollision2(Ennemi))
             {
-                Joueur.Rebondir(Ennemi.Direction, Ennemi.SphèreDeCollision.Center); //SWITCH
+                Joueur.Rebondir(Ennemi.Direction, Ennemi.Position); //SWITCH
             }
             //collision avec objets
             bool estEnColAvecObj = false;
