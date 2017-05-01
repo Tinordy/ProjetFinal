@@ -26,7 +26,7 @@ namespace AtelierXNA
         const int LARGEUR_ENTRE_VOITURE = 100;
         const int NB_TOURS = 3;
         const int LARGEUR_D…PART = 3;
-        Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
+        Vector3 RotationInitiale = new Vector3(0, 0, 0);
         bool Connection…tablie { get; set; }
         const int …TENDUE = 50;
         const float INTERVALLE_MAJ = 1f / 60f;
