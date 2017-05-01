@@ -135,6 +135,7 @@ namespace AtelierXNA
             GÈrerTransition();
             GÈrer…tat();
             GÈrerDÈconnection();
+            
         }
 
         private void GÈrerDÈconnection()
