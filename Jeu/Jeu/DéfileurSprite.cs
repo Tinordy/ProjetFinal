@@ -37,7 +37,8 @@ namespace AtelierXNA
         bool DéroulerD { get; set; }
         bool DéroulerG { get; set; }
 
-        public bool EstSélectionné { get; set; } //ajouter tab...
+        public bool EstSélectionné { get; set; } 
+        public bool EstActif { get; set; }
 
         public DéfileurSprite(Game game, List<string> nomTextures, Rectangle destination, float intervalleMAJ)
             : base(game)
@@ -76,34 +77,37 @@ namespace AtelierXNA
         }
         public override void Update(GameTime gameTime)
         {
-            GérerSouris();
-            float tempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            TempsÉcouléDepuisMAJ += tempsÉcoulé;
-            if (TempsÉcouléDepuisMAJ > IntervalleMAJ)
+            if(EstActif)
             {
-                if (DéroulerD)
+                GérerSouris();
+                float tempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                TempsÉcouléDepuisMAJ += tempsÉcoulé;
+                if (TempsÉcouléDepuisMAJ > IntervalleMAJ)
                 {
-                    DestinationI = new Rectangle(DestinationI.X, DestinationI.Y, DestinationI.Width - 2, DestinationI.Height);
-                    DestinationF = new Rectangle(DestinationF.X - 2, DestinationF.Y, DestinationF.Width + 2, DestinationF.Height);
-                    if (DestinationF.Width == DestinationSprite.Width)
+                    if (DéroulerD)
                     {
-                        DéroulerD = false;
-                        DestinationI = DestinationF;
-                        IndexI = IndexF;
+                        DestinationI = new Rectangle(DestinationI.X, DestinationI.Y, DestinationI.Width - 2, DestinationI.Height);
+                        DestinationF = new Rectangle(DestinationF.X - 2, DestinationF.Y, DestinationF.Width + 2, DestinationF.Height);
+                        if (DestinationF.Width == DestinationSprite.Width)
+                        {
+                            DéroulerD = false;
+                            DestinationI = DestinationF;
+                            IndexI = IndexF;
+                        }
                     }
-                }
-                if (DéroulerG)
-                {
-                    DestinationI = new Rectangle(DestinationI.X + 2, DestinationI.Y, DestinationI.Width - 2, DestinationI.Height);
-                    DestinationF = new Rectangle(DestinationF.X, DestinationF.Y, DestinationF.Width + 2, DestinationF.Height);
-                    if (DestinationF.Width == DestinationSprite.Width)
+                    if (DéroulerG)
                     {
-                        DéroulerG = false;
-                        DestinationI = DestinationF;
-                        IndexI = IndexF;
+                        DestinationI = new Rectangle(DestinationI.X + 2, DestinationI.Y, DestinationI.Width - 2, DestinationI.Height);
+                        DestinationF = new Rectangle(DestinationF.X, DestinationF.Y, DestinationF.Width + 2, DestinationF.Height);
+                        if (DestinationF.Width == DestinationSprite.Width)
+                        {
+                            DéroulerG = false;
+                            DestinationI = DestinationF;
+                            IndexI = IndexF;
+                        }
                     }
+                    TempsÉcouléDepuisMAJ = 0;
                 }
-                TempsÉcouléDepuisMAJ = 0;
             }
         }
 
@@ -144,7 +148,7 @@ namespace AtelierXNA
             GestionSprite.Draw(TextureFlècheG, RégionFlècheG, Color.White);
             GestionSprite.End();
         }
-        public int DonnerChoixVoiture()
+        public int DonnerChoix()
         {
             return IndexF;
         }

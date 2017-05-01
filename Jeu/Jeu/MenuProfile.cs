@@ -59,7 +59,7 @@ namespace AtelierXNA
 
             Choix = ChoixMenu.VALIDATION;
             Pseudonyme = LecteurPseudonyme.ObtenirEntrée();
-            Voiture = ChoixVoiture.DonnerChoixVoiture();
+            Voiture = ChoixVoiture.DonnerChoix();
             NetworkManager.SetChoixVoiture(Voiture);
             BtnValider.EstActif = false;
             foreach(DrawableGameComponent s in Composantes)

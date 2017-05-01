@@ -51,7 +51,7 @@ namespace AtelierXNA
                 ChangerAvtivationBoutons(true);
             }
         }
-        void ChangerAvtivationBoutons(bool actif)
+        protected void ChangerAvtivationBoutons(bool actif)
         {
             foreach (BoutonDeCommande bouton in Composantes.Where(c => c is BoutonDeCommande))
             {

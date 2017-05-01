@@ -17,7 +17,8 @@ namespace AtelierXNA
         public string PseudonymeE { get; set; }
         public int ChoixVoitureJ { get; private set; }
         public int ChoixVoitureE { get; private set; }
-
+        List<string> Pseudonymes = new List<string>() { "MARILOU", "DAVE", "WILL" };
+        List<TimeSpan> Temps = new List<TimeSpan>() { new TimeSpan(0, 1, 20), new TimeSpan(0, 1, 4), new TimeSpan(0,0,0,57,150) };
         public bool DisconnectedT { get; set; }
         const int BUFFER_SIZE = 2048;
         //Server Serveur { get; set; }
@@ -38,8 +39,8 @@ namespace AtelierXNA
         public Réseautique(Game game,/*Server serveur,*/ string ip, int port)
             :base(game)
         {
-            PseudonymeE = "ORDI";
-            TempsDeCourseE = new TimeSpan(0, 1, 0);
+            //PseudonymeE = "ORDI";
+            //TempsDeCourseE = new TimeSpan(0, 1, 0);
 
             //Serveur = serveur;
             EnnemiPrêtÀJouer = false;
@@ -299,6 +300,11 @@ namespace AtelierXNA
             DisconnectedT = false;
             EnnemiPrêtÀJouer = false;
             EnnemiEstArrivé = false;
+        }
+        public void SetEnnemi(int difficulté)
+        {
+            PseudonymeE = Pseudonymes[difficulté];
+            TempsDeCourseE = Temps[difficulté];
         }
     }
 }
