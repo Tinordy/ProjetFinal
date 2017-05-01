@@ -59,8 +59,16 @@ namespace AtelierXNA
             }
         }
 
+        public bool BoutonCaméraArrièreActivé
+        {
+            get
+            {
+                return Buttons[0] == BOUTON_PRESSED;
+            }
+        }
+
         public List<int> Buttons { get; set; }
-        
+
 
         public Volant(Game game, float intervalleMAJ)
             : base(game)
@@ -70,9 +78,14 @@ namespace AtelierXNA
         public override void Initialize()
         {
             Buttons = new List<int>(8);
+
             ChargerVolant();
             //ChargerButtons();
             base.Initialize();
+            if (this.Enabled)
+            {
+                UpdateButtons();
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -97,7 +110,7 @@ namespace AtelierXNA
             int NumButton = 0;
             Buttons.Clear();
             byte[] tableauByte = ElVolant.CurrentJoystickState.GetButtons();
-            
+
             foreach (byte bouton in tableauByte)
             {
                 if (NumButton < 8)
