@@ -466,8 +466,8 @@ namespace AtelierXNA
         {
             if (Vitesse >= 1 || Vitesse <= -1)
             {
-                if (directionEnnemi == Vector3.Zero)
-                {
+                //if (directionEnnemi == Vector3.Zero)
+                //{
                     Vector3 collision = centre - Position;
                     double angleRad = Math.Acos(Vector3.Dot(collision, Direction) / Norme(collision, Vector3.Zero) / Norme(Direction, Vector3.Zero));
                     if (angleRad <= Math.PI / 5 || angleRad >= Math.PI * 4 / 5)
@@ -483,14 +483,14 @@ namespace AtelierXNA
                     }
                     ChangementEffectué = true;
 
-                }
-                else
-                {
-                    Vector3 newDirection = (Direction + directionEnnemi) / 2f;
-                    Direction = newDirection;
-                    Position += Direction / 100f;
-                    ChangementEffectué = true;
-                }
+                //}
+                //else
+                //{
+                //    Vector3 newDirection = (Direction + directionEnnemi) / 2f;
+                //    Direction = newDirection;
+                //    Position += Direction / 100f;
+                //    ChangementEffectué = true;
+                //}
             }
         }
 
