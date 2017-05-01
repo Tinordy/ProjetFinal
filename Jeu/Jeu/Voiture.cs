@@ -454,7 +454,7 @@ namespace AtelierXNA
             EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
             return (valeurRetour1 || valeurRetour2);
         }
-        bool EstEnCollision2(Voiture ennemi)
+        public bool EstEnCollision2(Voiture ennemi)
         {
             bool valeurRetour1 = EstEnCollision(ennemi.SphèreDeCollisionAvant);
             bool valeurRetour2 = EstEnCollision(ennemi.SphèreDeCollisionArrière);
