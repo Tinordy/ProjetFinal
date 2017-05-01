@@ -715,7 +715,7 @@ namespace AtelierXNA
                 for (int j = 0; j < 7; ++j)
                 {
                     bool maison = !pasDeMaison.Contains(Sections.Count);
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "HerbeSections", "Sable" }, maison, INTERVALLE_MAJ); //double??
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, maison, INTERVALLE_MAJ); //double??
                     Sections.Add(newSection);
                     newSection.Initialize();
                     Game.Components.Add(newSection);
