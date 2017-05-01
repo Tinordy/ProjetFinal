@@ -52,9 +52,9 @@ namespace AtelierXNA
          ObjetsSélectionnables.Add(LecteurPort);
          base.Initialize();
          Composantes.Add(new ArrièrePlan(Game, "Carte"));
-         Composantes.Add(new Titre(Game, "Port : ", "Arial", new Vector2(Game.Window.ClientBounds.Width / 5, Game.Window.ClientBounds.Height / 3), "Blanc"));
+         Composantes.Add(new Titre(Game, "Port : ", "Arial", new Vector2(Game.Window.ClientBounds.Width / 5, Game.Window.ClientBounds.Height / 3), "Blanc", false, Color.White));
          Composantes.Add(LecteurPort);
-         Composantes.Add(new Titre(Game, "IP :", "Arial", new Vector2(Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 3), "Blanc"));
+         Composantes.Add(new Titre(Game, "IP :", "Arial", new Vector2(Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 3), "Blanc", false, Color.White));
          Composantes.Add(new BoutonDeCommande(Game, "OK", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 2, 4 * Game.Window.ClientBounds.Height / 5), true, Lire, 0.01f));
          Composantes.Add(new BoutonDeCommande(Game, "Retour", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 5, 8 * Game.Window.ClientBounds.Height / 9), true, Retour, 0.01f));
          GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;

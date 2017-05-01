@@ -26,7 +26,7 @@ namespace AtelierXNA
          string HostName = Dns.GetHostName();
          IP = Dns.GetHostAddresses(HostName)[1].ToString();
          base.Initialize();
-         Composantes.Add(new Titre(Game, IP, "Arial", new Vector2(3 * Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 3), "Blanc"));
+         Composantes.Add(new Titre(Game, IP, "Arial", new Vector2(3 * Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 3), "Blanc",false, Color.White));
          Activer();
       }
    }

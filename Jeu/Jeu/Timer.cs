@@ -21,8 +21,8 @@ namespace AtelierXNA
         float IntervalleDeMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         public bool EstActif { get; set; }
-        public Timer(Game game,string format, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
-            : base(game, format, nomPolice, position, nomTexture) // po legit
+        public Timer(Game game,string format, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, bool fond, Color couleur,float intervalleDeMAJ)
+            : base(game, format, nomPolice, position, nomTexture, fond, couleur) // po legit
         {
             ValeurTimer = départ;
             EstActif = estActif;

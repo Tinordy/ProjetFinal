@@ -108,6 +108,7 @@ namespace AtelierXNA
         bool[] CheckPointsAtteints { get; set; }
         List<Voiture> VoituresDummies { get; set; }
         List<string> ChoixVoiture = new List<string>() { "GLX_400", "FBX_2010_chevy_volt_deepRed", "volks" };//meilleures voitures plz
+        Titre AffNbTours { get; set; }
 
         public Jeu(Game game)
             : base(game)
@@ -156,12 +157,20 @@ namespace AtelierXNA
 
         private void GÈrer…tat()
         {
-            switch (…tat)
+            if(…tat == …tatsJeu.JEU||…tat == …tatsJeu.GAGN…||…tat == …tatsJeu.PERDU)
             {
-                case …tatsJeu.JEU:
-                    GÈrer…tatJeu();
-                    break;
+                GÈrer…tatJeu();
             }
+            //switch (…tat)
+            //{
+            //    case …tatsJeu.JEU:
+            //        GÈrer…tatJeu();
+            //        break;
+            //    case …tatsJeu.PERDU:
+            //        break;
+            //    case …tatsJeu.GAGN…:
+            //        break;
+            //}
         }
 
         private void GÈrer…tatJeu()
@@ -190,6 +199,7 @@ namespace AtelierXNA
             {
                 ++NbTours;
                 CheckPointsAtteints = new bool[2] { false, false };
+                AffNbTours.ChangerTexte("Tour : " + NbTours);
             }
         }
 
@@ -434,9 +444,11 @@ namespace AtelierXNA
                 Joueur.EstActif = true;
                 DÈcompteInitial.Enabled = false;
                 DÈcompteInitial.Visible = false;
-                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, INTERVALLE_MAJ);
+                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, false, Color.White, INTERVALLE_MAJ);
                 Game.Components.Add(NetworkManager.TempsDeCourseJ);
                 MenuDesOptions.DÈsactiverDifficultÈ();
+                AffNbTours = new Titre(Game, "Tour : 0", "Arial20", new Vector2(Game.Window.ClientBounds.Width / 15, Game.Window.ClientBounds.Height / 18), "Blanc", false, Color.White);
+                Game.Components.Add(AffNbTours);
             }
         }
 
@@ -528,7 +540,7 @@ namespace AtelierXNA
 
         private void InitialiserDÈcompte()
         {
-            DÈcompteInitial = new TimerDiminue(Game, new TimeSpan(0, 0, 5), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, 1f);
+            DÈcompteInitial = new TimerDiminue(Game, new TimeSpan(0, 0, 5), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true,false, Color.White, 1f);
             Game.Components.Add(DÈcompteInitial);
         }
 

@@ -42,7 +42,7 @@ namespace AtelierXNA
             BtnValider = new BoutonDeCommande(Game, "Valider", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 3, 8 * Game.Window.ClientBounds.Height / 9), true, Valider, 0.01f);
             base.Initialize();
             Composantes.Add(new ArrièrePlan(Game, "MenuOption"));
-            Composantes.Add(new Titre(Game, "Pseudonyme: ", "Arial", new Vector2(Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Blanc"));
+            Composantes.Add(new Titre(Game, "Pseudonyme: ", "Arial", new Vector2(Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Blanc", false, Color.White));
             Composantes.Add(LecteurPseudonyme);
             Composantes.Add(ChoixVoiture);
             Composantes.Add(BtnDémarrer);

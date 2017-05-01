@@ -15,8 +15,8 @@ namespace AtelierXNA
     public class TimerDiminue : Timer
     {
         const string FORMAT = "ss";
-        public TimerDiminue(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
-            : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, intervalleDeMAJ)
+        public TimerDiminue(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif,bool fond, Color couleur, float intervalleDeMAJ)
+            : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, fond, couleur, intervalleDeMAJ)
         {
         }
         protected override void Incrémenter(TimeSpan val)

@@ -15,8 +15,8 @@ namespace AtelierXNA
     public class TimerAugmente : Timer
     { 
         const string FORMAT = "mm':'ss','ff";
-        public TimerAugmente(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, float intervalleDeMAJ)
-            : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, intervalleDeMAJ)
+        public TimerAugmente(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif,bool fond, Color couleur, float intervalleDeMAJ)
+            : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif,fond, couleur ,intervalleDeMAJ)
         {
 
         }

@@ -27,14 +27,16 @@ namespace AtelierXNA
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         Rectangle Destination { get; set; }
         bool Fond { get; set; }
-        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture/*, bool fond, Color couleur*/)
+        Color Couleur { get; set; }
+        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture, bool fond, Color couleur)
         : base(game)
         {
             Message = message;
             Position = position;
             NomPolice = nomPolice;
             NomTexture = nomTexture;
-            //Fond = fond;
+            Fond = fond;
+            Couleur = couleur;
         }
         protected override void LoadContent()
         {
@@ -46,14 +48,20 @@ namespace AtelierXNA
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             Texture = GestionnaireDeTextures.Find(NomTexture);
             Destination = new Rectangle((int)Position.X, (int)Position.Y, (int)dimension.X, (int)dimension.Y);
-            
+
         }
         public override void Draw(GameTime gameTime)
         {
             GestionSprites.Begin();
-            GestionSprites.Draw(Texture, Destination, Color.White);
-            GestionSprites.DrawString(Police, Message, Position, Color.Black);
+            if (Fond)
+            { GestionSprites.Draw(Texture, Destination, Color.White); }
+            GestionSprites.DrawString(Police, Message, Position, Couleur);
             GestionSprites.End();
+
+        }
+        public void ChangerTexte(string texte)
+        {
+            Message = texte;
         }
     }
 }
