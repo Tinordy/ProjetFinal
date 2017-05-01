@@ -27,14 +27,14 @@ namespace AtelierXNA
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         Rectangle Destination { get; set; }
         bool Fond { get; set; }
-        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture, bool fond, Color couleur)
+        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture/*, bool fond, Color couleur*/)
         : base(game)
         {
             Message = message;
             Position = position;
             NomPolice = nomPolice;
             NomTexture = nomTexture;
-            Fond = fond;
+            //Fond = fond;
         }
         protected override void LoadContent()
         {
