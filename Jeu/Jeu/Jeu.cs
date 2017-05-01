@@ -744,7 +744,7 @@ namespace AtelierXNA
         private void CréerJoueur(Vector2 Départ)
         {
             Vector3 pos = ÉtatJoueur != ÉtatsJoueur.CLIENT ? new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y) : new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y);
-            Joueur = Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale, pos, INTERVALLE_MAJ);
+            Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale, pos, INTERVALLE_MAJ);
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
             NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
