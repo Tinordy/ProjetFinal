@@ -70,29 +70,29 @@ namespace AtelierXNA
         
             Components.Add(Piste);
             Game.Components.Add(Piste);
-            CreateLimits();
+            //CreateLimits();
         }
-        void CreateLimits()
-        {
-            List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp((int)(Origine.X % Étendue.X) + 7 * (int)(Origine.Y % Étendue.Y));
-            if (VecteursPerp != null)
-            {
+        //void CreateLimits()
+        //{
+        //    List<Vector2> VecteursPerp = Piste.ObtenirVecteursPerp((int)(Origine.X % Étendue.X) + 7 * (int)(Origine.Y % Étendue.Y));
+        //    if (VecteursPerp != null)
+        //    {
 
 
-                for (int i = 0; i < VecteursPerp.Count / 2; i += 4)
-                {
-                    Vector2 vUp = 4f * VecteursPerp[i] + VecteursPerp[i + 1];
-                    Vector2 vDown = 2f * VecteursPerp[i + 2] + VecteursPerp[i + 3];
-                    CubeColoré cubeUp = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X,0,vUp.Y), Color.Yellow,new Vector3(2,2,2), INTERVALLE_MAJ_STANDARD);
-                    CubeColoré cubeDown = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vDown.X, 0, vDown.Y), Color.Gray, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD);
-                    Components.Add(cubeUp);
-                    Components.Add(cubeDown);
-                    Game.Components.Add(cubeUp);
-                    Game.Components.Add(cubeDown);
-                }
-            }
+        //        for (int i = 0; i < VecteursPerp.Count / 2; i += 4)
+        //        {
+        //            Vector2 vUp = 4f * VecteursPerp[i] + VecteursPerp[i + 1];
+        //            Vector2 vDown = 2f * VecteursPerp[i + 2] + VecteursPerp[i + 3];
+        //            CubeColoré cubeUp = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vUp.X,0,vUp.Y), Color.Yellow,new Vector3(2,2,2), INTERVALLE_MAJ_STANDARD);
+        //            CubeColoré cubeDown = new CubeColoré(Game, 1f, Vector3.Zero, new Vector3(vDown.X, 0, vDown.Y), Color.Gray, new Vector3(2, 2, 2), INTERVALLE_MAJ_STANDARD);
+        //            Components.Add(cubeUp);
+        //            Components.Add(cubeDown);
+        //            Game.Components.Add(cubeUp);
+        //            Game.Components.Add(cubeDown);
+        //        }
+        //    }
             
-        }
+        //}
         protected override void OnVisibleChanged(object sender, EventArgs args)
         {
             foreach (DrawableGameComponent c in Components)
