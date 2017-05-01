@@ -32,6 +32,7 @@ namespace AtelierXNA
         protected BasicEffect EffetDeBase { get; private set; }
         public bool nullité { get; set; }
         //InputManager GestionInput { get; set; }
+        public BoundingBox BoxDeCollision { get; set; }
         public BoundingSphere SphèreDeCollision { get; set; }
 
         //constructeur vide pour créer un objet "inexistant"
@@ -54,7 +55,7 @@ namespace AtelierXNA
             NbSommetsMurs = NB_TRIANGLES_MURS + 2;
             NbSommetsToit = NB_TRIANGLES_TOIT * NB_SOMMETS_PAR_TRIANGLE;
             CréerTableauSommets();
-            SphèreDeCollision = new BoundingSphere(PositionInitiale, HomothétieInitiale*Étendue.X / 2);
+            BoxDeCollision = new BoundingBox(PositionInitiale - new Vector3(Étendue.X/2f,0,Étendue.Z/2f) * HomothétieInitiale - new Vector3(0,PositionInitiale.Y, 0), PositionInitiale + new Vector3(Étendue.X / 2f, 0, Étendue.Z / 2f) * HomothétieInitiale - new Vector3(0, PositionInitiale.Y, 0)/*HomothétieInitiale*Étendue.X / 2*/);
             base.Initialize();
             Visible = false;
         }
@@ -154,7 +155,7 @@ namespace AtelierXNA
             bool valeurRetour = false;
             if (autreObjet is ICollisionable)
             {
-                valeurRetour = SphèreDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
+                valeurRetour = BoxDeCollision.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
             }
             return valeurRetour;
         }
