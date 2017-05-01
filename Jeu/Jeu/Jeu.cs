@@ -690,11 +690,11 @@ namespace AtelierXNA
             Reset();
             CréerVoitureDummy();
             Vector2 v = Sections[10].ObtenirPointDépart();
-            CréerJoueur(v);
             if (ÉtatJoueur != ÉtatsJoueur.SOLO)
             {
                 CréerEnnemi(v);
             }
+            CréerJoueur(v);
         }
 
         private void CréerVoitureDummy()
