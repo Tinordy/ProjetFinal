@@ -110,7 +110,7 @@ namespace AtelierXNA
         public Vector3 Direction { get; private set; }
         bool ChangementEffectué { get; set; }
         Caméra Caméra { get; set; }
-
+        Vector3 Décalage { get; set; }
         InputManager GestionInput { get; set; }
         float IntervalleRotation
         {
@@ -167,6 +167,7 @@ namespace AtelierXNA
             elVolant = new Volant(Game, 1f / 60f);
             Game.Components.Add(elVolant);
             base.Initialize();
+            Décalage = Vector3.Normalize(Direction);
             PositionAvant = Position + Vector3.Normalize(Direction);
             PositionArrière = Position - Vector3.Normalize(Direction);
             SphèreDeCollisionAvant = new BoundingSphere(PositionAvant, RAYON_VOITURE);
@@ -433,6 +434,8 @@ namespace AtelierXNA
         public void AjusterPosition(Matrix nouvelleMatriceMonde)
         {
             Monde = nouvelleMatriceMonde;
+            SphèreDeCollisionAvant = new BoundingSphere(Monde.Translation + Vector3.Normalize(Monde.Forward - Monde.Backward), RAYON_VOITURE);
+            SphèreDeCollisionArrière = new BoundingSphere(Monde.Translation - Vector3.Normalize(Monde.Forward - Monde.Backward), RAYON_VOITURE);
         }
         public void RecréerMonde()
         {
