@@ -37,7 +37,7 @@ namespace AtelierXNA
             Composantes.Add(new Sprite(Game, "menuOption", destination));
             Composantes.Add(new Titre(Game, "Options", "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 4), "Blanc", false, Color.White));
             Composantes.Add(new BoutonDeCommande(Game, "Retour", "Arial", "BoutonVert", "BoutonNoir", new Vector2(3 * Game.Window.ClientBounds.Width / 4, 3 * Game.Window.ClientBounds.Height / 4), true, Retour, 0.01f));
-            Composantes.Add(new BoutonDeCommande(Game, "Afficher parcours", "Arial", "BoutonVert", "BoutonNoir", new Vector2(2*Game.Window.ClientBounds.Width / 5, 2 * Game.Window.ClientBounds.Height / 5), true, AfficherCarte, 0.01f));
+            Composantes.Add(new BoutonDeCommande(Game, "Afficher parcours", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width /2, 2 * Game.Window.ClientBounds.Height / 5), true, AfficherCarte, 0.01f));
             Composantes.Add(ChoixDifficulté);
             Composantes.Add(Carte);
             Activer();

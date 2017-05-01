@@ -694,7 +694,7 @@ namespace AtelierXNA
             {
                 CréerEnnemi(v);
             }
-            CréerJoueur(v);
+            CréerJoueur(v);  
         }
 
         private void CréerVoitureDummy()
@@ -720,6 +720,7 @@ namespace AtelierXNA
             }
             CheckPointsAtteints = new bool[2] { false, false };
             NbTours = 0;
+            Game.Components.Remove(AffNbTours);
         }
 
         private void CréerEnvironnement()
