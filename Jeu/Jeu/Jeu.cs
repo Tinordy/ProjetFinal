@@ -44,6 +44,10 @@ namespace AtelierXNA
                 Joueur.EstActif = !pause;
                 NetworkManager.TempsDeCourseJ.EstActif = !pause;
                 NetworkManager.SendPrêtJeu(!pause);
+                foreach(VoitureDummy v in VoituresDummies)
+                {
+                    v.Enabled = !pause;
+                }
                 //ARRÊter TOUTES LES VOITURE? juste voitures robots + objets?
 
             }
@@ -686,11 +690,11 @@ namespace AtelierXNA
             Reset();
             CréerVoitureDummy();
             Vector2 v = Sections[10].ObtenirPointDépart();
-            CréerJoueur(v);
             if (ÉtatJoueur != ÉtatsJoueur.SOLO)
             {
                 CréerEnnemi(v);
             }
+            CréerJoueur(v);
         }
 
         private void CréerVoitureDummy()
