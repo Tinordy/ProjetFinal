@@ -162,7 +162,7 @@ namespace AtelierXNA
             GérerRéseau = Game.Services.GetService(typeof(Réseautique)) as Réseautique;
             ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //aller chercher de jeu
             IntervalleAccélération = 1f / 10f;
-            Direction = Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 3.14f, -(float)Math.Cos(Rotation.Y))) / 100f;
+            Direction = Vector3.Normalize(new Vector3(0, 3.14f, 0));
             Vitesse = 0;
             elVolant = new Volant(Game, 1f / 60f);
             Game.Components.Add(elVolant);

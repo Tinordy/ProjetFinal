@@ -161,7 +161,7 @@ namespace AtelierXNA
 
         private void GÈrer…tat()
         {
-            if(…tat == …tatsJeu.JEU||…tat == …tatsJeu.GAGN…||…tat == …tatsJeu.PERDU||…tat == …tatsJeu.D…COMPTE)
+            if(…tat == …tatsJeu.JEU||…tat == …tatsJeu.GAGN…||…tat == …tatsJeu.PERDU)
             {
                 GÈrer…tatJeu();
             }
