@@ -456,11 +456,13 @@ namespace AtelierXNA
         }
         public bool EstEnCollision2(Voiture ennemi)
         {
-            bool valeurRetour1 = EstEnCollision(ennemi.SphèreDeCollisionAvant);
-            bool valeurRetour2 = EstEnCollision(ennemi.SphèreDeCollisionArrière);
+            bool valeurRetour1 = SphèreDeCollisionArrière.Intersects(ennemi.SphèreDeCollisionArrière);
+            bool valeurRetour2 = SphèreDeCollisionArrière.Intersects(ennemi.SphèreDeCollisionAvant);
+            bool valeurRetour3 = SphèreDeCollisionAvant.Intersects(ennemi.SphèreDeCollisionArrière);
+            bool valeurRetour4 = SphèreDeCollisionAvant.Intersects(ennemi.SphèreDeCollisionAvant);
 
-            EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
-            return (valeurRetour1 || valeurRetour2);
+            EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2 || valeurRetour3 || valeurRetour4);
+            return (valeurRetour1 || valeurRetour2 || valeurRetour3 || valeurRetour4);
         }
         public void Rebondir(Vector3 directionEnnemi, Vector3 centre)
         {
