@@ -54,6 +54,7 @@ namespace AtelierXNA
             {
                 DéplacerVoiture();
                 RecréerMonde();
+                TempsÉcouléDepuisMAJ = 0;
             }
         }
         Vector2 Déplacement { get; set; }

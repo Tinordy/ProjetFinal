@@ -35,9 +35,9 @@ namespace AtelierXNA
             List<string> noms = new List<string>();
             noms.Add("choix1");
             noms.Add("Neige");
-            noms.Add("brique1");
+            noms.Add("choix3");
             LecteurPseudonyme = new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20", 10);
-            ChoixVoiture = new DéfileurSprite(Game, noms, new Rectangle(0, Game.Window.ClientBounds.Height / 3, Game.Window.ClientBounds.Width, 2 * Game.Window.ClientBounds.Height / 3), 0.01f);
+            ChoixVoiture = new DéfileurSprite(Game, noms, new Rectangle(0, Game.Window.ClientBounds.Height / 3, Game.Window.ClientBounds.Width, 2 * Game.Window.ClientBounds.Height / 3), 0.001f);
             BtnDémarrer = new BoutonDeCommande(Game, "Démarrer", "Arial", "BoutonVert", "BoutonNoir", new Vector2(2 * Game.Window.ClientBounds.Width / 3, 8 * Game.Window.ClientBounds.Height / 9), false, Démarrer, 0.01f);
             BtnValider = new BoutonDeCommande(Game, "Valider", "Arial", "BoutonVert", "BoutonNoir", new Vector2(Game.Window.ClientBounds.Width / 3, 8 * Game.Window.ClientBounds.Height / 9), true, Valider, 0.01f);
             base.Initialize();
@@ -62,6 +62,13 @@ namespace AtelierXNA
             Voiture = ChoixVoiture.DonnerChoixVoiture();
             NetworkManager.SetChoixVoiture(Voiture);
             BtnValider.EstActif = false;
+            foreach(DrawableGameComponent s in Composantes)
+            {
+                if(s is ISélectionnable)
+                {
+                    s.Enabled = false;
+                }
+            }
             //désactiver le reste (pseudonyme et voiture)
         }
         private void Démarrer()

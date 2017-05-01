@@ -46,10 +46,10 @@ namespace AtelierXNA
         }
         public override void Draw(GameTime gameTime)
         {
-            DepthStencilState ancienDepthStencilState = GraphicsDevice.DepthStencilState;
-            DepthStencilState temporaire = new DepthStencilState();
-            temporaire.DepthBufferEnable = false;
-            GraphicsDevice.DepthStencilState = temporaire;
+            //DepthStencilState ancienDepthStencilState = GraphicsDevice.DepthStencilState;
+            //DepthStencilState temporaire = new DepthStencilState();
+            //temporaire.DepthBufferEnable = false;
+            //GraphicsDevice.DepthStencilState = temporaire;
 
             EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
@@ -60,7 +60,7 @@ namespace AtelierXNA
                 passeEffet.Apply();
                 GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, 2);
             }
-            GraphicsDevice.DepthStencilState = ancienDepthStencilState;
+            //GraphicsDevice.DepthStencilState = ancienDepthStencilState;
         }
         public bool EstÀArrivée(Vector3 position)
         {

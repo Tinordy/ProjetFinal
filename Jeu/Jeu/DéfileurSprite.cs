@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public class DéfileurSprite : DrawableGameComponent
+    public class DéfileurSprite : DrawableGameComponent, ISélectionnable
     {
         List<Texture2D> Textures { get; set; }
         List<string> NomTextures { get; set; }
@@ -36,6 +36,9 @@ namespace AtelierXNA
         float TempsÉcouléDepuisMAJ { get; set; }
         bool DéroulerD { get; set; }
         bool DéroulerG { get; set; }
+
+        public bool EstSélectionné { get; set; } //ajouter tab...
+
         public DéfileurSprite(Game game, List<string> nomTextures, Rectangle destination, float intervalleMAJ)
             : base(game)
         {
