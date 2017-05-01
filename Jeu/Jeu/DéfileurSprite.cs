@@ -50,7 +50,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
-
+            EstActif = true;
             SourceI = null;
             SourceF = null;
             DéroulerG = false;

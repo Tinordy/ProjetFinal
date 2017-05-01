@@ -304,7 +304,7 @@ namespace AtelierXNA
 
         private void GérerTransitionPerdu()
         {
-            if (JoueurEstArrivé)
+            if (NbTours == NB_TOURS)
             {
                 État = ÉtatsJeu.FIN_DE_PARTIE;
                 MenuFinDePartie.Enabled = true;
