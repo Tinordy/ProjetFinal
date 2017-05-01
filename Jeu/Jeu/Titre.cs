@@ -26,13 +26,15 @@ namespace AtelierXNA
         Texture2D Texture { get; set; }
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         Rectangle Destination { get; set; }
-        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture)
+        bool Fond { get; set; }
+        public Titre(Game game, string message, string nomPolice, Vector2 position, string nomTexture, bool fond, Color couleur)
         : base(game)
         {
             Message = message;
             Position = position;
             NomPolice = nomPolice;
             NomTexture = nomTexture;
+            Fond = fond;
         }
         protected override void LoadContent()
         {
@@ -50,7 +52,7 @@ namespace AtelierXNA
         {
             GestionSprites.Begin();
             GestionSprites.Draw(Texture, Destination, Color.White);
-            GestionSprites.DrawString(Police, Message, Position, Color.Fuchsia);
+            GestionSprites.DrawString(Police, Message, Position, Color.Black);
             GestionSprites.End();
         }
     }
