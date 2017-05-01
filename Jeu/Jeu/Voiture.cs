@@ -190,6 +190,7 @@ namespace AtelierXNA
             base.LoadContent();
         }
 
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -450,6 +451,14 @@ namespace AtelierXNA
                 valeurRetour1 = SphèreDeCollisionAvant.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
                 valeurRetour2 = SphèreDeCollisionArrière.Intersects((autreObjet as ICollisionable).SphèreDeCollision);
             }
+            EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
+            return (valeurRetour1 || valeurRetour2);
+        }
+        bool EstEnCollision2(Voiture ennemi)
+        {
+            bool valeurRetour1 = EstEnCollision(ennemi.SphèreDeCollisionAvant);
+            bool valeurRetour2 = EstEnCollision(ennemi.SphèreDeCollisionArrière);
+
             EstEnCollisionAvecOBJ = (valeurRetour1 || valeurRetour2);
             return (valeurRetour1 || valeurRetour2);
         }
