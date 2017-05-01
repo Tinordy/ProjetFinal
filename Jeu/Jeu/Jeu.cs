@@ -436,6 +436,7 @@ namespace AtelierXNA
                 DécompteInitial.Visible = false;
                 NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, INTERVALLE_MAJ);
                 Game.Components.Add(NetworkManager.TempsDeCourseJ);
+                MenuDesOptions.DésactiverDifficulté();
             }
         }
 
@@ -653,6 +654,7 @@ namespace AtelierXNA
                     Game.Services.AddService(typeof(Server), Serveur);
                 }
                 NetworkManager = new Réseautique(Game,/*Serveur,*/ ip, port);
+                NetworkManager.SetEnnemi(MenuDesOptions.GetDifficulté());
                 Game.Services.AddService(typeof(Réseautique), NetworkManager);
                 //UsedIP.Add(ip);
                 test = true;

@@ -202,6 +202,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modèles\small car.fbx">
+      <Name>small car</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\carbodyD.png">
       <Name>carbodyD</Name>
       <Importer>TextureImporter</Importer>
@@ -229,7 +236,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modèles\GLX_400.fbx">
+    <Compile Include="Modèles\GLX_400.FBX">
       <Name>GLX_400</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -347,24 +354,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Volt_diffuse_deepRed.png">
-      <Name>Volt_diffuse_deepRed</Name>
+    <Compile Include="Textures\mappe.png">
+      <Name>mappe</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\choix2.png">
-      <Name>choix2</Name>
+    <Compile Include="Textures\difficile.png">
+      <Name>difficile</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Modèles\small car.fbx">
-      <Name>small car</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+    <Compile Include="Textures\facile.png">
+      <Name>facile</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\moyen.png">
+      <Name>moyen</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
