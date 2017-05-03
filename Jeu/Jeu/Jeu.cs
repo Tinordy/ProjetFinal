@@ -703,7 +703,7 @@ namespace AtelierXNA
             Voiture temp;
             for (int i = 0; i < NB_VOITURES_DUMMIES; ++i)
             {
-                temp = new VoitureDummy(Game, "small car", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
+                temp = new VoitureDummy(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
                 VoituresDummies.Add(temp);
                 Game.Components.Add(temp);
             }
