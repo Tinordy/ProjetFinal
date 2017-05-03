@@ -36,6 +36,7 @@ namespace AtelierXNA
             noms.Add("choix1");
             noms.Add("choix2");
             noms.Add("choix3");
+            noms.Add("choix4");
             LecteurPseudonyme = new EntréeDeTexte(Game, new Vector2(3 * Game.Window.ClientBounds.Width / 4, Game.Window.ClientBounds.Height / 4), "Arial20", 10);
             ChoixVoiture = new DéfileurSprite(Game, noms, new Rectangle(0, Game.Window.ClientBounds.Height / 3, Game.Window.ClientBounds.Width, 2 * Game.Window.ClientBounds.Height / 3), 0.001f);
             BtnDémarrer = new BoutonDeCommande(Game, "Démarrer", "Arial", "BoutonVert", "BoutonNoir", new Vector2(2 * Game.Window.ClientBounds.Width / 3, 8 * Game.Window.ClientBounds.Height / 9), false, Démarrer, 0.01f);
