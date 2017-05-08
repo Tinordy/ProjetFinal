@@ -43,12 +43,60 @@ namespace AtelierXNA
         Vector3 PositionArrière { get; set; }
         Vector3 DirectionCaméra { get; set; }
         List<Vector2> PointsCentraux { get; set; }
-        float NormeDirection { get; set; }
-        float intervalleAccélération;
         Volant elVolant { get; set; }
-        int RotationVolant { get; set; }
         int AccélérationVolant { get; set; }
-        int FreinageVolant { get; set; }
+
+        #region FacteursPourVolantEtClavier
+        float Sens
+        {
+            get { return Vitesse > 0 ? elVolant.Enabled ? -FacteurRotationVolant : FacteurRotationClavier : elVolant.Enabled ? FacteurRotationVolant : -FacteurRotationClavier;}
+        }
+        float FacteurAccélérationVolant
+        {
+            get { return -(elVolant.AxeY - MOITIÉ_AXE) / MOITIÉ_AXE; }
+        }
+        float FacteurFreinageVolant
+        {
+            get { return 3 * (-((elVolant.AxeZ - MAX_AXE) / MAX_AXE)); }
+        }
+
+        float FacteurRotationVolant
+        {
+            get { return 12 * ((elVolant.AxeX - MOITIÉ_AXE) / MOITIÉ_AXE); }
+        }
+
+        float FacteurAccélérationClavier
+        {
+            get { return GestionInput.EstEnfoncée(Keys.W) ? 1 : 0; }
+        }
+        float FacteurFreinageClavier
+        {
+            get { return GestionInput.EstEnfoncée(Keys.S) ? 1 : 0; }
+        }
+
+        float FacteurRotationClavier
+        {
+            get { return GérerTouche(Keys.A) - GérerTouche(Keys.D); }
+        }
+        float FacteurAccélérationFinal
+        {
+            get { return elVolant.Enabled ? FacteurAccélérationVolant : FacteurAccélérationClavier; }
+        }
+        float FacteurFreinageFinal
+        {
+            get { return elVolant.Enabled ? FacteurFreinageVolant : FacteurFreinageClavier; }
+        }
+        float FacteurRotationFinal
+        {
+            get { return elVolant.Enabled ? FacteurRotationVolant : FacteurRotationClavier; }
+        }
+        bool BoutonDérapageActivé
+        {
+            get { return elVolant.Enabled ? elVolant.BoutonDérapageActivé : GestionInput.EstEnfoncée(Keys.LeftControl); }
+        }
+        #endregion
+
+        float intervalleAccélération;
         float IntervalleAccélération
         {
             get
@@ -202,20 +250,10 @@ namespace AtelierXNA
             TempsÉcouléDepuisMAJ += tempsÉcoulé;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ && EstActif)
             {
-                if (!elVolant.Enabled)
-                {
-                    VarierVitesseClavier();
-                    CalculerVitesse();
-                    AjusterPositionClavier();
-                }
-                else
-                {
-                    VarierVitesseVolant();
-                    CalculerVitesse();
-                    AjusterPositionVolant();
-                    Game.Window.Title = "Vitesse : " + Vitesse.ToString() + " TempsAccélération : " + TempsAccélération.ToString() + " Axes : " + elVolant.AxeX.ToString() + " / " + elVolant.AxeY.ToString() + " / " + elVolant.AxeZ.ToString(); ;
-
-                }
+                VarierVitesse();
+                CalculerVitesse();
+                AjusterPosition();
+                //Game.Window.Title = "Vitesse : " + Vitesse.ToString() + " TempsAccélération : " + TempsAccélération.ToString() + " Axes : " + elVolant.AxeX.ToString() + " / " + elVolant.AxeY.ToString() + " / " + elVolant.AxeZ.ToString(); ;
                 EffectuerTransformations();
                 //RecréerMonde();
                 //Game.Window.Title = "Position : " + Position.X.ToString("0.0") + " / " + Position.Y.ToString("0.0") + " / " + Position.Z.ToString("0.0") + " Vitesse : " + Vitesse.ToString("0.0") + " / TempsAccélaration" + TempsAccélération.ToString("0.0");
@@ -227,12 +265,13 @@ namespace AtelierXNA
 
             base.Update(gameTime);
         }
-        void VarierVitesseVolant()
+
+        void VarierVitesse()
         {
             int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
-            TempsAccélération += FACTEUR_ACCÉLÉRATION * -(elVolant.AxeY - MOITIÉ_AXE) / MOITIÉ_AXE;
-            TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * 3 * -((elVolant.AxeZ - MAX_AXE) / MAX_AXE);
-            if (elVolant.AxeY == MOITIÉ_AXE && elVolant.AxeZ == MAX_AXE)
+            if (!BoutonDérapageActivé) { TempsAccélération += FACTEUR_ACCÉLÉRATION * FacteurAccélérationFinal; }
+            TempsAccélération -= INTERVALLE_RALENTISSEMENT * FREINAGE * FacteurFreinageFinal;
+            if (FacteurAccélérationFinal == 0 && FacteurFreinageFinal == 0)
             {
                 if (Vitesse >= -1f / 2f && Vitesse <= 1f / 2f)
                 {
@@ -244,14 +283,12 @@ namespace AtelierXNA
                     TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT;
                 }
             }
-
-
         }
 
-        void AjusterPositionVolant()
+        void AjusterPosition()
         {
             Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
-            if (!elVolant.BoutonDérapageActivé)
+            if (!BoutonDérapageActivé)
             {
                 ModifierPosition1();
 
@@ -264,45 +301,22 @@ namespace AtelierXNA
 
             ChangementEffectué = true;
 
-            if (!elVolant.BoutonDérapageActivé)
+            if (FacteurRotationFinal != 0)
             {
                 if (TempsAccélération > 0)
                 {
                     TempsAccélération -= INTERVALLE_RALENTISSEMENT / 10;
                 }
-                if (TempsAccélération <= 0)
-                {
-                    TempsAccélération = 0;
-                }
             }
-            float sens = ((float)elVolant.AxeX - MOITIÉ_AXE) / MOITIÉ_AXE;
-            if (Vitesse > 0)
-            {
-                Rotation = new Vector3(Rotation.X, Rotation.Y - sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
 
-            }
-            else
-            {
-                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation * 12, Rotation.Z);
-            }
+                Rotation = new Vector3(Rotation.X, Rotation.Y + Sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
+
+
             ChangementEffectué = true;
 
 
         }
-
-        void VarierVitesseClavier()
-        {
-            bool accélération = GestionInput.EstEnfoncée(Keys.W);
-            bool freinage = GestionInput.EstEnfoncée(Keys.S);
-            int signe = Math.Sign(Vitesse) == 0 ? 1 : Math.Sign(Vitesse);
-
-
-
-            if ((!accélération && !freinage)) { TempsAccélération += (float)-signe * INTERVALLE_RALENTISSEMENT; }
-            if (accélération && !GestionInput.EstEnfoncée(Keys.LeftControl)) { TempsAccélération += FACTEUR_ACCÉLÉRATION; }
-            if (freinage) { TempsAccélération -= FREINAGE * INTERVALLE_RALENTISSEMENT; }
-
-        }
+        
 
         void CalculerVitesse()
         {
@@ -330,38 +344,7 @@ namespace AtelierXNA
             PositionAvant -= Direction;
             PositionArrière -= Direction;
         }
-        void AjusterPositionClavier()
-        {
-            Direction = Vitesse * Vector3.Normalize(new Vector3(-(float)Math.Sin(Rotation.Y), 0, -(float)Math.Cos(Rotation.Y))) / 100f;
-            //pédales + ajouter accélération??
-            if (!GestionInput.EstEnfoncée(Keys.LeftControl))
-            {
-                ModifierPosition1();
-                PremièreBoucleDérapage = true;
-            }
-            else
-            {
-                GérerDérapage();
-            }
-
-            ChangementEffectué = true;
-
-            //Volant... degrés??
-            if (GestionInput.EstEnfoncée(Keys.A) || GestionInput.EstEnfoncée(Keys.D))
-            {
-                int sens = GérerTouche(Keys.A) - GérerTouche(Keys.D);
-                if (!GestionInput.EstEnfoncée(Keys.LeftControl))
-                {
-                    if (TempsAccélération > 0)
-                    {
-                        TempsAccélération -= INTERVALLE_RALENTISSEMENT / 10;
-                    }
-                }
-                //Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION, Rotation.Z);
-                Rotation = new Vector3(Rotation.X, Rotation.Y + sens * INCRÉMENT_ROTATION * IntervalleRotation, Rotation.Z);
-                ChangementEffectué = true;
-            }
-        }
+      
         void GérerDérapage()
         {
             if (PremièreBoucleDérapage && Vitesse > 5)

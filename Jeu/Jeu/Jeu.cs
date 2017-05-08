@@ -784,7 +784,7 @@ namespace AtelierXNA
             Voiture temp;
             for (int i = 0; i < NB_VOITURES_DUMMIES; ++i)
             {
-                temp = new VoitureDummy(Game, "small car", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
+                temp = new VoitureDummy(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
                 VoituresDummies.Add(temp);
                 Game.Components.Add(temp);
             }
@@ -804,6 +804,24 @@ namespace AtelierXNA
             Game.Components.Remove(AffNbTours);
         }
 
+        private void CréerEnvironnement()
+        {
+            Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", INTERVALLE_MAJ));
+            Sections = new List<Section>();
+
+            ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
+            List<int> pasDeMaison = new List<int>() { 17, 25, 32, 33, 24, 47, 61, 53, 60, 63, 64, 51, 49, 50, 43, 36, 37, 29, 30, 16, 37, 21, 22, 23 };
+            for (int i = 0; i < 10; ++i)
+            {
+                for (int j = 0; j < 7; ++j)
+                {
+                    bool maison = !pasDeMaison.Contains(Sections.Count);
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, maison, INTERVALLE_MAJ); //double??
+                    Sections.Add(newSection);
+                    newSection.Initialize();
+                    Game.Components.Add(newSection);
+                }
+            }
 
 
         private void CréerEnnemi(Vector2 Départ)
