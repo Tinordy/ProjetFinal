@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    public class VoitureDummy : Voiture
+    public class VoitureDummy : Voiture, IResettable
     {
         const float RAYON_VOITURE_DUMMY = 0.2f;
         DataPiste Data { get; set; }

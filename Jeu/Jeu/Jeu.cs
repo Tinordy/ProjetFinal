@@ -39,11 +39,10 @@ namespace AtelierXNA
         const int NB_SECONDES_DÉCOMPTE = 5;
         Vector3 RotationInitiale = new Vector3(0, 3.14f, 0);
         List<string> ChoixVoiture = new List<string>() { "GLX_400", "FBX_2010_chevy_volt_deepRed", "volks", "FBX_2008_dodge_charger_blue" };
-        bool[] CHECKPOINTS_INITIAUX = new bool[NB_CHECKPOINTS] { false, false };
         int[] SECTIONS_CHECKPOINTS = new int[NB_CHECKPOINTS] { 54, 63 };
         Vector2 ÉTENDUE_TOTALE = new Vector2(200 * 4, 200 * 4);
 
-        //PROPRIÉTÉS
+        #region Propriétés
         //propriétés qui gèrent la pause
         bool pause;
         bool Pause
@@ -138,6 +137,7 @@ namespace AtelierXNA
 
         //autre propriété
         InputManager GestionInput { get; set; }
+        #endregion
 
         #region Constructeur et création des menus
         public Jeu(Game game)
@@ -167,7 +167,7 @@ namespace AtelierXNA
         #region Initialisation du jeu
         public override void Initialize()
         {
-            CheckPointsAtteints = CHECKPOINTS_INITIAUX;
+            CheckPointsAtteints = new bool[NB_CHECKPOINTS] { false, false };
             NbTours = 0;
             ÉtatJoueur = ÉtatsJoueur.SOLO;
             CréerCaméra();
@@ -199,7 +199,7 @@ namespace AtelierXNA
                 for (int j = 0; j < LONGUEUR; ++j)
                 {
                     bool maison = !pasDeMaison.Contains(Sections.Count);
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, maison, INTERVALLE_MAJ); //double??
+                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Neige", "Sable" }, maison, INTERVALLE_MAJ);
                     Sections.Add(newSection);
                     newSection.Initialize();
                     Game.Components.Add(newSection);
@@ -229,7 +229,7 @@ namespace AtelierXNA
 
         private void GérerDéconnection()
         {
-            //On veut que le joueur arrête de jouer si son concurent s'est déconnecté
+            //On veut que le joueur arrête de jouer si son adversaire s'est déconnecté
             if (ConnectionÉtablie && NetworkManager.DisconnectedT)
             {
                 État = ÉtatsJeu.MENU_PRINCIPAL;
@@ -264,7 +264,7 @@ namespace AtelierXNA
         }
         private void GérerCollisions()
         {
-            //Collision entre joueurs
+            //Collisions entre joueurs
             if (ÉtatJoueur != ÉtatsJoueur.SOLO && Joueur.EstEnCollision2(Ennemi))
             {
                 Joueur.Rebondir(Ennemi.Direction, Ennemi.Position);
@@ -305,7 +305,7 @@ namespace AtelierXNA
             if (CheckPointsAtteints[NB_CHECKPOINTS - 1] && JoueurEstArrivé)
             {
                 ++NbTours;
-                CheckPointsAtteints = CHECKPOINTS_INITIAUX;
+                CheckPointsAtteints = new bool[2] { false, false } ;
                 AffNbTours.ChangerTexte("Tour : " + (NbTours + 1).ToString());
             }
         }
@@ -321,7 +321,6 @@ namespace AtelierXNA
             return checkpointsAtteints;
         }
         #endregion
-
 
         #region Transitions
         void GérerTransition()
@@ -400,7 +399,6 @@ namespace AtelierXNA
                     break;
             }
         }
-
         void GérerTransitionMenuOption()
         {
             switch (MenuDesOptions.Choix)
@@ -414,7 +412,6 @@ namespace AtelierXNA
                     break;
             }
         }
-
         void GérerTransitionMenuChoixLan()
         {
             switch (MenuNetwork.Choix)
@@ -447,7 +444,6 @@ namespace AtelierXNA
                     break;
             }
         }
-
         private void GérerTransitionMenuProfile()
         {
             switch (MenuChoixProfile.Choix)
@@ -465,12 +461,16 @@ namespace AtelierXNA
                 case ChoixMenu.JOUER:
                     État = ÉtatsJeu.DÉCOMPTE;
                     MenuChoixProfile.Enabled = false;
-                    InitialiserLeJeu();
+                    RéinitialiserLeJeu();
                     InitialiserDécompte();
                     break;
             }
         }
-
+        private void InitialiserDécompte()
+        {
+            DécompteInitial = new TimerDiminue(Game, new TimeSpan(0, 0, NB_SECONDES_DÉCOMPTE), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, false, Color.White, 1f);
+            Game.Components.Add(DécompteInitial);
+        }
         private void ChercherPseudonyme()
         {
             if (MenuChoixProfile.Pseudonyme == string.Empty)
@@ -486,13 +486,6 @@ namespace AtelierXNA
             }
             NetworkManager.PseudonymeJ = MenuChoixProfile.Pseudonyme;
         }
-
-        private void InitialiserDécompte()
-        {
-            DécompteInitial = new TimerDiminue(Game, new TimeSpan(0, 0, NB_SECONDES_DÉCOMPTE), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, false, Color.White, 1f);
-            Game.Components.Add(DécompteInitial);
-        }
-
         void GérerTransitionMenuServeur()
         {
             switch (MenuServeur.Choix)
@@ -510,7 +503,6 @@ namespace AtelierXNA
                     break;
             }
         }
-
         private void GérerTransitionMenuClient()
         {
             switch (MenuClient.Choix)
@@ -531,7 +523,6 @@ namespace AtelierXNA
                     break;
             }
         }
-
         private void ConnectionAuServeur(string ip, int port)
         {
             //Si le serveur est déjà créé, on ne veut pas le refaire
@@ -553,7 +544,6 @@ namespace AtelierXNA
             }
             ConnectionÉtablie = true;
         }
-
         private void GérerTransitionConnection()
         {
             if (NetworkManager.enemiConnecté)
@@ -563,7 +553,6 @@ namespace AtelierXNA
                 MenuChoixProfile.Enabled = true;
             }
         }
-
         private void GérerTransitionAttenteJoueurs()
         {
             switch (ÉtatJoueur)
@@ -576,7 +565,7 @@ namespace AtelierXNA
                     if (NetworkManager.EnnemiPrêtÀJouer)
                     {
                         MenuChoixProfile.Enabled = false;
-                        InitialiserLeJeu();
+                        RéinitialiserLeJeu();
                         État = ÉtatsJeu.DÉCOMPTE;
                         InitialiserDécompte();
                     }
@@ -590,7 +579,70 @@ namespace AtelierXNA
                     break;
             }
         }
-
+        private void GérerTransitionDécompte()
+        {
+            if (!DécompteInitial.EstActif)
+            {
+                État = ÉtatsJeu.JEU;
+                Joueur.EstActif = true;
+                DécompteInitial.Enabled = false;
+                DécompteInitial.Visible = false;
+                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, false, Color.White, INTERVALLE_MAJ);
+                Game.Components.Add(NetworkManager.TempsDeCourseJ);
+                MenuDesOptions.DésactiverDifficulté();
+                AffNbTours = new Titre(Game, "Tour : 1", "Arial20", new Vector2(Game.Window.ClientBounds.Width / 15, Game.Window.ClientBounds.Height / 18), "Blanc", false, Color.White);
+                Game.Components.Add(AffNbTours);
+            }
+        }
+        private void GérerTransitionJeu()
+        {
+            GérerChangementPause();
+            GérerGagnant();
+        }
+        private void GérerChangementPause()
+        {
+            if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
+            {
+                if (GestionInput.EstNouvelleTouche(Keys.Space))
+                {
+                    État = ÉtatsJeu.PAUSE;
+                    Pause = true;
+                    MenuDePause.Enabled = true;
+                    MenuDePause.ChangerActivationMenu(true);
+                }
+            }
+            else
+            {
+                if (!NetworkManager.EnnemiPrêtÀJouer)
+                {
+                    État = ÉtatsJeu.STAND_BY;
+                    MenuDePause.Enabled = true;
+                    MenuDePause.ChangerActivationMenu(false);
+                    Pause = true;
+                }
+            }
+        }
+        private void GérerGagnant()
+        {
+            if (NetworkManager.EnnemiEstArrivé)
+            {
+                Gagné = false;
+            }
+            else
+            {
+                if (NbTours == NB_TOURS)
+                {
+                    if (ÉtatJoueur == ÉtatsJoueur.SOLO)
+                    {
+                        Gagné = NetworkManager.TempsDeCourseJ.ValeurTimer < NetworkManager.TempsDeCourseE;
+                    }
+                    else
+                    {
+                        Gagné = true;
+                    }
+                }
+            }
+        }
         private void GérerTransitionPause()
         {
             switch (MenuDePause.Choix)
@@ -617,101 +669,15 @@ namespace AtelierXNA
                     break;
             }
         }
-
-        private void GérerTransitionJeu()
+        private void GérerTransitionStandBy()
         {
-            GérerChangementPause();
-            GérerGagnant();
-        }
-
-        private void GérerChangementPause()
-        {
-            if (ÉtatJoueur != ÉtatsJoueur.CLIENT)
+            if (NetworkManager.EnnemiPrêtÀJouer)
             {
-                if (GestionInput.EstNouvelleTouche(Keys.Space))
-                {
-                    État = ÉtatsJeu.PAUSE;
-                    Pause = true;
-                    MenuDePause.Enabled = true;
-                    MenuDePause.ChangerActivationMenu(true);
-                }
-            }
-            else
-            {
-                if (!NetworkManager.EnnemiPrêtÀJouer)
-                {
-                    État = ÉtatsJeu.STAND_BY;
-                    MenuDePause.Enabled = true;
-                    MenuDePause.ChangerActivationMenu(false);
-                    Pause = true;
-                }
+                État = ÉtatsJeu.JEU;
+                Pause = false;
+                MenuDePause.Enabled = false;
             }
         }
-
-        private void GérerGagnant()
-        {
-            if (NetworkManager.EnnemiEstArrivé)
-            {
-                Gagné = false;
-            }
-            else
-            {
-                if (NbTours == NB_TOURS)
-                {
-                    if (ÉtatJoueur == ÉtatsJoueur.SOLO)
-                    {
-                        Gagné = NetworkManager.TempsDeCourseJ.ValeurTimer < new TimeSpan(0, 0, 10); //obtenir vraie valeur
-                    }
-                    else
-                    {
-                        Gagné = true;
-                    }
-                }
-            }
-        }
-
-
-
-
-
-
-        private void GérerTransitionFinDePartie()
-        {
-            switch (MenuFinDePartie.Choix)
-            {
-                case ChoixMenu.JOUER:
-                    MenuFinDePartie.Enabled = false;
-                    MenuChoixProfile.Enabled = true;
-                    État = ÉtatsJeu.CHOIX_PROFILE;
-                    //Envoyer client!!! REJOUER!!!
-                    break;
-                case ChoixMenu.QUITTER:
-                    État = ÉtatsJeu.MENU_PRINCIPAL;
-                    MenuFinDePartie.Enabled = false;
-                    MenuPrincipal.Enabled = true;
-                    NetworkManager.SendDisconnect();
-                    ConnectionÉtablie = false;
-                    NetworkManager.Close();
-                    break;
-            }
-        }
-
-        private void GérerTransitionPerdu()
-        {
-            if (NbTours == NB_TOURS)
-            {
-                État = ÉtatsJeu.FIN_DE_PARTIE;
-                MenuFinDePartie.Enabled = true;
-                NetworkManager.TempsDeCourseJ.EstActif = false;
-                Joueur.EstActif = false;
-                NetworkManager.SendTerminé(true, NetworkManager.TempsDeCourseJ.ValeurTimer, NetworkManager.PseudonymeJ);
-            }
-            else
-            {
-                Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
-            }
-        }
-
         private void GérerTransitionGagné()
         {
             if (NetworkManager.EnnemiEstArrivé || ÉtatJoueur == ÉtatsJoueur.SOLO)
@@ -725,48 +691,44 @@ namespace AtelierXNA
                 Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
             }
         }
-
-        private void GérerTransitionStandBy()
+        private void GérerTransitionPerdu()
         {
-            if (NetworkManager.EnnemiPrêtÀJouer)
+            if (NbTours == NB_TOURS || ÉtatJoueur == ÉtatsJoueur.SOLO)
             {
-                État = ÉtatsJeu.JEU;
-                Pause = false;
-                MenuDePause.Enabled = false;
+                État = ÉtatsJeu.FIN_DE_PARTIE;
+                MenuFinDePartie.Enabled = true;
+                NetworkManager.TempsDeCourseJ.EstActif = false;
+                Joueur.EstActif = false;
+                NetworkManager.SendTerminé(true, NetworkManager.TempsDeCourseJ.ValeurTimer, NetworkManager.PseudonymeJ);
+            }
+            else
+            {
+                Ennemi.AjusterPosition(NetworkManager.MatriceMondeEnnemi);
             }
         }
-
-
-
-
-
-
-
-        private void GérerTransitionDécompte()
+        private void GérerTransitionFinDePartie()
         {
-            if (!DécompteInitial.EstActif)
+            switch (MenuFinDePartie.Choix)
             {
-                État = ÉtatsJeu.JEU;
-                Joueur.EstActif = true;
-                DécompteInitial.Enabled = false;
-                DécompteInitial.Visible = false;
-                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, false, Color.White, INTERVALLE_MAJ);
-                Game.Components.Add(NetworkManager.TempsDeCourseJ);
-                MenuDesOptions.DésactiverDifficulté();
-                AffNbTours = new Titre(Game, "Tour : 1", "Arial20", new Vector2(Game.Window.ClientBounds.Width / 15, Game.Window.ClientBounds.Height / 18), "Blanc", false, Color.White);
-                Game.Components.Add(AffNbTours);
+                case ChoixMenu.JOUER:
+                    MenuFinDePartie.Enabled = false;
+                    MenuChoixProfile.Enabled = true;
+                    État = ÉtatsJeu.CHOIX_PROFILE;
+                    break;
+                case ChoixMenu.QUITTER:
+                    État = ÉtatsJeu.MENU_PRINCIPAL;
+                    MenuFinDePartie.Enabled = false;
+                    MenuPrincipal.Enabled = true;
+                    NetworkManager.SendDisconnect();
+                    ConnectionÉtablie = false;
+                    NetworkManager.Close();
+                    break;
             }
         }
-
-
-
-
         #endregion
 
-
-
-        #region initialisation du jeu
-        private void InitialiserLeJeu()
+        #region Réinitialisation du jeu
+        private void RéinitialiserLeJeu()
         {
             Reset();
             CréerVoitureDummy();
@@ -777,19 +739,6 @@ namespace AtelierXNA
             }
             CréerJoueur(v);  
         }
-
-        private void CréerVoitureDummy()
-        {
-            VoituresDummies = new List<Voiture>();
-            Voiture temp;
-            for (int i = 0; i < NB_VOITURES_DUMMIES; ++i)
-            {
-                temp = new VoitureDummy(Game, "GLX_400", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
-                VoituresDummies.Add(temp);
-                Game.Components.Add(temp);
-            }
-        }
-
         private void Reset()
         {
             for (int i = Game.Components.Count - 1; i >= 0; --i)
@@ -799,52 +748,35 @@ namespace AtelierXNA
                     Game.Components.RemoveAt(i);
                 }
             }
-            CheckPointsAtteints = new bool[2] { false, false };
+            CheckPointsAtteints = new bool[NB_CHECKPOINTS] { false, false };
             NbTours = 0;
             Game.Components.Remove(AffNbTours);
         }
-
-        private void CréerEnvironnement()
+        private void CréerVoitureDummy()
         {
-            Game.Components.Add(new ArrièrePlanDéroulant(Game, "CielÉtoilé", INTERVALLE_MAJ));
-            Sections = new List<Section>();
-
-            ÉtendueTotale = new Vector2(200 * 4, 200 * 4); //envoyer à voiture?
-            List<int> pasDeMaison = new List<int>() { 17, 25, 32, 33, 24, 47, 61, 53, 60, 63, 64, 51, 49, 50, 43, 36, 37, 29, 30, 16, 37, 21, 22, 23 };
-            for (int i = 0; i < 10; ++i)
+            VoituresDummies = new List<Voiture>();
+            Voiture temp;
+            for (int i = 0; i < NB_VOITURES_DUMMIES; ++i)
             {
-                for (int j = 0; j < 7; ++j)
-                {
-                    bool maison = !pasDeMaison.Contains(Sections.Count);
-                    Section newSection = new Section(Game, new Vector2(ÉTENDUE * i, ÉTENDUE * j), new Vector2(ÉTENDUE, ÉTENDUE), 1f, Vector3.Zero, Vector3.Zero, new Vector3(ÉTENDUE, 25, ÉTENDUE), new string[] { "Herbe", "Sable" }, maison, INTERVALLE_MAJ); //double??
-                    Sections.Add(newSection);
-                    newSection.Initialize();
-                    Game.Components.Add(newSection);
-                }
+                temp = new VoitureDummy(Game, "small car", 0.01f, Vector3.Zero, new Vector3(50, 5, 50), i * LARGEUR_ENTRE_VOITURE, INTERVALLE_MAJ);
+                VoituresDummies.Add(temp);
+                Game.Components.Add(temp);
             }
-
-
+        }
         private void CréerEnnemi(Vector2 Départ)
         {
             Vector3 pos = ÉtatJoueur == ÉtatsJoueur.SERVEUR ? new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y) : new Vector3(Départ.X + LARGEUR_DÉPART, 0, Départ.Y);
-            Ennemi = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureE], 0.01f, Vector3.Zero, pos, INTERVALLE_MAJ); //Get choix de voiture??
+            Ennemi = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureE], 0.01f, Vector3.Zero, pos, INTERVALLE_MAJ);
             Ennemi.EstActif = false;
             Game.Components.Add(Ennemi);
         }
-
         private void CréerJoueur(Vector2 Départ)
         {
             Vector3 pos = ÉtatJoueur != ÉtatsJoueur.CLIENT ? new Vector3(LARGEUR_DÉPART + Départ.X, 0, Départ.Y) : new Vector3(Départ.X - LARGEUR_DÉPART, 0, Départ.Y);
             Joueur = new Voiture(Game, ChoixVoiture[NetworkManager.ChoixVoitureJ], 0.01f, RotationInitiale, pos, INTERVALLE_MAJ);
             Joueur.EstActif = false;
             Game.Components.Add(Joueur);
-            NetworkManager.SendPosIni(Joueur.Position); //fonctionne pas....
         }
-
-
         #endregion
-
-
-
     }
 }

@@ -39,10 +39,6 @@ namespace AtelierXNA
         public Réseautique(Game game,/*Server serveur,*/ string ip, int port)
             :base(game)
         {
-            //PseudonymeE = "ORDI";
-            //TempsDeCourseE = new TimeSpan(0, 1, 0);
-
-            //Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
             Client = new TcpClient();
@@ -274,8 +270,8 @@ namespace AtelierXNA
         }
         public void Reset(string ip, int port)
         {
-            PseudonymeE = "ORDI";
-            TempsDeCourseE = new TimeSpan(0, 1, 0);
+            //PseudonymeE = "ORDI";
+            //TempsDeCourseE = new TimeSpan(0, 1, 0);
             //Serveur = serveur;
             EnnemiPrêtÀJouer = false;
 
