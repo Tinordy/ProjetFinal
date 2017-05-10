@@ -12,10 +12,10 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public class TimerDiminue : Timer
+    public class ChronoDiminue : Chrono
     {
         const string FORMAT = "ss";
-        public TimerDiminue(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif,bool fond, Color couleur, float intervalleDeMAJ)
+        public ChronoDiminue(Game game, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif,bool fond, Color couleur, float intervalleDeMAJ)
             : base(game, (départ).ToString(FORMAT), départ, nomPolice, position, nomTexture, estActif, fond, couleur, intervalleDeMAJ)
         {
         }

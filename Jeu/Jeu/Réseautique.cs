@@ -11,7 +11,7 @@ namespace AtelierXNA
 {
     public class Réseautique : Microsoft.Xna.Framework.GameComponent
     {
-        public TimerAugmente TempsDeCourseJ { get; set; }
+        public ChronoAugmente TempsDeCourseJ { get; set; }
         public string PseudonymeJ { get; set; }
         public TimeSpan TempsDeCourseE { get; set; }
         public string PseudonymeE { get; set; }

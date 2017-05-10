@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    abstract public class Timer: Titre, IResettable
+    abstract public class Chrono: Titre, IResettable
     {
        // protected float ValeurTimer { get; set; }
 
@@ -21,7 +21,7 @@ namespace AtelierXNA
         float IntervalleDeMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         public bool EstActif { get; set; }
-        public Timer(Game game,string format, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, bool fond, Color couleur,float intervalleDeMAJ)
+        public Chrono(Game game,string format, TimeSpan départ, string nomPolice, Vector2 position, string nomTexture, bool estActif, bool fond, Color couleur,float intervalleDeMAJ)
             : base(game, format, nomPolice, position, nomTexture, fond, couleur) // po legit
         {
             ValeurTimer = départ;

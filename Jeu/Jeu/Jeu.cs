@@ -124,7 +124,7 @@ namespace AtelierXNA
         //propriétés affichables (Joueurs et Environnement)
         Voiture Joueur { get; set; }
         Voiture Ennemi { get; set; }
-        TimerDiminue DécompteInitial { get; set; }
+        ChronoDiminue DécompteInitial { get; set; }
         Titre AffNbTours { get; set; }
         List<Section> Sections { get; set; }
         List<Voiture> VoituresDummies { get; set; }
@@ -468,7 +468,7 @@ namespace AtelierXNA
         }
         private void InitialiserDécompte()
         {
-            DécompteInitial = new TimerDiminue(Game, new TimeSpan(0, 0, NB_SECONDES_DÉCOMPTE), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, false, Color.White, 1f);
+            DécompteInitial = new ChronoDiminue(Game, new TimeSpan(0, 0, NB_SECONDES_DÉCOMPTE), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2), "Blanc", true, false, Color.White, 1f);
             Game.Components.Add(DécompteInitial);
         }
         private void ChercherPseudonyme()
@@ -587,7 +587,7 @@ namespace AtelierXNA
                 Joueur.EstActif = true;
                 DécompteInitial.Enabled = false;
                 DécompteInitial.Visible = false;
-                NetworkManager.TempsDeCourseJ = new TimerAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, false, Color.White, INTERVALLE_MAJ);
+                NetworkManager.TempsDeCourseJ = new ChronoAugmente(Game, new TimeSpan(0), "Arial", new Vector2(Game.Window.ClientBounds.Width / 2, 30), "Blanc", true, false, Color.White, INTERVALLE_MAJ);
                 Game.Components.Add(NetworkManager.TempsDeCourseJ);
                 MenuDesOptions.DésactiverDifficulté();
                 AffNbTours = new Titre(Game, "Tour : 1", "Arial20", new Vector2(Game.Window.ClientBounds.Width / 15, Game.Window.ClientBounds.Height / 18), "Blanc", false, Color.White);
