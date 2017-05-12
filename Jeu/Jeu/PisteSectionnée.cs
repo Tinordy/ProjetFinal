@@ -16,8 +16,9 @@ namespace AtelierXNA
     {
         DataPiste DonnéesPiste { get; set; }
         int HAUTEUR_INITIALE = 0;
-        const float LARGEUR_PISTE = 7f;
-        const float ÉCHELLE = 0.3f;
+        const float LARGEUR_PISTE = 7f; // Valeur arbitraire
+        const float ÉCHELLE = 0.3f; // Valeur arbitraire
+        const int NB_POINT_MINIMAL_PISTE = 3;
 
         Vector3 Origine { get; set; }
         protected List<List<Vector2>> PointsBordureExt { get; set; }
@@ -92,20 +93,9 @@ namespace AtelierXNA
                     ListeSommets.Add(sommets);
                 }
             }
-            //InitialiserSommetsPointillés();
+            
 
         }
-
-        //protected void InitialiserSommetsPointillés()
-        //{
-        //    for (int i = 0; i < NbDeSommets - 3; i += 2)
-        //    {
-        //        SommetsPointillés[i + 1] = new VertexPositionColor(new Vector3(PointsPointillés[i + 1].X, HAUTEUR_INITIALE, PointsPointillés[i + 1].Y), Color.White);
-        //        SommetsPointillés[i] = new VertexPositionColor(new Vector3(PointsPointillés[i].X, HAUTEUR_INITIALE, PointsPointillés[i].Y), Color.White);
-        //    }
-        //    SommetsPointillés[NbDeSommets - 2] = SommetsPointillés[0];
-        //    SommetsPointillés[NbDeSommets - 1] = SommetsPointillés[1];
-        //}
 
         protected override void LoadContent()
         {
@@ -115,15 +105,10 @@ namespace AtelierXNA
         }
         public void ObtenirDonnéesPiste()
         {
-            //PointsBordureExt = GénérerListeRestreinte(DonnéesPiste.GetBordureExtérieure());
-            //PointsBordureInt = GénérerListeRestreinte(DonnéesPiste.GetBordureIntérieur());
-            if (NbPtsCentraux > 0)
+            if (NbPtsCentraux > 0) //Sert à rien de générer une bordure s'il n'y a pas de points milieux puisque qu'il n'y a pas de piste
             {
                 GénérerBordureÀPartirDeMilieu();
-                //InitialiserSommets();
             }
-
-            //PointsPointillés = GénérerListeRestreinte(DonnéesPiste.GetPointsPointillés());
         }
 
         void ObtenirPointsCentraux()
@@ -135,13 +120,11 @@ namespace AtelierXNA
         {
             if (CaméraJeu.Frustum.Intersects(SphereDeCollision))
             {
-                //EnableDraw = true;
                 Visible = true;
             }
             else
             {
                 Visible = false;
-                //EnableDraw = false;
             }
         }
 
@@ -152,7 +135,6 @@ namespace AtelierXNA
             int ancienIndex = -1;
             List<List<Vector2>> temp = new List<List<Vector2>>();
             List<Vector2> listePointTemp = new List<Vector2>();
-            //foreach (Vector2 point in points)
 
             for (int i = 0; i < points.Count; ++i)
             {
@@ -174,7 +156,7 @@ namespace AtelierXNA
             temp.Add(listePointTemp);
             for (int i = 0; i < temp.Count; ++i)
             {
-                if (temp[i].Count < 2)
+                if (temp[i].Count < NB_POINT_MINIMAL_PISTE)
                 {
                     temp.RemoveAt(i);
                 }
@@ -246,7 +228,6 @@ namespace AtelierXNA
                     {
                         GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, Sommets, 0, NbDeTriangles);
                         //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, SommetsPointillés, 0, NbDeTriangles);
-                        //Problème à 60 / 0 / 135 -> Manque un bout de piste
                     }
 
                 }
