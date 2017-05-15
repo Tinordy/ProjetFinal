@@ -108,7 +108,6 @@
     <Compile Include="IResettable.cs" />
     <Compile Include="ISélectionnable.cs" />
     <Compile Include="Jeu.cs" />
-    <Compile Include="JeuTest.cs" />
     <Compile Include="Maison.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="MenuFinPartie.cs" />

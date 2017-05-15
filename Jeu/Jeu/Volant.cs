@@ -99,8 +99,6 @@ namespace AtelierXNA
             {
                 UpdateButtons();
                 Temps…coulÈDepuisMAJ = 0;
-                //Game.Window.Title = AxeX.ToString() + " / " + AxeY.ToString() + " / " + AxeZ.ToString();
-
             }
             base.Update(gameTime);
         }
